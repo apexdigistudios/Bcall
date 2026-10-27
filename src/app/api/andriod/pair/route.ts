@@ -1,67 +1,76 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import crypto from "crypto";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { pairingCode, deviceLabel } = await req.json();
+    const { pairing_code, device_id, device_name } = await request.json();
 
-    if (!pairingCode) {
-      return NextResponse.json({ error: "Pairing code is required." }, { status: 400 });
+    if (!pairing_code) {
+      return NextResponse.json(
+        { error: "Missing pairing code" },
+        { status: 400 }
+      );
     }
 
-    const codeHash = crypto.createHash("sha256").update(pairingCode.trim()).digest("hex");
-    const nowISO = new Date().toISOString();
+    // 1. Hash the incoming 6-digit code to match the hash stored in Supabase
+    const codeHash = crypto
+      .createHash("sha256")
+      .update(pairing_code.trim())
+      .digest("hex");
 
-    // 1. Find valid, unexpired, unused pairing code
-    const { data: codeRecord, error: codeQueryError } = await supabase
+    // 2. Fetch active, non-expired pairing code from Supabase
+    const { data: codeRecord, error: fetchError } = await supabaseAdmin
       .from("android_pairing_codes")
       .select("*")
       .eq("code_hash", codeHash)
-      .is("used_at", null)
-      .gt("expires_at", nowISO)
+      .gt("expires_at", new Date().toISOString())
       .single();
 
-    if (codeQueryError || !codeRecord) {
-      return NextResponse.json({ error: "Invalid or expired pairing code." }, { status: 400 });
+    if (fetchError || !codeRecord) {
+      return NextResponse.json(
+        { error: "Invalid or expired pairing code" },
+        { status: 400 }
+      );
     }
 
-    // 2. Mark code as used
-    await supabase
-      .from("android_pairing_codes")
-      .update({ used_at: nowISO })
-      .eq("id", codeRecord.id);
-
-    // 3. Generate secure per-device credential token
-    const rawCredential = "cb_live_" + crypto.randomBytes(32).toString("hex");
-    const credentialHash = crypto.createHash("sha256").update(rawCredential).digest("hex");
-
-    // 4. Register the device
-    const { data: deviceRecord, error: deviceInsertError } = await supabase
+    // 3. Register or update the companion phone in android_devices
+    const { data: deviceRecord, error: deviceError } = await supabaseAdmin
       .from("android_devices")
       .insert({
         business_name: codeRecord.business_name,
-        device_label: deviceLabel || "Shop Companion Phone",
-        credential_hash: credentialHash,
+        device_label: device_name || "Android Shop Phone",
         status: "active",
-        last_seen_at: nowISO,
+        last_seen_at: new Date().toISOString(),
       })
       .select()
       .single();
 
-    if (deviceInsertError) {
-      throw deviceInsertError;
+    if (deviceError || !deviceRecord) {
+      return NextResponse.json(
+        { error: "Failed to register companion device" },
+        { status: 500 }
+      );
     }
 
-    // Return the raw credential ONCE to the Android app
-    return NextResponse.json({
-      success: true,
-      deviceId: deviceRecord.id,
-      deviceCredential: rawCredential,
-      businessName: codeRecord.business_name,
-    });
+    // 4. Delete the used pairing code so it cannot be reused
+    await supabaseAdmin
+      .from("android_pairing_codes")
+      .delete()
+      .eq("id", codeRecord.id);
+
+    // 5. Return success and the business_id (device UUID) expected by Android app
+    return NextResponse.json(
+      {
+        success: true,
+        business_id: deviceRecord.id,
+      },
+      { status: 200 }
+    );
   } catch (err: any) {
-    console.error("Pairing API error:", err);
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }
