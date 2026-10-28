@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { PhoneMissed, Smartphone, Clock, AlertCircle } from "lucide-react";
+import { PhoneMissed, Smartphone, Clock, AlertCircle, MessageCircle, Send, ChevronDown } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 interface CallsClientWrapperProps {
@@ -12,6 +12,19 @@ interface CallsClientWrapperProps {
 
 export default function CallsClientWrapper({ initialCalls, error }: CallsClientWrapperProps) {
   const router = useRouter();
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdownId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Real-time subscription to auto-update when a new call event arrives
   useEffect(() => {
@@ -69,34 +82,75 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
               No missed calls logged yet. Incoming calls from your companion devices will appear here instantly.
             </div>
           ) : (
-            initialCalls.map((call) => (
-              <div key={call.id} className="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start sm:items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 mt-0.5 sm:mt-0">
-                    <PhoneMissed className="w-5 h-5" />
+            initialCalls.map((call) => {
+              const cleanPhone = call.phone_number.replace(/\D/g, "");
+              const defaultMsg = encodeURIComponent("Hello! We missed your call at our shop. How can we help you today?");
+              const isDropdownOpen = openDropdownId === call.id;
+
+              return (
+                <div key={call.id} className="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative">
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 mt-0.5 sm:mt-0">
+                      <PhoneMissed className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-semibold text-sm text-[#111214] font-mono">{call.phone_number}</h4>
+                        {call.contact_name && (
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-[#f7f7f5] text-[#686b73] border border-[#e7e7e9]">
+                            {call.contact_name}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#686b73] mt-1 flex items-center gap-1.5">
+                        <Smartphone className="w-3.5 h-3.5" />
+                        {call.android_devices?.business_name || "Shop"} ({call.android_devices?.device_label || "Phone"})
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-semibold text-sm text-[#111214] font-mono">{call.phone_number}</h4>
-                      {call.contact_name && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-[#f7f7f5] text-[#686b73] border border-[#e7e7e9]">
-                          {call.contact_name}
-                        </span>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e7e7e9]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#686b73]">
+                      <Clock className="w-3.5 h-3.5" />
+                      {call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}
+                    </div>
+
+                    {/* Follow Up Button & Popup */}
+                    <div className="relative" ref={isDropdownOpen ? dropdownRef : undefined}>
+                      <button
+                        onClick={() => setOpenDropdownId(isDropdownOpen ? null : call.id)}
+                        className="px-3 py-1.5 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs hover:bg-[#e6b825] transition-colors flex items-center gap-1 shadow-sm"
+                      >
+                        Follow Up <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+
+                      {isDropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-[#e7e7e9] py-1.5 z-20 animate-in fade-in zoom-in-95">
+                          <a
+                            href={`sms:${call.phone_number}?body=${defaultMsg}`}
+                            className="w-full px-3.5 py-2 text-xs text-left text-[#111214] hover:bg-[#f7f7f5] flex items-center gap-2 font-medium"
+                            onClick={() => setOpenDropdownId(null)}
+                          >
+                            <MessageCircle className="w-4 h-4 text-blue-600" />
+                            Send SMS
+                          </a>
+                          <a
+                            href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full px-3.5 py-2 text-xs text-left text-[#111214] hover:bg-[#f7f7f5] flex items-center gap-2 font-medium"
+                            onClick={() => setOpenDropdownId(null)}
+                          >
+                            <Send className="w-4 h-4 text-emerald-600" />
+                            WhatsApp
+                          </a>
+                        </div>
                       )}
                     </div>
-                    <p className="text-xs text-[#686b73] mt-1 flex items-center gap-1.5">
-                      <Smartphone className="w-3.5 h-3.5" />
-                      {call.android_devices?.business_name || "Shop"} ({call.android_devices?.device_label || "Phone"})
-                    </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-1.5 text-xs text-[#686b73] pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e7e7e9]">
-                  <Clock className="w-3.5 h-3.5" />
-                  {call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
