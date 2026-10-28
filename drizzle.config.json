@@ -1,7 +1,0 @@
-{
-  "dialect": "postgresql",
-  "schema": "./src/db/schema.ts",
-  "dbCredentials": {
-    "url": "postgresql://postgres:[Paypal053238]@db.cmnheqmkjexpwwrbygty.supabase.co:5432/postgres"
-  }
-}
