@@ -59,7 +59,8 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#e7e7e9] overflow-hidden shadow-sm">
+      {/* Removed overflow-hidden to prevent clipping dropdown popups */}
+      <div className="bg-white rounded-2xl border border-[#e7e7e9] shadow-sm">
         <div className="p-5 md:p-6 border-b border-[#e7e7e9] flex items-center justify-between">
           <div>
             <h3 className="font-bold text-base text-[#111214]">Recent Calls</h3>
@@ -125,35 +126,28 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                       </button>
 
                       {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-black/5 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
-                          <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#686b73] uppercase">
-                            Quick Actions
-                          </div>
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-[#e7e7e9] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                           <a
                             href={`sms:${call.phone_number}?body=${defaultMsg}`}
-                            className="w-full px-3 py-2 text-xs text-left text-[#111214] hover:bg-[#f2f2f7] rounded-xl flex items-center justify-between font-medium transition-colors group"
+                            className="w-full px-3 py-2.5 text-xs text-left text-[#111214] hover:bg-[#f7f7f7] rounded-xl flex items-center gap-2.5 font-medium transition-colors"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="flex items-center gap-2.5">
-                              <span className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm">
-                                <MessageCircle className="w-3.5 h-3.5" />
-                              </span>
-                              Send SMS
+                            <span className="w-6 h-6 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm shrink-0">
+                              <MessageCircle className="w-3.5 h-3.5" />
                             </span>
+                            Send SMS
                           </a>
                           <a
                             href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full px-3 py-2 text-xs text-left text-[#111214] hover:bg-[#f2f2f7] rounded-xl flex items-center justify-between font-medium transition-colors group mt-0.5"
+                            className="w-full px-3 py-2.5 text-xs text-left text-[#111214] hover:bg-[#f7f7f7] rounded-xl flex items-center gap-2.5 font-medium transition-colors mt-0.5"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="flex items-center gap-2.5">
-                              <span className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm">
-                                <Send className="w-3.5 h-3.5" />
-                              </span>
-                              WhatsApp
+                            <span className="w-6 h-6 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shrink-0">
+                              <Send className="w-3.5 h-3.5" />
                             </span>
+                            WhatsApp
                           </a>
                         </div>
                       )}
