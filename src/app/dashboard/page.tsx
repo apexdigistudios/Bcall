@@ -121,11 +121,21 @@ export default async function DashboardPage() {
                 </tr>
               ) : (
                 calls.map((call) => {
-                  const number = call.caller_number || call.callerNumber || "";
+                  // Fixed property lookup to check phone_number first
+                  const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
+                  const cleanPhone = number.replace(/\D/g, "");
+
                   return (
                     <tr key={call.id} className="hover:bg-[#f7f7f5]/40 transition-colors">
                       <td className="py-4 px-6 font-semibold font-mono text-[#111214]">
-                        {number}
+                        <div className="flex items-center gap-2">
+                          <span>{number}</span>
+                          {call.contact_name && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-[#f7f7f5] text-[#686b73] border border-[#e7e7e9] font-sans font-normal">
+                              {call.contact_name}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-4 px-6">
                         <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
@@ -148,7 +158,7 @@ export default async function DashboardPage() {
                           <PhoneCall className="w-3.5 h-3.5" /> Call
                         </a>
                         <a
-                          href={`https://wa.me/${number.replace(/\D/g, "")}`}
+                          href={`https://wa.me/${cleanPhone}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
