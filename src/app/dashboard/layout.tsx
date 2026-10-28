@@ -35,14 +35,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-[#f7f7f5] text-[#111214]">
-        {/* Protected Official Shadcn Sidebar */}
-        <AppSidebar />
+        {/* Sidebar hidden on mobile screens via responsive classes */}
+        <div className="hidden md:block">
+          <AppSidebar />
+        </div>
 
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col min-w-0 pb-28 md:pb-0">
           <header className="h-16 border-b border-[#e7e7e9] bg-white px-4 md:px-8 flex items-center justify-between sticky top-0 z-40">
             <div className="flex items-center gap-3">
-              <SidebarTrigger className="text-[#686b73] hover:text-[#111214]" />
+              <SidebarTrigger className="text-[#686b73] hover:text-[#111214] hidden md:inline-flex" />
               <h1 className="font-semibold text-base md:text-lg truncate">CallBackly Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
@@ -57,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </main>
 
-        {/* Floating White Blur Mobile Navbar */}
+        {/* Floating Mobile Navbar */}
         <MobileNavbar />
       </div>
     </SidebarProvider>

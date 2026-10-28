@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { 
   PhoneCall, Smartphone, Settings, Building2, User, Plus, Check, ChevronsUpDown, 
-  LayoutDashboard, X, ChevronRight, ChevronLeft, CreditCard, HelpCircle, LogOut, Sparkles, Camera
+  LayoutDashboard, X, ChevronRight, ChevronLeft, CreditCard, HelpCircle, LogOut, Sparkles, FileText, BarChart3
 } from "lucide-react";
 import {
   Sidebar,
@@ -140,12 +140,13 @@ export function AppSidebar() {
 
   return (
     <>
-      <Sidebar collapsible="icon" className="border-r border-[#e7e7e9]">
+      {/* Hidden on mobile view, visible from medium screens up */}
+      <Sidebar collapsible="icon" className="border-r border-[#e7e7e9] hidden md:block">
         {/* TOP HEADER: Business Switcher / Wizard Trigger */}
         <SidebarHeader className="border-b border-sidebar-border p-2">
           <div 
             onClick={() => { setWizardStep(1); setBusinessModalOpen(true); }}
-            className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-accent/50 hover:bg-sidebar-accent cursor-pointer transition-colors"
+            className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-accent/50 hover:bg-sidebar-accent cursor-pointer transition-colors overflow-hidden"
             title="Manage or Add Business"
           >
             <div className="w-8 h-8 rounded-lg bg-[#f5c62e] text-[#111214] flex items-center justify-center font-bold text-sm shrink-0">
@@ -169,25 +170,37 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton isActive={pathname === "/dashboard"} onClick={() => router.push("/dashboard")} tooltip="Overview">
-                    <LayoutDashboard className="w-4 h-4" />
+                    <LayoutDashboard className="w-4 h-4 shrink-0" />
                     <span>Overview</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton isActive={pathname === "/dashboard/calls"} onClick={() => router.push("/dashboard/calls")} tooltip="Missed Calls">
-                    <PhoneCall className="w-4 h-4" />
+                    <PhoneCall className="w-4 h-4 shrink-0" />
                     <span>Missed Calls</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton isActive={pathname === "/dashboard/devices"} onClick={() => router.push("/dashboard/devices")} tooltip="Android Devices">
-                    <Smartphone className="w-4 h-4" />
+                    <Smartphone className="w-4 h-4 shrink-0" />
                     <span>Android Devices</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
+                  <SidebarMenuButton isActive={pathname === "/dashboard/templates"} onClick={() => router.push("/dashboard/templates")} tooltip="Templates">
+                    <FileText className="w-4 h-4 shrink-0" />
+                    <span>Templates</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive={pathname === "/dashboard/analytics"} onClick={() => router.push("/dashboard/analytics")} tooltip="Analytics">
+                    <BarChart3 className="w-4 h-4 shrink-0" />
+                    <span>Analytics</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
                   <SidebarMenuButton isActive={pathname === "/dashboard/settings"} onClick={() => router.push("/dashboard/settings")} tooltip="Settings">
-                    <Settings className="w-4 h-4" />
+                    <Settings className="w-4 h-4 shrink-0" />
                     <span>Settings</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -197,7 +210,7 @@ export function AppSidebar() {
         </SidebarContent>
 
         {/* BOTTOM FOOTER: User Profile with Nested Popup */}
-        <SidebarFooter className="border-t border-sidebar-border p-2 relative" ref={menuRef}>
+        <SidebarFooter className="border-t border-sidebar-border p-2 relative overflow-hidden" ref={menuRef}>
           <div 
             onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             className="flex items-center justify-between p-2 rounded-xl hover:bg-sidebar-accent cursor-pointer transition-colors group"
@@ -224,9 +237,9 @@ export function AppSidebar() {
             <div className="absolute bottom-full left-2 mb-2 w-64 bg-white rounded-2xl shadow-2xl border border-[#e7e7e9] p-2 z-50 animate-in fade-in zoom-in-95 text-[#111214]">
               <div className="p-3 border-b border-[#e7e7e9] flex items-center gap-3">
                 {userProfile?.avatar_url ? (
-                  <img src={userProfile.avatar_url} alt="Avatar" className="w-9 h-9 rounded-full object-cover" />
+                  <img src={userProfile.avatar_url} alt="Avatar" className="w-9 h-9 rounded-full object-cover shrink-0" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-[#f5c62e] text-[#111214] flex items-center justify-center font-bold text-sm">
+                  <div className="w-9 h-9 rounded-full bg-[#f5c62e] text-[#111214] flex items-center justify-center font-bold text-sm shrink-0">
                     <User className="w-4 h-4" />
                   </div>
                 )}
