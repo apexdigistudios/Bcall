@@ -17,34 +17,29 @@ export const demoRequests = pgTable("demo_requests", {
 // 1. One-time pairing codes generated on the CallBackly website
 export const androidPairingCodes = pgTable("android_pairing_codes", {
   id: uuid("id").defaultRandom().primaryKey(),
-  businessName: varchar("business_name", { length: 160 }).notNull(),
-  codeHash: varchar("code_hash", { length: 255 }).notNull(),
+  codeHash: text("code_hash").notNull().unique(),
+  businessName: text("business_name").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-  usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
 });
 
 // 2. Registered/Paired Android devices
 export const androidDevices = pgTable("android_devices", {
   id: uuid("id").defaultRandom().primaryKey(),
-  businessName: varchar("business_name", { length: 160 }).notNull(),
-  deviceLabel: varchar("device_label", { length: 120 }).notNull(),
-  credentialHash: varchar("credential_hash", { length: 255 }).notNull(),
-  status: varchar("status", { length: 20 }).notNull().default("active"), // 'active' | 'revoked'
+  deviceId: text("device_id").notNull().unique(),
+  businessName: text("business_name").notNull(),
+  deviceLabel: text("device_label").notNull(),
+  status: text("status").notNull().default("active"),
   lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// 3. Classified missed call events ingested from the Android app
+// 3. Ingested call events from the Android app
 export const callEvents = pgTable("call_events", {
   id: uuid("id").defaultRandom().primaryKey(),
-  deviceId: uuid("device_id").references(() => androidDevices.id).notNull(),
-  eventId: varchar("event_id", { length: 100 }).unique().notNull(), // Unique string for server-side deduplication
-  callerNumber: varchar("caller_number", { length: 50 }).notNull(),
-  callOutcome: varchar("call_outcome", { length: 30 }).notNull().default("missed"),
-  callStartedAt: timestamp("call_started_at", { withTimezone: true }),
-  callEndedAt: timestamp("call_ended_at", { withTimezone: true }),
-  durationSeconds: integer("duration_seconds").default(0),
-  leadStatus: varchar("lead_status", { length: 30 }).notNull().default("new"), // 'new' | 'contacted' | 'booked' | 'lost'
+  businessId: uuid("business_id").references(() => androidDevices.id).notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  contactName: text("contact_name").notNull().default(""),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
