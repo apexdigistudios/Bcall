@@ -115,34 +115,45 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                       {call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}
                     </div>
 
-                    {/* Follow Up Button & Popup */}
+                    {/* iOS-Inspired Follow Up Menu */}
                     <div className="relative" ref={isDropdownOpen ? dropdownRef : undefined}>
                       <button
                         onClick={() => setOpenDropdownId(isDropdownOpen ? null : call.id)}
-                        className="px-3 py-1.5 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs hover:bg-[#e6b825] transition-colors flex items-center gap-1 shadow-sm"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs hover:bg-[#e6b825] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                       >
-                        Follow Up <ChevronDown className="w-3.5 h-3.5" />
+                        Follow Up <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
                       {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-[#e7e7e9] py-1.5 z-20 animate-in fade-in zoom-in-95">
+                        <div className="absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-black/5 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
+                          <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#686b73] uppercase">
+                            Quick Actions
+                          </div>
                           <a
                             href={`sms:${call.phone_number}?body=${defaultMsg}`}
-                            className="w-full px-3.5 py-2 text-xs text-left text-[#111214] hover:bg-[#f7f7f5] flex items-center gap-2 font-medium"
+                            className="w-full px-3 py-2 text-xs text-left text-[#111214] hover:bg-[#f2f2f7] rounded-xl flex items-center justify-between font-medium transition-colors group"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <MessageCircle className="w-4 h-4 text-blue-600" />
-                            Send SMS
+                            <span className="flex items-center gap-2.5">
+                              <span className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm">
+                                <MessageCircle className="w-3.5 h-3.5" />
+                              </span>
+                              Send SMS
+                            </span>
                           </a>
                           <a
                             href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full px-3.5 py-2 text-xs text-left text-[#111214] hover:bg-[#f7f7f5] flex items-center gap-2 font-medium"
+                            className="w-full px-3 py-2 text-xs text-left text-[#111214] hover:bg-[#f2f2f7] rounded-xl flex items-center justify-between font-medium transition-colors group mt-0.5"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <Send className="w-4 h-4 text-emerald-600" />
-                            WhatsApp
+                            <span className="flex items-center gap-2.5">
+                              <span className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                                <Send className="w-3.5 h-3.5" />
+                              </span>
+                              WhatsApp
+                            </span>
                           </a>
                         </div>
                       )}
