@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { PhoneCall, Smartphone, MessageSquare, CheckCircle2, AlertCircle } from "lucide-react";
+import { PhoneCall, Smartphone, MessageSquare, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -30,167 +30,169 @@ export default async function DashboardPage() {
   const activeDevicesCount = devices.filter((d) => d.status === "active").length;
 
   return (
-    <div className="w-full min-w-0 space-y-6">
+    <div className="w-full min-w-0 space-y-4 bg-white min-h-screen text-[#111214] pb-20 px-2 sm:px-0">
       {/* Database Connection Error Banner */}
       {connectionError && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-900 space-y-2">
-          <div className="flex items-center gap-3 font-semibold text-sm">
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-            Supabase HTTPS Connection Error
+        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 space-y-1.5">
+          <div className="flex items-center gap-2 font-bold text-xs">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            Supabase Connection Error
           </div>
-          <p className="text-xs font-mono bg-white/80 p-2 rounded border border-red-200 overflow-x-auto">
+          <p className="text-[10px] font-mono bg-white p-2 rounded border border-rose-200 overflow-x-auto">
             {connectionError}
-          </p>
-          <p className="text-xs text-red-700">
-            Please check your <code>.env</code> file. Ensure your <code>NEXT_PUBLIC_SUPABASE_URL</code> and API keys are correct.
           </p>
         </div>
       )}
 
-      {/* Verification Banner */}
+      {/* Device Pairing Notice Banner */}
       {!connectionError && activeDevicesCount === 0 && (
-        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
-            <p className="text-sm font-medium">
-              No active Android companion phone paired. Pair your shop phone to start recovering missed calls on MTN & Telecel.
+        <div className="p-3.5 rounded-xl bg-neutral-100 border border-neutral-200 text-[#111214] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+            <p className="text-xs font-medium">
+              No active companion phone paired. Pair your device to start capturing missed calls.
             </p>
           </div>
-          <Link href="/dashboard/devices" className="px-4 py-2 rounded-lg bg-[#111214] text-white text-xs font-semibold hover:bg-black transition-colors shrink-0">
-            Pair Device Now
+          <Link href="/dashboard/devices" className="px-3.5 py-1.5 rounded-lg bg-black text-[#f5c62e] text-[11px] font-bold hover:bg-neutral-900 transition-colors shrink-0">
+            Pair Device
           </Link>
         </div>
       )}
 
-      {/* Metric Cards Bento Grid - Responsive auto-adjustment */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="p-5 md:p-6 bg-white rounded-2xl border border-[#e7e7e9] shadow-sm">
-          <p className="text-xs font-medium text-[#686b73]">Missed Calls (30 Days)</p>
-          <h3 className="text-3xl font-bold mt-2 text-[#111214]">{totalMissed}</h3>
-          <p className="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" /> 100% captured from companion phone
+      {/* Compact Bento Grid Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm space-y-1">
+          <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Missed Leads</span>
+          <h3 className="text-2xl font-black text-[#111214]">{totalMissed}</h3>
+          <p className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" /> Captured in real-time
           </p>
         </div>
 
-        <div className="p-5 md:p-6 bg-white rounded-2xl border border-[#e7e7e9] shadow-sm">
-          <p className="text-xs font-medium text-[#686b73]">Paired Android Devices</p>
-          <h3 className="text-3xl font-bold mt-2 text-[#111214]">{activeDevicesCount}</h3>
-          <p className="text-xs text-[#686b73] mt-2">Active on shop SIM cards</p>
+        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm space-y-1">
+          <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Active Devices</span>
+          <h3 className="text-2xl font-black text-[#111214]">{activeDevicesCount}</h3>
+          <p className="text-[11px] text-neutral-500">Connected SIM gateway</p>
         </div>
 
-        <div className="p-5 md:p-6 bg-white rounded-2xl border border-[#e7e7e9] shadow-sm flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-medium text-[#686b73]">Quick Action</p>
-            <h4 className="font-semibold text-sm mt-1 text-[#111214]">Connect Companion Phone</h4>
+            <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Quick Action</span>
+            <h4 className="font-bold text-xs mt-0.5 text-[#111214]">Companion Setup</h4>
           </div>
-          <Link href="/dashboard/devices" className="mt-4 w-full py-2.5 px-4 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs text-center hover:bg-[#e6b825] transition-colors">
-            Generate Pairing Code
+          <Link href="/dashboard/devices" className="mt-3 w-full py-2 px-3 rounded-xl bg-black text-[#f5c62e] font-bold text-[11px] text-center hover:bg-neutral-900 transition-colors flex items-center justify-center gap-1">
+            Pair Phone <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
       </div>
 
-      {/* Missed Calls Inbox Table */}
-      <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#e7e7e9] bg-white shadow-sm">
-        <div className="flex flex-col gap-3 border-b border-[#e7e7e9] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      {/* Missed Calls Inbox Section */}
+      <div className="w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-neutral-50/50">
           <div>
-            <h2 className="font-bold text-base">Recent Missed Calls</h2>
-            <p className="text-xs text-[#686b73]">Instant lead recovery for Ghanaian local business</p>
+            <h2 className="font-bold text-xs uppercase tracking-wider text-[#111214]">Missed Call Logs</h2>
+            <p className="text-[10px] text-neutral-500">Instant automated lead recovery stream</p>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-[#f7f7f5] text-[#686b73] font-medium border border-[#e7e7e9]">
-            {calls.length} Total Leads
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-neutral-600 font-mono border border-neutral-200">
+            {calls.length} Leads
           </span>
         </div>
 
-        <div className="space-y-3 p-4 xl:hidden">
+        {/* Mobile Feed View */}
+        <div className="space-y-2.5 p-3 xl:hidden">
           {calls.length === 0 ? (
-            <p className="py-6 text-center text-sm leading-6 text-[#686b73]">
-              {connectionError ? "Unable to load calls due to a database connection issue." : "No missed calls yet. Calls from your paired phone will appear here."}
+            <p className="py-8 text-center text-xs text-neutral-400">
+              {connectionError ? "Database connection error." : "No missed calls recorded yet."}
             </p>
           ) : calls.map((call) => {
             const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
             const cleanPhone = number.replace(/\D/g, "");
             return (
-              <article key={call.id} className="min-w-0 rounded-xl border border-[#e7e7e9] bg-[#f7f7f5] p-4">
-                <div className="flex min-w-0 items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="break-all font-mono text-sm font-semibold text-[#111214]">{number}</p>
-                    {call.contact_name && <p className="mt-1 truncate text-xs text-[#686b73]">{call.contact_name}</p>}
+              <article key={call.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-mono text-xs font-bold text-[#111214]">{number}</p>
+                    {call.contact_name && <p className="text-[10px] text-neutral-500">{call.contact_name}</p>}
                   </div>
-                  <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-medium text-amber-800">{call.lead_status || call.leadStatus || "new"}</span>
+                  <span className="rounded-md bg-neutral-200 px-2 py-0.5 text-[9px] font-mono text-neutral-700">
+                    {call.lead_status || "new"}
+                  </span>
                 </div>
-                <p className="mt-3 text-xs text-[#686b73]">{call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}</p>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  <a href={`tel:${number}`} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#111214] px-3 text-xs font-medium text-white">Call</a>
-                  <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#e7e7e9] bg-white px-3 text-xs font-medium text-[#111214]">WhatsApp</a>
+                <div className="flex items-center justify-between text-[10px] text-neutral-400 pt-1">
+                  <span>{call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}</span>
+                  <div className="flex gap-1.5">
+                    <a href={`tel:${number}`} className="px-2.5 py-1 rounded-lg bg-black text-white text-[10px] font-medium">Call</a>
+                    <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 rounded-lg border border-neutral-300 bg-white text-[10px] font-medium text-[#111214]">WhatsApp</a>
+                  </div>
                 </div>
               </article>
             );
           })}
         </div>
 
+        {/* Desktop Table View */}
         <div className="hidden overflow-x-auto xl:block">
-          <table className="w-full text-left border-collapse min-w-[650px]">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#e7e7e9] bg-[#f7f7f5]/50 text-[#686b73] text-xs font-semibold">
-                <th className="py-3 px-6">Caller Number</th>
-                <th className="py-3 px-6">Outcome</th>
-                <th className="py-3 px-6">Time Received</th>
-                <th className="py-3 px-6">Lead Status</th>
-                <th className="py-3 px-6 text-right">Instant Follow-up</th>
+              <tr className="border-b border-neutral-200 bg-neutral-50 text-neutral-500 text-[10px] font-mono uppercase">
+                <th className="py-2.5 px-4">Caller Number</th>
+                <th className="py-2.5 px-4">Outcome</th>
+                <th className="py-2.5 px-4">Time Received</th>
+                <th className="py-2.5 px-4">Status</th>
+                <th className="py-2.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#e7e7e9] text-sm">
+            <tbody className="divide-y divide-neutral-100 text-xs">
               {calls.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-[#686b73]">
-                    {connectionError ? "Unable to load calls due to database connection issue." : "No missed calls recorded yet. When customers call your paired phone and it rings out, they will appear here instantly."}
+                  <td colSpan={5} className="py-8 text-center text-neutral-400">
+                    {connectionError ? "Unable to load calls." : "No missed calls recorded yet."}
                   </td>
                 </tr>
               ) : (
                 calls.map((call) => {
-                  // Fixed property lookup to check phone_number first
                   const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
                   const cleanPhone = number.replace(/\D/g, "");
 
                   return (
-                    <tr key={call.id} className="hover:bg-[#f7f7f5]/40 transition-colors">
-                      <td className="py-4 px-6 font-semibold font-mono text-[#111214]">
+                    <tr key={call.id} className="hover:bg-neutral-50/50 transition-colors">
+                      <td className="py-3 px-4 font-bold font-mono text-[#111214]">
                         <div className="flex items-center gap-2">
                           <span>{number}</span>
                           {call.contact_name && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-[#f7f7f5] text-[#686b73] border border-[#e7e7e9] font-sans font-normal">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-neutral-100 text-neutral-600 font-sans font-normal">
                               {call.contact_name}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-4 px-6">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 font-mono">
                           {call.call_outcome || call.callOutcome || "missed"}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-xs text-[#686b73]">
-                        {call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}
+                      <td className="py-3 px-4 text-[11px] text-neutral-500 font-mono">
+                        {call.created_at ? new Date(call.created_at.replace(" ", "T")).toLocaleString() : "Just now"}
                       </td>
-                      <td className="py-4 px-6">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200">
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-800 font-mono">
                           {call.lead_status || call.leadStatus || "new"}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right space-x-2 whitespace-nowrap">
+                      <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
                         <a
                           href={`tel:${number}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111214] text-white text-xs font-medium hover:bg-black transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black text-white text-[11px] font-medium hover:bg-neutral-800 transition-colors"
                         >
-                          <PhoneCall className="w-3.5 h-3.5" /> Call
+                          <PhoneCall className="w-3 h-3" /> Call
                         </a>
                         <a
                           href={`https://wa.me/${cleanPhone}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-neutral-300 bg-white text-[11px] font-medium text-[#111214] hover:bg-neutral-50 transition-colors"
                         >
-                          <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
+                          <MessageSquare className="w-3 h-3" /> WhatsApp
                         </a>
                       </td>
                     </tr>

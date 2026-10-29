@@ -29,7 +29,6 @@ export default function DevicesClientWrapper({
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
 
-  // Setup Realtime subscription to auto-update when a phone connects
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -53,22 +52,17 @@ export default function DevicesClientWrapper({
     };
   }, [router]);
 
-  // Handle countdown timer for code expiration
   useEffect(() => {
     if (!expiresAt) return;
-
     const expiryTime = new Date(expiresAt).getTime();
-
     const interval = setInterval(() => {
       const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
       setTimeLeft(remaining);
-
       if (remaining === 0) {
         setIsExpired(true);
         clearInterval(interval);
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [expiresAt]);
 
@@ -87,126 +81,125 @@ export default function DevicesClientWrapper({
   };
 
   return (
-    <div className="space-y-6 max-w-5xl">
-      <div>
-        <h2 className="text-xl font-bold tracking-tight text-[#111214]">Android Companion Devices</h2>
-        <p className="text-xs text-[#686b73] mt-0.5">
-          Pair your shop phone running MTN or Telecel to automatically detect and sync missed calls.
-        </p>
+    <div className="space-y-3.5 max-w-2xl mx-auto px-2 sm:px-0 bg-white min-h-screen text-[#111214] font-sans pb-20">
+      {/* Header */}
+      <div className="pt-2 border-b border-neutral-100 pb-3 flex items-center justify-between">
+        <div>
+          <span className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase">y'elllo / Gateway</span>
+          <h2 className="text-lg font-bold tracking-tight text-[#111214]">Android Devices</h2>
+        </div>
       </div>
 
-      {/* SUCCESS BANNER: Displays the generated pairing code with countdown & auto-hide on expiration */}
+      {/* Success Banner: Pairing Code */}
       {rawCode && !isExpired && (
-        <div className="p-6 bg-[#111214] text-white rounded-2xl shadow-xl border border-[#f5c62e]/30 space-y-3 animate-in fade-in zoom-in-95">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[#f5c62e]">
-              <KeyRound className="w-5 h-5" />
-              <h3 className="font-bold text-sm">Pairing Code Generated Successfully</h3>
+        <div className="p-4 bg-black text-white rounded-2xl shadow-md border border-neutral-800 space-y-2.5 animate-in fade-in">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 text-[#f5c62e]">
+              <KeyRound className="w-3.5 h-3.5 shrink-0" />
+              <h3 className="font-semibold text-xs">Pairing Code Active</h3>
             </div>
             {timeLeft !== null && (
-              <div className="flex items-center gap-1.5 text-xs bg-white/10 px-2.5 py-1 rounded-full text-gray-300 font-mono">
-                <Clock className="w-3.5 h-3.5 text-[#f5c62e]" />
-                Expires in {formatTime(timeLeft)}
+              <div className="flex items-center gap-1 text-[9px] bg-white/10 px-2 py-0.5 rounded-full text-neutral-300 font-mono">
+                <Clock className="w-3 h-3 text-[#f5c62e]" />
+                {formatTime(timeLeft)}
               </div>
             )}
           </div>
-          <p className="text-xs text-gray-300">
-            Enter this secure code inside your installed y&apos;elllo Android app for{" "}
-            <span className="font-semibold text-white">{decodeURIComponent(bizName || "your shop")}</span>.
+          <p className="text-[10px] text-neutral-300">
+            Enter inside your y'elllo app for <span className="font-bold text-white">{decodeURIComponent(bizName || "Shop")}</span>.
           </p>
-          <div className="flex items-center gap-3 pt-2">
-            <div className="bg-white/10 border border-white/20 px-5 py-2.5 rounded-xl font-mono text-2xl tracking-widest text-[#f5c62e] font-bold">
+          <div className="flex items-center gap-2.5 pt-0.5 flex-wrap">
+            <div className="bg-white/10 border border-white/20 px-3.5 py-1.5 rounded-xl font-mono text-lg tracking-widest text-[#f5c62e] font-bold">
               {rawCode}
             </div>
+            {/* iOS Styled Pill Button */}
             <button
               onClick={copyCode}
-              className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors flex items-center gap-2 border border-white/10"
+              className="px-3.5 py-1.5 rounded-full bg-white text-black text-[11px] font-semibold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 hover:bg-neutral-100"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy Code"}
+              {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+              {copied ? "Copied" : "Copy Code"}
             </button>
           </div>
         </div>
       )}
 
-      {/* EXPIRED CODE NOTIFICATION */}
+      {/* Expired Notification */}
       {isExpired && (
-        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-xs flex items-center gap-2">
+        <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-[11px] flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
-          Previous pairing code has expired. Generate a new one below to connect your device.
+          Pairing code expired. Generate a new one below.
         </div>
       )}
 
       {/* Generate Pairing Code Box */}
-      <div className="p-5 md:p-6 bg-white rounded-2xl border border-[#e7e7e9] shadow-sm space-y-4">
+      <div className="p-3.5 bg-neutral-50/50 rounded-2xl border border-neutral-200/80 shadow-2xs space-y-2.5">
         <div>
-          <h3 className="font-semibold text-sm text-[#111214]">Pair a New Phone</h3>
-          <p className="text-xs text-[#686b73] mt-1">
-            Generate a 10-minute secure pairing code. Enter this code inside your installed y&apos;elllo Android companion app.
-          </p>
+          <h3 className="text-[11px] font-semibold text-[#111214] uppercase tracking-wide">Pair New Phone</h3>
+          <p className="text-[10px] text-neutral-500">Generate a 10-minute secure pairing code.</p>
         </div>
-        <form action={handleGenerateCode} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <form action={handleGenerateCode} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <input
             type="text"
             name="businessName"
-            placeholder="Business / Shop Name"
+            placeholder="Business Name"
             required
-            className="px-3.5 py-2.5 rounded-xl border border-[#e7e7e9] text-sm bg-[#f7f7f5] focus:outline-none focus:border-[#111214] flex-1 text-[#111214]"
+            className="px-3 py-2 rounded-xl border border-neutral-200 text-xs bg-white focus:outline-none focus:border-black flex-1 font-medium text-[#111214]"
           />
+          {/* iOS Styled Pill Button */}
           <button
             type="submit"
-            className="px-4 py-2.5 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs hover:bg-[#e6b825] transition-colors flex items-center justify-center gap-1.5 shrink-0"
+            className="px-4 py-2 rounded-full bg-black text-[#f5c62e] font-semibold text-xs hover:bg-neutral-800 transition-all flex items-center justify-center gap-1.5 shrink-0 active:scale-95 shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Generate Pairing Code
+            <Plus className="w-3.5 h-3.5" /> Generate Code
           </button>
         </form>
       </div>
 
       {/* Connected Devices List */}
-      <div className="bg-white rounded-2xl border border-[#e7e7e9] overflow-hidden shadow-sm">
-        <div className="p-5 md:p-6 border-b border-[#e7e7e9] flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-2xs">
+        <div className="p-3.5 border-b border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-base text-[#111214]">Connected Devices</h3>
-            <p className="text-xs text-[#686b73]">Active Android phones monitoring incoming calls</p>
+            <h3 className="text-[11px] font-semibold text-[#111214] uppercase tracking-wide">Connected Devices</h3>
+            <p className="text-[10px] text-neutral-500">Active monitoring gateways</p>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f7f7f5] text-[#111214] border border-[#e7e7e9]">
-            {initialDevices.length} Device{initialDevices.length === 1 ? "" : "s"}
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white text-neutral-700 border border-neutral-200">
+            {initialDevices.length}
           </span>
         </div>
 
-        <div className="divide-y divide-[#e7e7e9]">
+        <div className="divide-y divide-neutral-100">
           {error && (
-            <div className="p-6 text-xs text-red-600 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" /> Error loading devices: {error}
+            <div className="p-3 text-xs text-rose-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" /> Error: {error}
             </div>
           )}
 
-{!error && initialDevices.length === 0 ? (
-            <div className="p-8 text-center text-xs text-[#686b73]">
-              No Android devices paired yet. Generate a pairing code above to connect your phone.
+          {!error && initialDevices.length === 0 ? (
+            <div className="p-6 text-center text-xs text-neutral-400">
+              No Android devices paired yet.
             </div>
           ) : (
             initialDevices.map((device) => (
-              <div key={device.id} className="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start sm:items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#f7f7f5] border border-[#e7e7e9] flex items-center justify-center text-[#111214] shrink-0 mt-0.5 sm:mt-0">
-                    <Smartphone className="w-5 h-5" />
+              <div key={device.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-neutral-50/40 transition-colors">
+                <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[#111214] shrink-0 font-bold">
+                    <Smartphone className="w-3.5 h-3.5" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-[#111214]">{device.device_label || "Shop Phone"}</h4>
-                    <p className="text-xs text-[#686b73] mt-0.5">
-                      Business: {device.business_name} • Last seen:{" "}
-                      {device.last_seen_at ? new Date(device.last_seen_at).toLocaleString() : "Never"}
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-xs text-[#111214] truncate">{device.device_label || "Shop Phone"}</h4>
+                    <p className="text-[10px] text-neutral-500 truncate mt-0.5">
+                      {device.business_name} • {device.last_seen_at ? new Date(device.last_seen_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Never"}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e7e7e9]">
+                <div className="flex items-center justify-between sm:justify-end gap-2 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
                   <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                    className={`px-2 py-0.5 rounded text-[9px] font-semibold font-mono ${
                       device.status === "active"
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : "bg-red-50 text-red-700 border border-red-200"
+                        : "bg-rose-50 text-rose-700 border border-rose-200"
                     }`}
                   >
                     {device.status}
@@ -214,11 +207,12 @@ export default function DevicesClientWrapper({
                   {device.status === "active" && (
                     <form action={handleRevokeDevice}>
                       <input type="hidden" name="deviceId" value={device.id} />
+                      {/* iOS Styled Pill Button with Icon */}
                       <button
                         type="submit"
-                        className="px-3 py-1.5 rounded-lg border border-red-200 text-red-600 text-xs font-medium hover:bg-red-50 transition-colors"
+                        className="px-3 py-1 rounded-full border border-neutral-200 bg-neutral-50 text-neutral-700 text-[10px] font-semibold hover:bg-neutral-100 transition-all flex items-center gap-1 active:scale-95"
                       >
-                        Revoke
+                        <Trash2 className="w-3 h-3 text-rose-600" /> Revoke
                       </button>
                     </form>
                   )}

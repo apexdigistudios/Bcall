@@ -51,35 +51,32 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
   }, [router]);
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-4 max-w-4xl mx-auto px-2 sm:px-0 bg-white min-h-screen text-[#111214] pb-20">
       <div>
+        <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block mb-0.5">Live Lead Stream</span>
         <h2 className="text-xl font-bold tracking-tight text-[#111214]">Missed Call Logs</h2>
-        <p className="text-xs text-[#686b73] mt-0.5">
-          Real-time missed calls captured from your paired shop Android phones.
-        </p>
       </div>
 
-      {/* Removed overflow-hidden to prevent clipping dropdown popups */}
-      <div className="bg-white rounded-2xl border border-[#e7e7e9] shadow-sm">
-        <div className="p-5 md:p-6 border-b border-[#e7e7e9] flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-neutral-200 bg-neutral-50/50 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-base text-[#111214]">Recent Calls</h3>
-            <p className="text-xs text-[#686b73]">Synced automatically via background worker</p>
+            <h3 className="font-bold text-xs uppercase tracking-wider text-[#111214]">Recent Inbound Calls</h3>
+            <p className="text-[10px] text-neutral-500">Synced automatically from companion devices</p>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f7f7f5] text-[#111214] border border-[#e7e7e9]">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white text-neutral-700 border border-neutral-200">
             {initialCalls.length} Call{initialCalls.length === 1 ? "" : "s"}
           </span>
         </div>
 
-        <div className="divide-y divide-[#e7e7e9]">
+        <div className="divide-y divide-neutral-100">
           {error && (
-            <div className="p-6 text-xs text-red-600 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" /> Error loading calls: {error}
+            <div className="p-4 text-xs text-rose-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" /> Error loading calls: {error}
             </div>
           )}
 
           {!error && initialCalls.length === 0 ? (
-            <div className="p-8 text-center text-xs text-[#686b73]">
+            <div className="p-8 text-center text-xs text-neutral-400">
               No missed calls logged yet. Incoming calls from your companion devices will appear here instantly.
             </div>
           ) : (
@@ -89,51 +86,54 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
               const isDropdownOpen = openDropdownId === call.id;
 
               return (
-                <div key={call.id} className="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative">
-                  <div className="flex items-start sm:items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 mt-0.5 sm:mt-0">
-                      <PhoneMissed className="w-5 h-5" />
+                <div key={call.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative hover:bg-neutral-50/50 transition-colors">
+                  <div className="flex items-start sm:items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[#111214] shrink-0 mt-0.5 sm:mt-0 font-bold">
+                      <PhoneMissed className="w-4 h-4" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-semibold text-sm text-[#111214] font-mono">{call.phone_number}</h4>
+                        <h4 className="font-bold text-xs text-[#111214] font-mono">{call.phone_number}</h4>
                         {call.contact_name && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-[#f7f7f5] text-[#686b73] border border-[#e7e7e9]">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200 truncate">
                             {call.contact_name}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#686b73] mt-1 flex items-center gap-1.5">
-                        <Smartphone className="w-3.5 h-3.5" />
-                        {call.android_devices?.business_name || "Shop"} ({call.android_devices?.device_label || "Phone"})
+                      <p className="text-[11px] text-neutral-500 mt-0.5 flex items-center gap-1 truncate">
+                        <Smartphone className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{call.android_devices?.business_name || "Shop"} ({call.android_devices?.device_label || "Phone"})</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e7e7e9]">
-                    <div className="flex items-center gap-1.5 text-xs text-[#686b73]">
-                      <Clock className="w-3.5 h-3.5" />
-                      {call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
+                    <div className="flex items-center gap-1 text-[10px] text-neutral-400 font-mono">
+                      <Clock className="w-3 h-3 shrink-0" />
+                      {call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
                     </div>
 
-                    {/* iOS-Inspired Follow Up Menu */}
+                    {/* iOS-Styled Pill Follow-Up Button & Frosted Glass Menu */}
                     <div className="relative" ref={isDropdownOpen ? dropdownRef : undefined}>
                       <button
                         onClick={() => setOpenDropdownId(isDropdownOpen ? null : call.id)}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#f5c62e] text-[#111214] font-semibold text-xs hover:bg-[#e6b825] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                        className="px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[#111214] font-semibold text-[11px] transition-all flex items-center gap-1.5 border border-neutral-200 active:scale-95 shadow-2xs"
                       >
-                        Follow Up <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                        Follow Up <ChevronDown className={`w-3 h-3 text-neutral-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
                       {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-[#e7e7e9] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-neutral-200/80 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                          <div className="px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest text-neutral-400 border-b border-neutral-100 mb-1">
+                            Quick Action
+                          </div>
                           <a
                             href={`sms:${call.phone_number}?body=${defaultMsg}`}
-                            className="w-full px-3 py-2.5 text-xs text-left text-[#111214] hover:bg-[#f7f7f7] rounded-xl flex items-center gap-2.5 font-medium transition-colors"
+                            className="w-full px-3 py-2 text-[11px] text-left text-[#111214] hover:bg-neutral-100/80 rounded-xl flex items-center gap-2.5 font-semibold transition-colors"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="w-6 h-6 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm shrink-0">
-                              <MessageCircle className="w-3.5 h-3.5" />
+                            <span className="w-5 h-5 rounded-lg bg-neutral-900 text-white flex items-center justify-center shrink-0">
+                              <MessageCircle className="w-3 h-3" />
                             </span>
                             Send SMS
                           </a>
@@ -141,11 +141,11 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                             href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full px-3 py-2.5 text-xs text-left text-[#111214] hover:bg-[#f7f7f7] rounded-xl flex items-center gap-2.5 font-medium transition-colors mt-0.5"
+                            className="w-full px-3 py-2 text-[11px] text-left text-[#111214] hover:bg-neutral-100/80 rounded-xl flex items-center gap-2.5 font-semibold transition-colors mt-0.5"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="w-6 h-6 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shrink-0">
-                              <Send className="w-3.5 h-3.5" />
+                            <span className="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                              <Send className="w-3 h-3" />
                             </span>
                             WhatsApp
                           </a>
