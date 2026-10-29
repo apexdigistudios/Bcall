@@ -10,11 +10,11 @@ test("renders the landing page and replays the recovery flow", async ({ page }) 
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
-  await expect(page).toHaveTitle(/CallBackly/);
+  await expect(page).toHaveTitle(/Y'elllo/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Turn missed calls");
   await expect(page.getByText("Booked. Just like that.")).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: "artifacts/callbackly-desktop.png" });
+  await page.screenshot({ path: "artifacts/yelllo-desktop.png" });
   await page.getByRole("button", { name: "Replay missed-call recovery flow" }).click();
   await expect(page.getByText("A missed call. We’ve got it.")).toBeVisible();
   await expect(page.getByText("Booked. Just like that.")).toBeVisible();
@@ -59,7 +59,7 @@ test("personalizes industry inquiries and supports keyboard dismissal", async ({
 
 test("opens one FAQ at a time", async ({ page }) => {
   await page.goto("/#faq");
-  const first = page.getByRole("button", { name: "What exactly does CallBackly do?" });
+  const first = page.getByRole("button", { name: "What exactly does y'elllo do?" });
   const second = page.getByRole("button", { name: "Do I need to change my business phone number?" });
   await expect(first).toHaveAttribute("aria-expanded", "true");
   await second.click();
@@ -73,14 +73,14 @@ test("opens one FAQ at a time", async ({ page }) => {
 test("saves a real trial inquiry and returns a confirmation", async ({ page, request }) => {
   const invalid = await request.post("/api/demo", { data: { name: "A", email: "invalid" } });
   expect(invalid.status()).toBe(400);
-  const email = `callbackly-browser-test-${Date.now()}@example.com`;
+  const email = `yelllo-browser-test-${Date.now()}@example.com`;
   try {
     await page.goto("/");
     await page.getByRole("button", { name: "Start my 14-day free trial", exact: true }).first().click();
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("Your name", { exact: false }).fill("Alex Browser Test");
     await dialog.getByLabel("Work email", { exact: false }).fill(email);
-    await dialog.getByLabel("Business name", { exact: false }).fill("CallBackly Browser Test Business");
+    await dialog.getByLabel("Business name", { exact: false }).fill("y'elllo Browser Test Business");
     await dialog.getByLabel("Business type", { exact: false }).selectOption("Salon or barbershop");
     await dialog.getByLabel("Phone number", { exact: false }).fill("+1 (555) 123-4567");
     await dialog.getByRole("checkbox").check();
@@ -93,8 +93,8 @@ test("saves a real trial inquiry and returns a confirmation", async ({ page, req
     const [saved] = await db.select().from(demoRequests).where(eq(demoRequests.email, email));
     expect(saved.kind).toBe("trial");
     expect(saved.consent).toBe(true);
-    expect(saved.businessName).toBe("CallBackly Browser Test Business");
-    await dialog.getByRole("button", { name: "Back to CallBackly" }).click();
+    expect(saved.businessName).toBe("y'elllo Browser Test Business");
+    await dialog.getByRole("button", { name: "Back to y'elllo" }).click();
     await expect(dialog).not.toBeVisible();
   } finally {
     await db.delete(demoRequests).where(eq(demoRequests.email, email));
@@ -110,7 +110,7 @@ test("keeps the mobile navigation and narrow layouts usable", async ({ page }) =
   await expect(page.getByRole("navigation", { name: "Mobile navigation" })).not.toBeVisible();
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: "artifacts/callbackly-mobile.png" });
+  await page.screenshot({ path: "artifacts/yelllo-mobile.png" });
   for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);

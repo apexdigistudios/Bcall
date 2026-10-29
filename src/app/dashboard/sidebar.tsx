@@ -49,18 +49,6 @@ export function AppSidebar() {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetchData();
-    // Close profile menu on outside click
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setProfileMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   async function fetchData() {
     const { data: { user: authUser } } = await supabase.auth.getUser();
 
@@ -89,6 +77,17 @@ export function AppSidebar() {
       setCurrentBusiness(bizData[0]);
     }
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(fetchData);
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Handle Business Wizard Submission
   async function handleCompleteWizard(e: React.FormEvent) {

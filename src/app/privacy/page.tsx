@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 import { DemoButton } from "@/components/DemoButton";
 
-export const metadata: Metadata = { title: "Privacy policy — CallBackly", description: "How CallBackly handles the information you share in a demo or free-trial inquiry." };
+export const metadata: Metadata = { title: "Privacy policy — y'elllo", description: "How y'elllo handles the information you share in a demo or free-trial inquiry." };
 
 export default function PrivacyPage() {
   return (

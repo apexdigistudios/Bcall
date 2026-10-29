@@ -30,7 +30,7 @@ export default async function DashboardPage() {
   const activeDevicesCount = devices.filter((d) => d.status === "active").length;
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 space-y-6">
       {/* Database Connection Error Banner */}
       {connectionError && (
         <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-900 space-y-2">
@@ -90,8 +90,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* Missed Calls Inbox Table */}
-      <div className="bg-white rounded-2xl border border-[#e7e7e9] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-[#e7e7e9] flex items-center justify-between">
+      <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#e7e7e9] bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-[#e7e7e9] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
             <h2 className="font-bold text-base">Recent Missed Calls</h2>
             <p className="text-xs text-[#686b73]">Instant lead recovery for Ghanaian local business</p>
@@ -101,7 +101,34 @@ export default async function DashboardPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-4 xl:hidden">
+          {calls.length === 0 ? (
+            <p className="py-6 text-center text-sm leading-6 text-[#686b73]">
+              {connectionError ? "Unable to load calls due to a database connection issue." : "No missed calls yet. Calls from your paired phone will appear here."}
+            </p>
+          ) : calls.map((call) => {
+            const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
+            const cleanPhone = number.replace(/\D/g, "");
+            return (
+              <article key={call.id} className="min-w-0 rounded-xl border border-[#e7e7e9] bg-[#f7f7f5] p-4">
+                <div className="flex min-w-0 items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="break-all font-mono text-sm font-semibold text-[#111214]">{number}</p>
+                    {call.contact_name && <p className="mt-1 truncate text-xs text-[#686b73]">{call.contact_name}</p>}
+                  </div>
+                  <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-medium text-amber-800">{call.lead_status || call.leadStatus || "new"}</span>
+                </div>
+                <p className="mt-3 text-xs text-[#686b73]">{call.created_at ? new Date(call.created_at).toLocaleString() : "Just now"}</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <a href={`tel:${number}`} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#111214] px-3 text-xs font-medium text-white">Call</a>
+                  <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#e7e7e9] bg-white px-3 text-xs font-medium text-[#111214]">WhatsApp</a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="hidden overflow-x-auto xl:block">
           <table className="w-full text-left border-collapse min-w-[650px]">
             <thead>
               <tr className="border-b border-[#e7e7e9] bg-[#f7f7f5]/50 text-[#686b73] text-xs font-semibold">

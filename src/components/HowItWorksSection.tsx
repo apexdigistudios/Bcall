@@ -1,7 +1,7 @@
 import { ArrowUpRight, CalendarCheck2, MessageSquareText, Phone, PhoneMissed } from "lucide-react";
 
 const steps = [
-  { number: "01", label: "MISSED CALL", title: "They call. You’re busy.", description: "A customer calls while you’re hands-on. CallBackly catches the call you couldn’t answer.", icon: PhoneMissed },
+  { number: "01", label: "MISSED CALL", title: "They call. You’re busy.", description: "A customer calls while you’re hands-on. y'elllo catches the call you couldn’t answer.", icon: PhoneMissed },
   { number: "02", label: "FOLLOW-UP", title: "We keep it going.", description: "A friendly, automatic text starts the conversation and helps them take the next step.", icon: MessageSquareText },
   { number: "03", label: "RECOVERY", title: "They’re on the books.", description: "A missed opportunity becomes a new booking. You get back to doing what you do best.", icon: CalendarCheck2 },
 ];

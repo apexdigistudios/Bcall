@@ -24,7 +24,7 @@ export function Navbar() {
 
   return (
     <header className="site-nav sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-line w-full">
-      <nav aria-label="Main navigation" className="page-container max-w-7xl mx-auto px-4 sm:px-6 flex h-16 sm:h-[76px] items-center justify-between gap-2 sm:gap-4 box-border">
+      <nav aria-label="Main navigation" className="page-container max-w-7xl mx-auto px-4 sm:px-6 flex min-h-16 sm:min-h-[76px] items-center justify-between gap-2 sm:gap-4 box-border">
         <Brand onClick={() => setMenuOpen(false)} />
         
         {/* Desktop Navigation Links */}
@@ -42,13 +42,13 @@ export function Navbar() {
             </DemoButton>
           </div>
           
-          <Link href="/auth" className="btn btn-dark btn-sm text-xs sm:text-sm px-3 py-2 flex items-center gap-1 shrink-0">
+          <Link href="/auth" className="btn btn-dark btn-sm min-h-11 !hidden shrink-0 items-center gap-1 px-3 py-2 text-xs sm:!flex sm:text-sm">
             Get started <ArrowRight size={13} />
           </Link>
 
           <button 
             type="button" 
-            className="grid size-9 place-items-center rounded-lg text-ink lg:hidden bg-[#f7f7f5] border border-line shrink-0" 
+            className="grid size-11 place-items-center rounded-lg text-ink lg:hidden bg-[#f7f7f5] border border-line shrink-0"
             aria-label={menuOpen ? "Close navigation" : "Open navigation"} 
             aria-expanded={menuOpen} 
             aria-controls="mobile-navigation" 

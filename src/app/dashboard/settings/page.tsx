@@ -95,7 +95,7 @@ export default async function SettingsPage() {
         <div className="flex items-center justify-between text-xs py-2">
           <div>
             <span className="font-semibold text-[#111214] block">Local Device Notification</span>
-            <span className="text-[#686b73]">Show "New Lead Captured!" popup on phone when a missed call registers</span>
+            <span className="text-[#686b73]">Show &quot;New Lead Captured!&quot; popup on phone when a missed call registers</span>
           </div>
           <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
             Enabled in APK

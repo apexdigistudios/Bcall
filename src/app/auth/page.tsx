@@ -54,16 +54,16 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#f7f7f5] text-[#111214]">
+    <div className="flex min-h-screen w-full overflow-x-hidden bg-[#f7f7f5] text-[#111214]">
       {/* LEFT COLUMN: Dark Form Container */}
-      <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col justify-between p-8 sm:p-12 bg-[#111214] text-[#f7f7f5] shrink-0 border-r border-[#27292d]">
+      <div className="flex w-full min-w-0 flex-col justify-between border-r border-[#27292d] bg-[#111214] p-6 text-[#f7f7f5] sm:p-8 lg:w-[480px] lg:shrink-0 lg:p-12 xl:w-[520px]">
         <div>
           {/* Logo & Brand */}
           <div className="flex items-center gap-2.5 mb-10">
             <div className="w-9 h-9 rounded-xl bg-[#f5c62e] text-[#111214] flex items-center justify-center font-bold">
               <PhoneCall className="w-5 h-5" />
             </div>
-            <span className="font-bold text-base tracking-tight text-white">CallBackly</span>
+            <span className="font-bold text-base tracking-tight text-white">y&apos;elllo</span>
           </div>
 
           {/* Heading */}
@@ -139,14 +139,14 @@ export default function AuthPage() {
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-[#90939c] hover:text-white transition-colors cursor-pointer"
             >
-              {isSignUp ? "Already have an account? Sign in" : "New to CallBackly? Create a free account"}
+              {isSignUp ? "Already have an account? Sign in" : "New to y'elllo? Create a free account"}
             </button>
           </div>
         </div>
 
         {/* Footer info */}
-        <div className="pt-8 border-t border-[#222326] flex items-center justify-between text-[11px] text-[#686b73]">
-          <span>© 2026 CallBackly Inc.</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#222326] pt-8 text-[11px] text-[#686b73]">
+          <span>© {new Date().getFullYear()} y&apos;elllo</span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors">Terms of Use</a>
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

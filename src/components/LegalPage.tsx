@@ -10,7 +10,7 @@ export function LegalPage({ title, description, children }: { title: string; des
       <Navbar />
       <main id="main-content" className="page-container section-space">
         <article className="mx-auto max-w-[760px]">
-          <Link href="/" className="mb-10 inline-flex items-center gap-2 text-xs text-muted hover:text-ink"><ArrowLeft size={14} /> Back to CallBackly</Link>
+          <Link href="/" className="mb-10 inline-flex min-h-11 items-center gap-2 text-xs text-muted hover:text-ink"><ArrowLeft size={14} /> Back to y&apos;elllo</Link>
           <p className="eyebrow mb-4"><span className="eyebrow-dot" />THE SMALL PRINT, KEPT SIMPLE.</p>
           <h1 className="section-heading text-[48px]">{title}</h1>
           <p className="mt-5 text-[14px] leading-7 text-muted">{description}</p>

@@ -14,7 +14,7 @@ export const demoRequests = pgTable("demo_requests", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// 1. One-time pairing codes generated on the CallBackly website
+// One-time pairing codes generated on the y'elllo website.
 export const androidPairingCodes = pgTable("android_pairing_codes", {
   id: uuid("id").defaultRandom().primaryKey(),
   codeHash: text("code_hash").notNull().unique(),

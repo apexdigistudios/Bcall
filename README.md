@@ -1,6 +1,6 @@
-# CallBackly
+# y'elllo
 
-A responsive, fullstack missed-call recovery landing page built with Next.js App Router, TypeScript, Tailwind CSS, Geist fonts, Lucide Icons, and PostgreSQL through Drizzle ORM.
+A responsive, full-stack missed-call recovery platform built with Next.js App Router, TypeScript, Tailwind CSS, Geist fonts, Lucide icons, and PostgreSQL through Drizzle ORM.
 
 ## Run locally
 

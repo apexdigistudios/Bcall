@@ -6,7 +6,7 @@ import { DemoButton } from "./DemoButton";
 
 const industries = [
   { label: "Salons", icon: Scissors, detail: "Hands on with a client? Keep the next one coming in, without reaching for your phone." },
-  { label: "Barbers", icon: Scissors, detail: "Your chair stays busy. CallBackly keeps the next appointment in the conversation." },
+  { label: "Barbers", icon: Scissors, detail: "Your chair stays busy. y'elllo keeps the next appointment in the conversation." },
   { label: "Dentists", icon: Stethoscope, detail: "More time for your patients. Less time chasing the calls your front desk couldn’t take." },
   { label: "Clinics", icon: HeartPulse, detail: "Give your team the breathing room to care, while new patients find their way to your calendar." },
   { label: "Auto shops", icon: CarFront, detail: "You’re under the hood. We’re on the phone, helping your next customer get back on the road." },

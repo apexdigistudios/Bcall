@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
+import { CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
 import { BrandMark } from "./Brand";
 
 const flowSteps = ["Missed call", "Follow-up", "Booked"];
@@ -70,20 +70,20 @@ export function Hero() {
           <div className="relative w-full max-w-[320px] sm:max-w-[380px] bg-[#111214] rounded-[44px] sm:rounded-[48px] p-3 sm:p-4 shadow-2xl border-4 border-[#333] box-border">
             
             {/* iPhone Notch */}
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-30 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-[#1a1a1a] mr-2" />
-              <div className="w-10 h-1.5 rounded-full bg-[#2a2a2a]" />
+            <div className="absolute top-3 left-1/2 z-30 flex h-7 w-24 -translate-x-1/2 items-center justify-center gap-2 rounded-full bg-black">
+              <div className="size-2.5 rounded-full bg-[#1a1a1a]" />
+              <div className="h-1.5 w-9 rounded-full bg-[#2a2a2a]" />
             </div>
 
             {/* Screen Container */}
-            <div className="bg-[#f7f7f5] rounded-[32px] sm:rounded-[36px] pt-8 pb-4 px-3 sm:px-4 text-[#111214] relative overflow-hidden min-h-[420px] sm:min-h-[460px] flex flex-col justify-between box-border">
+            <div className="bg-white rounded-[32px] sm:rounded-[36px] pt-10 pb-4 px-3 sm:px-4 text-[#111214] relative overflow-hidden min-h-[420px] sm:min-h-[460px] flex flex-col justify-between box-border">
               
               <div>
                 {/* Header */}
                 <div className="mb-3 sm:mb-4 flex items-center justify-between border-b border-[#e7e7e9] pb-3">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <BrandMark className="brand-mark-small w-5 h-5 shrink-0" />
-                    <span className="text-[11px] font-bold tracking-tight truncate">CallBackly</span>
+                    <span className="text-[11px] font-bold tracking-tight truncate">y&apos;elllo</span>
                     <span className="rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[7px] text-amber-800 font-semibold shrink-0">LIVE</span>
                   </div>
                   <button 

@@ -9,18 +9,17 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://callbackly.com"),
-  title: "CallBackly — Turn missed calls into booked customers",
-  description: "You do the work. CallBackly follows up. Turn missed calls into conversations, bookings, and revenue with automatic text follow-ups. Try it free for 14 days.",
-  keywords: ["missed call recovery", "automatic text back", "local business", "appointment booking", "CallBackly"],
+  title: "Y'elllo — Turn missed calls into booked customers",
+  description: "You do the work. Y'elllo follows up. Turn missed calls into conversations, bookings, and revenue with automatic text follow-ups. Try it free for 14 days.",
+  keywords: ["missed call recovery", "automatic text back", "local business", "appointment booking", "y'elllo"],
   openGraph: {
-    title: "CallBackly — Never let a missed call be a missed opportunity",
+    title: "Y'elllo — Never let a missed call be a missed opportunity",
     description: "Automatic follow-ups. More bookings. Zero extra effort. Built for local businesses that can’t afford to miss customers.",
     type: "website",
-    siteName: "CallBackly",
+    siteName: "y'elllo",
   },
-  twitter: { card: "summary_large_image", title: "CallBackly — Make every call count", description: "Turn missed calls into booked customers. Your next two weeks are on us." },
-  icons: { icon: "/icon.png" },
+  twitter: { card: "summary_large_image", title: "Y'elllo — Make every call count", description: "Turn missed calls into booked customers. Your next two weeks are on us." },
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -30,7 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#main-content" className="fixed top-3 left-4 z-120 -translate-y-24 rounded-lg bg-ink px-4 py-3 text-sm text-white focus:translate-y-0">Skip to content</a>
         <DemoProvider>
           <ScrollReveal />
-          {children}
+          <div className="min-h-screen w-full overflow-x-hidden">{children}</div>
         </DemoProvider>
       </body>
     </html>

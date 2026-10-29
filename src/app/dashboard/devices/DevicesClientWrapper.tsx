@@ -111,7 +111,7 @@ export default function DevicesClientWrapper({
             )}
           </div>
           <p className="text-xs text-gray-300">
-            Enter this secure code inside your installed CallBackly Android app for{" "}
+            Enter this secure code inside your installed y&apos;elllo Android app for{" "}
             <span className="font-semibold text-white">{decodeURIComponent(bizName || "your shop")}</span>.
           </p>
           <div className="flex items-center gap-3 pt-2">
@@ -142,7 +142,7 @@ export default function DevicesClientWrapper({
         <div>
           <h3 className="font-semibold text-sm text-[#111214]">Pair a New Phone</h3>
           <p className="text-xs text-[#686b73] mt-1">
-            Generate a 10-minute secure pairing code. Enter this code inside your installed CallBackly Android companion app.
+            Generate a 10-minute secure pairing code. Enter this code inside your installed y&apos;elllo Android companion app.
           </p>
         </div>
         <form action={handleGenerateCode} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

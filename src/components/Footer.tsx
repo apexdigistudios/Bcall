@@ -37,7 +37,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-10 flex flex-col justify-between gap-4 border-t border-line pt-6 text-[9px] text-muted sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} CallBackly. Every call is an opportunity. Dont loose it!</p>
+          <p>© {new Date().getFullYear()} y&apos;elllo. Every call is an opportunity.</p>
           <nav aria-label="Legal navigation" className="flex gap-5">
             <Link href="/privacy" className="hover:text-ink">Privacy policy</Link>
             <Link href="/terms" className="hover:text-ink">Terms of service</Link>

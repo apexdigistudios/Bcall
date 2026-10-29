@@ -93,14 +93,14 @@ export function DemoModal({ intent, onClose }: DemoModalProps) {
             <h2 id="demo-modal-title" className="section-heading">You’re on the list,<br />{confirmation.name}.</h2>
             <p id="demo-modal-description" className="mx-auto mt-5 max-w-sm text-sm leading-7 text-muted">Your {intent.kind === "trial" ? "free-trial" : "demo"} request has been saved. We’ll use <strong className="font-medium text-ink">{confirmation.email}</strong> to follow up and help you get started.</p>
             <div className="my-7 rounded-lg bg-soft px-4 py-3 font-mono text-[10px] tracking-widest text-muted">REQUEST REFERENCE · CB-{confirmation.reference}</div>
-            <button type="button" onClick={onClose} className="btn btn-dark w-full">Back to CallBackly <ArrowUpRight size={16} /></button>
+            <button type="button" onClick={onClose} className="btn btn-dark w-full">Back to y&apos;elllo <ArrowUpRight size={16} /></button>
           </div>
         ) : (
           <>
             <BrandMark className="mb-5" />
             <p className="eyebrow mb-3">{intent.kind === "trial" ? "14 DAYS. ZERO PRESSURE." : "LESS CHASING. MORE BOOKING."}</p>
             <h2 id="demo-modal-title" className="section-heading text-[34px]">{intent.kind === "trial" ? "Your next two weeks, on us." : "Let’s put missed calls to work."}</h2>
-            <p id="demo-modal-description" className="mt-3 mb-6 text-[13px] leading-6 text-muted">{intent.kind === "trial" ? "Tell us a little about your business. We’ll help you get your 14-day free trial set up. No credit card needed." : "Tell us a little about your business. We’ll show you how CallBackly can turn missed calls into your next customers."}</p>
+            <p id="demo-modal-description" className="mt-3 mb-6 text-[13px] leading-6 text-muted">{intent.kind === "trial" ? "Tell us a little about your business. We’ll help you get your 14-day free trial set up. No credit card needed." : "Tell us a little about your business. We’ll show you how y'elllo can turn missed calls into your next customers."}</p>
             <form onSubmit={handleSubmit}>
               <fieldset disabled={submitting} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">

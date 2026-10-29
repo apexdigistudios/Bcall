@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const [saved] = await db.insert(demoRequests).values({ ...inquiry, phone: inquiry.phone || null, message: inquiry.message || null }).returning({ id: demoRequests.id });
     return Response.json({ success: true, reference: saved.id.slice(0, 8).toUpperCase() }, { status: 201 });
   } catch (error) {
-    console.error("CallBackly inquiry database write failed", { name: error instanceof Error ? error.name : "DatabaseError" });
+    console.error("y'elllo inquiry database write failed", { name: error instanceof Error ? error.name : "DatabaseError" });
     return Response.json({ error: "We couldn’t save your request right now. Please try again in a moment." }, { status: 503 });
   }
 }

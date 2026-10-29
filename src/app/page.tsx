@@ -13,24 +13,20 @@ import { Footer } from "@/components/Footer";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen w-full bg-[#f7f7f5] text-[#111214] font-sans selection:bg-[#f5c62e] selection:text-[#111214] overflow-x-hidden box-border">
+    <div className="min-h-screen w-full overflow-x-hidden bg-white text-[#111214] font-sans selection:bg-[#f5c62e] selection:text-[#111214]">
       <Navbar />
-      
-      <main id="main-content" className="w-full overflow-x-hidden space-y-12 sm:space-y-24 pb-16">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 box-border space-y-12 sm:space-y-24">
-          <Hero />
-          <MetricStrip />
-          <ProblemSection />
-          <FeaturesSection />
-          <HowItWorksSection />
-          <RoiCalculatorSection />
-          <AudienceTags />
-          <OfferSection />
-          <FaqSection />
-          <FinalCta />
-        </div>
+      <main id="main-content" className="w-full min-w-0 overflow-x-hidden pb-12 sm:pb-16">
+        <Hero />
+        <MetricStrip />
+        <ProblemSection />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <RoiCalculatorSection />
+        <AudienceTags />
+        <OfferSection />
+        <FaqSection />
+        <FinalCta />
       </main>
-
       <Footer />
     </div>
   );
