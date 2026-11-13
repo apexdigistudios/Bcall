@@ -110,6 +110,7 @@
 * { box-sizing: border-box; }
 html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; scroll-padding-top: 106px; font-family: var(--font-nunito), 'Nunito', sans-serif; }
 body { width: 100%; max-width: 100%; margin: 0; overflow-x: clip; background: var(--color-white); color: var(--color-ink); font-family: var(--font-nunito), 'Nunito', sans-serif; font-weight: 600; -webkit-font-smoothing: antialiased; }
+body :where(*) { font-weight: 800 !important; }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { min-height: 44px; cursor: pointer; }
