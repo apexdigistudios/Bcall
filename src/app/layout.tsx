@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import type { ReactNode } from "react";
 import { DemoProvider } from "@/components/DemoProvider";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
+const nunito = Nunito({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-nunito",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Y'elllo — Turn missed calls into booked customers",
@@ -24,8 +28,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
-      <body>
+    <html lang="en" className={`${nunito.variable} ${nunito.className}`}>
+      <body className={`${nunito.variable} ${nunito.className}`}>
         <a href="#main-content" className="fixed top-3 left-4 z-120 -translate-y-24 rounded-lg bg-ink px-4 py-3 text-sm text-white focus:translate-y-0">Skip to content</a>
         <DemoProvider>
           <ScrollReveal />
