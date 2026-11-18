@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowUpRight, CarFront, Dumbbell, HeartPulse, House, PawPrint, Scissors, Sparkles, Stethoscope } from "lucide-react";
 import { DemoButton } from "./DemoButton";
+import { Reveal } from "./Reveal";
 
 const industries = [
   { label: "Salons", icon: Scissors, detail: "Hands on with a client? Keep the next one coming in, without reaching for your phone." },
@@ -25,7 +26,7 @@ export function AudienceTags() {
         <p className="eyebrow mb-4"><span className="eyebrow-dot" />LOCAL BUSINESS. BIG POSSIBILITIES.</p>
         <h2 id="audience-heading" className="section-heading">Built for your kind of busy.</h2>
         <p className="mx-auto mt-4 max-w-[490px] text-[14px] leading-7 text-muted">For the people who answer to customers, not dashboards.<br className="hidden sm:block" /> If your phone rings while you work, you’re in the right place.</p>
-        <div className="mx-auto mt-9 flex max-w-[930px] flex-wrap justify-center gap-3">{industries.map(({ label, icon: Icon }, index) => <button key={label} type="button" className="industry-tag" data-active={selected === index} aria-pressed={selected === index} onClick={() => setSelected(index)}><Icon size={17} strokeWidth={1.5} />{label}</button>)}</div>
+        <div className="mx-auto mt-9 flex max-w-[930px] flex-wrap justify-center gap-3">{industries.map(({ label, icon: Icon }, index) => <Reveal key={label} delay={index * 50} className="inline-flex"><button type="button" className="industry-tag text-zinc-900 dark:text-zinc-100" data-active={selected === index} aria-pressed={selected === index} onClick={() => setSelected(index)}><Icon size={17} strokeWidth={1.5} />{label}</button></Reveal>)}<Reveal delay={industries.length * 50} className="inline-flex"><span className="industry-tag text-zinc-900 dark:text-zinc-100">More+</span></Reveal></div>
         <div className="mx-auto mt-7 flex max-w-[750px] flex-col items-center justify-between gap-4 rounded-xl border border-line bg-soft px-6 py-4 text-left sm:flex-row" aria-live="polite"><p className="text-[12px] leading-6 text-muted">{current.detail}</p><DemoButton variant="text" arrow={false} className="shrink-0 text-[11px]" intent={{ source: "Industry selector", industry: current.label, kind: "demo" }}>Sounds like us <ArrowUpRight size={14} /></DemoButton></div>
       </div>
     </section>

@@ -27,7 +27,7 @@ function RangeField({ id, label, value, min, max, step, prefix, suffix, lowLabel
     <div>
       <div className="flex items-center justify-between gap-3"><label htmlFor={id} className="text-[12px] font-medium">{label}</label><div className="flex items-center rounded-md border border-line bg-white px-2.5"><span className="font-mono text-[11px] text-muted">{prefix}</span><input id={id} type="number" inputMode="decimal" className="calculator-input w-[58px] border-0! px-1!" value={value} min={min} max={max} step={step} onChange={(event) => { const next = Number(event.target.value); if (Number.isFinite(next)) onChange(Math.min(max, Math.max(min, next))); }} /><span className="font-mono text-[11px] text-muted">{suffix}</span></div></div>
       <input type="range" min={min} max={max} step={step} value={value} aria-label={`${label} slider`} onChange={(event) => onChange(Number(event.target.value))} className="range-control" style={{ "--range-progress": `${progress}%` } as CSSProperties} />
-      <div className="mt-1 flex justify-between font-mono text-[8px] text-muted"><span>{lowLabel}</span><span>{highLabel}</span></div>
+      <div className="mt-1 flex justify-between font-mono text-[8px] text-zinc-900 dark:text-zinc-100 tabular-nums font-semibold"><span>{lowLabel}</span><span>{highLabel}</span></div>
     </div>
   );
 }

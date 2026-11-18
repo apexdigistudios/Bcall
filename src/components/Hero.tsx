@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
 import { BrandMark } from "./Brand";
 import { Android } from "@/components/ui/android";
+import { Reveal } from "./Reveal";
 
 const flowSteps = ["Missed call", "Follow-up", "Booked"];
 
@@ -28,44 +29,55 @@ export function Hero() {
         
         {/* Left Copy Column */}
         <div className="w-full lg:col-span-6 space-y-4 sm:space-y-6 text-center lg:text-left">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] sm:text-xs font-semibold mx-auto lg:mx-0">
-            <PhoneMissed size={12} strokeWidth={1.8} /> Built for businesses that can’t afford to miss customers
-          </div>
+          <Reveal immediate delay={0}>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] sm:text-xs font-semibold mx-auto lg:mx-0">
+              <PhoneMissed size={12} strokeWidth={1.8} /> Built for businesses that can’t afford to miss customers
+            </div>
+          </Reveal>
           
-          <h1 id="hero-heading" className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#111214] leading-[1.12]">
-            <span className="block">Turn missed calls</span>
-            <span className="block">into <span className="underline decoration-[#f5c62e] decoration-wavy">booked</span></span>
-            <span className="block">customers.</span>
-          </h1>
+          <Reveal immediate delay={80}>
+            <h1 id="hero-heading" className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#111214] leading-[1.12]">
+              <span className="block">Turn missed calls</span>
+              <span className="block">into <span className="underline decoration-[#f5c62e] decoration-wavy">booked</span></span>
+              <span className="block">customers.</span>
+            </h1>
+          </Reveal>
           
-          <p className="text-xs sm:text-sm lg:text-base text-[#686b73] max-w-lg mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
-            Your next customer called. You were busy. Turn missed calls into real conversations and booked appointments — without lifting a finger.
-          </p>
+          <Reveal immediate delay={160}>
+            <p className="text-xs sm:text-sm lg:text-base text-[#686b73] max-w-lg mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
+              Your next customer called. You were busy. Turn missed calls into real conversations and booked appointments — without lifting a finger.
+            </p>
+          </Reveal>
           
           {/* Mobile-optimized full-width buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2 w-full">
-            <Link 
-              href="/auth"
-              className="gold-cta w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#f5c62e] text-[#111214] font-bold text-xs sm:text-sm hover:bg-[#e6b825] transition-all shadow-lg shadow-amber-500/10 active:scale-95 text-center"
-            >
-              Start my 14-day free trial
-            </Link>
-            <a 
-              href="#how-it-works" 
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border border-[#e7e7e9] font-bold text-xs sm:text-sm text-[#111214] hover:bg-[#f7f7f5] transition-all flex items-center justify-center gap-2 shadow-sm text-center"
-            >
-              <CirclePlay size={17} strokeWidth={1.6} /> See how it works
-            </a>
-          </div>
+          <Reveal immediate delay={240}>
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2 w-full">
+              <Link
+                href="/auth"
+                className="gold-cta w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#f5c62e] text-[#111214] font-bold text-xs sm:text-sm hover:bg-[#e6b825] transition-all shadow-lg shadow-amber-500/10 active:scale-95 text-center"
+              >
+                Start my 14-day free trial
+              </Link>
+              <a
+                href="#how-it-works"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border border-[#e7e7e9] font-bold text-xs sm:text-sm text-[#111214] hover:bg-[#f7f7f5] transition-all flex items-center justify-center gap-2 shadow-sm text-center"
+              >
+                <CirclePlay size={17} strokeWidth={1.6} /> See how it works
+              </a>
+            </div>
+          </Reveal>
           
-          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-[11px] sm:text-xs text-[#686b73] pt-1">
-            <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> No credit card needed</span>
-            <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> Works with your existing number</span>
-          </div>
+          <Reveal immediate delay={240}>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-[11px] sm:text-xs text-[#686b73] pt-1">
+              <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> No credit card needed</span>
+              <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> Works with your existing number</span>
+            </div>
+          </Reveal>
         </div>
 
         {/* Right iPhone & Mobile Stack Column */}
-        <div className="w-full lg:col-span-6 flex flex-col items-center justify-center gap-4 relative pt-2 lg:pt-0">
+        <Reveal immediate delay={240} className="w-full lg:col-span-6">
+        <div className="flex flex-col items-center justify-center gap-4 relative pt-2 lg:pt-0">
           
           {/* Android Device Preview */}
           <Android width={378} height={830 * 0.88} className="h-auto w-full max-w-[320px] sm:max-w-[380px]">
@@ -190,9 +202,8 @@ export function Hero() {
               <Check size={11} strokeWidth={2.5} />
             </span>
           </div>
-
         </div>
-
+        </Reveal>
       </div>
     </section>
   );
