@@ -6,6 +6,7 @@ import MobileNavbar from "./MobileNavbar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { supabase } from "@/lib/supabase";
 import { RefreshCw } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -51,6 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="hidden text-xs font-medium text-[#686b73] sm:inline">
                 Live Call Listener Active
               </span>
+              <ThemeToggle />
             </div>
           </header>
 

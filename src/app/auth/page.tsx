@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { PhoneCall, ArrowRight, ShieldCheck, Smartphone, Zap } from "lucide-react";
+import { ArrowRight, ShieldCheck, Smartphone, Zap } from "lucide-react";
+import { BrandMark } from "@/components/Brand";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -56,14 +58,15 @@ export default function AuthPage() {
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden bg-[#f7f7f5] text-[#111214]">
       {/* LEFT COLUMN: Dark Form Container */}
-      <div className="flex w-full min-w-0 flex-col justify-between border-r border-[#27292d] bg-[#111214] p-6 text-[#f7f7f5] sm:p-8 lg:w-[480px] lg:shrink-0 lg:p-12 xl:w-[520px]">
+      <div className="auth-theme-panel flex w-full min-w-0 flex-col justify-between border-r border-[#27292d] bg-[#111214] p-6 text-[#f7f7f5] sm:p-8 lg:w-[480px] lg:shrink-0 lg:p-12 xl:w-[520px]">
         <div>
           {/* Logo & Brand */}
-          <div className="flex items-center gap-2.5 mb-10">
-            <div className="w-9 h-9 rounded-xl bg-[#f5c62e] text-[#111214] flex items-center justify-center font-bold">
-              <PhoneCall className="w-5 h-5" />
+          <div className="mb-10 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <BrandMark className="w-9 h-9" />
+              <span className="font-bold text-base tracking-tight text-white">y&apos;elllo</span>
             </div>
-            <span className="font-bold text-base tracking-tight text-white">y&apos;elllo</span>
+            <ThemeToggle />
           </div>
 
           {/* Heading */}

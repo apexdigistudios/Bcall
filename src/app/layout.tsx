@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import { DemoProvider } from "@/components/DemoProvider";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-const nunito = Nunito({
+const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
-  variable: "--font-nunito",
+  fallback: ["Inter", "sans-serif"],
+  variable: "--font-plus-jakarta-sans",
   display: "swap",
 });
 
@@ -28,13 +30,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${nunito.variable} ${nunito.className}`}>
-      <body className={`${nunito.variable} ${nunito.className}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${plusJakarta.className}`}>
+      <body className={`${plusJakarta.variable} ${plusJakarta.className}`}>
         <a href="#main-content" className="fixed top-3 left-4 z-120 -translate-y-24 rounded-lg bg-ink px-4 py-3 text-sm text-white focus:translate-y-0">Skip to content</a>
-        <DemoProvider>
-          <ScrollReveal />
-          <div className="min-h-screen w-full overflow-x-hidden">{children}</div>
-        </DemoProvider>
+        <ThemeProvider>
+          <DemoProvider>
+            <ScrollReveal />
+            <div className="min-h-screen w-full overflow-x-hidden">{children}</div>
+          </DemoProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { Brand } from "./Brand";
 import { DemoButton } from "./DemoButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navigation = [
   { label: "How it works", href: "#how-it-works" },
@@ -36,6 +37,7 @@ export function Navbar() {
 
         {/* Action Buttons & Mobile Menu Trigger */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <div className="hidden sm:block">
             <DemoButton variant="light" className="btn-sm" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
               Book a demo
