@@ -20,7 +20,7 @@ export function AudienceTags() {
   const [selected, setSelected] = useState(0);
   const current = industries[selected];
   return (
-    <section className="section-space" id="industries" aria-labelledby="audience-heading" data-reveal>
+    <section className="section-space" id="industries" aria-labelledby="audience-heading">
       <div className="page-container text-center">
         <p className="eyebrow mb-4"><span className="eyebrow-dot" />LOCAL BUSINESS. BIG POSSIBILITIES.</p>
         <h2 id="audience-heading" className="section-heading">Built for your kind of busy.</h2>

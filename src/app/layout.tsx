@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import { DemoProvider } from "@/components/DemoProvider";
-import { ScrollReveal } from "@/components/ScrollReveal";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
@@ -35,7 +34,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#main-content" className="fixed top-3 left-4 z-120 -translate-y-24 rounded-lg bg-ink px-4 py-3 text-sm text-white focus:translate-y-0">Skip to content</a>
         <ThemeProvider>
           <DemoProvider>
-            <ScrollReveal />
             <div className="min-h-screen w-full overflow-x-clip">{children}</div>
           </DemoProvider>
         </ThemeProvider>

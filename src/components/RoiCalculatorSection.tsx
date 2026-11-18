@@ -42,9 +42,9 @@ export function RoiCalculatorSection() {
   const annualRevenue = monthlyRevenue * 12;
 
   return (
-    <section className="section-space bg-soft" id="roi-calculator" aria-labelledby="roi-heading" data-reveal>
+    <section className="section-space bg-soft" id="roi-calculator" aria-labelledby="roi-heading">
       <div className="page-container">
-        <div className="bento-card grid overflow-hidden bg-white lg:grid-cols-[1.1fr_1fr]" data-reveal>
+        <div className="bento-card grid overflow-hidden bg-white lg:grid-cols-[1.1fr_1fr]">
           <div className="px-7 py-9 sm:px-10 lg:px-12 lg:py-11">
             <p className="eyebrow mb-4"><span className="eyebrow-dot" />LET’S PUT A NUMBER ON IT</p>
             <h2 id="roi-heading" className="section-heading">Your missed calls.<br />Your next revenue stream.</h2>

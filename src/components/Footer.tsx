@@ -5,7 +5,7 @@ import { DemoButton } from "./DemoButton";
 
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-white" data-reveal>
+    <footer className="border-t border-line bg-white">
       <div className="page-container py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>

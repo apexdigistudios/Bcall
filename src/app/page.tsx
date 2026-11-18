@@ -10,6 +10,7 @@ import { OfferSection } from "@/components/OfferSection";
 import { FaqSection } from "@/components/FaqSection";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
+import { Reveal } from "@/components/Reveal";
 
 export default function HomePage() {
   return (
@@ -17,17 +18,17 @@ export default function HomePage() {
       <Navbar />
       <main id="main-content" className="w-full min-w-0 overflow-x-clip pb-12 sm:pb-16">
         <Hero />
-        <MetricStrip />
-        <ProblemSection />
-        <FeaturesSection />
-        <HowItWorksSection />
-        <RoiCalculatorSection />
-        <AudienceTags />
-        <OfferSection />
-        <FaqSection />
-        <FinalCta />
+        <Reveal><MetricStrip /></Reveal>
+        <Reveal><ProblemSection /></Reveal>
+        <Reveal><FeaturesSection /></Reveal>
+        <Reveal><HowItWorksSection /></Reveal>
+        <Reveal><RoiCalculatorSection /></Reveal>
+        <Reveal><AudienceTags /></Reveal>
+        <Reveal><OfferSection /></Reveal>
+        <Reveal><FaqSection /></Reveal>
+        <Reveal><FinalCta /></Reveal>
       </main>
-      <Footer />
+      <Reveal><Footer /></Reveal>
     </div>
   );
 }

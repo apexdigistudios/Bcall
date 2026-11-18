@@ -1,4 +1,5 @@
 import { ArrowUpRight, CalendarCheck2, ChartNoAxesCombined, MessageCircleText, PhoneMissed } from "lucide-react";
+import { Reveal } from "./Reveal";
 
 const features = [
   {
@@ -32,7 +33,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="section-space w-full overflow-x-hidden border-t border-line bg-soft" id="features" aria-labelledby="features-heading" data-reveal>
+    <section className="section-space w-full overflow-x-hidden border-t border-line bg-soft" id="features" aria-labelledby="features-heading">
       <div className="page-container">
         <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
@@ -42,23 +43,27 @@ export function FeaturesSection() {
           <p className="section-description max-w-[340px]">Your best front-desk employee. Always on, never overwhelmed, and built to keep the conversation going.</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {features.map(({ number, label, title, description, icon: Icon, href, link }) => (
-            <article key={number} className="bento-card flex min-w-0 flex-col bg-white p-5 sm:p-7" data-reveal>
-              <span className="mb-8 grid size-12 place-items-center rounded-xl border border-line bg-soft text-ink">
-                <Icon size={21} strokeWidth={1.7} />
-              </span>
-              <p className="eyebrow mb-3 text-[9px] text-muted">{number} / {label}</p>
-              <h3 className="display-title text-[clamp(1.25rem,2vw,1.5rem)]">{title}</h3>
-              <p className="mt-3 flex-1 text-[13px] leading-7 text-muted">{description}</p>
-              <a href={href} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[12px] font-medium">
-                {link}<ArrowUpRight size={14} />
-              </a>
-            </article>
+          {features.map(({ number, label, title, description, icon: Icon, href, link }, index) => (
+            <Reveal key={number} className="min-w-0" delay={index * 70}>
+              <article className="bento-card flex min-w-0 flex-col bg-white p-5 sm:p-7">
+                <span className="mb-8 grid size-12 place-items-center rounded-xl border border-line bg-soft text-ink">
+                  <Icon size={21} strokeWidth={1.7} />
+                </span>
+                <p className="eyebrow mb-3 text-[9px] text-muted">{number} / {label}</p>
+                <h3 className="display-title text-[clamp(1.25rem,2vw,1.5rem)]">{title}</h3>
+                <p className="mt-3 flex-1 text-[13px] leading-7 text-muted">{description}</p>
+                <a href={href} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[12px] font-medium">
+                  {link}<ArrowUpRight size={14} />
+                </a>
+              </article>
+            </Reveal>
           ))}
-          <article className="bento-card flex min-w-0 items-center gap-4 bg-yellow p-5 sm:col-span-2 sm:p-7 xl:hidden" data-reveal>
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/70"><CalendarCheck2 size={20} strokeWidth={1.7} /></span>
-            <p className="text-sm font-medium leading-6">More time for your customers. More of them on your calendar.</p>
-          </article>
+          <Reveal className="sm:col-span-2 xl:hidden" delay={features.length * 70}>
+            <article className="bento-card flex min-w-0 items-center gap-4 bg-yellow p-5 sm:p-7">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/70"><CalendarCheck2 size={20} strokeWidth={1.7} /></span>
+              <p className="text-sm font-medium leading-6">More time for your customers. More of them on your calendar.</p>
+            </article>
+          </Reveal>
         </div>
       </div>
     </section>

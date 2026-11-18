@@ -16,7 +16,7 @@ const questions = [
 export function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="section-space" id="faq" aria-labelledby="faq-heading" data-reveal>
+    <section className="section-space" id="faq" aria-labelledby="faq-heading">
       <div className="page-container grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
         <div><p className="eyebrow mb-4"><span className="eyebrow-dot" />GOOD QUESTIONS. STRAIGHT ANSWERS.</p><h2 id="faq-heading" className="section-heading">A few things<br />you might be wondering.</h2><p className="mt-5 max-w-[300px] text-[13px] leading-7 text-muted">We like to keep things simple. If your question isn’t here, let’s have a conversation.</p><DemoButton variant="text" className="mt-4" intent={{ source: "FAQ", kind: "demo" }}>Ask us a question</DemoButton></div>
         <div>{questions.map(({ question, answer }, index) => <div key={question} className="faq-item"><h3><button type="button" id={`faq-question-${index}`} className="faq-trigger" aria-expanded={open === index} aria-controls={`faq-answer-${index}`} onClick={() => setOpen(open === index ? null : index)}>{question}<span className={`grid size-6 shrink-0 place-items-center rounded-full ${open === index ? "bg-yellow" : "bg-soft"}`}>{open === index ? <Minus size={13} /> : <Plus size={13} />}</span></button></h3><div id={`faq-answer-${index}`} role="region" aria-labelledby={`faq-question-${index}`} hidden={open !== index} className="faq-answer animate-enter">{answer}</div></div>)}</div>

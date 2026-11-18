@@ -23,7 +23,7 @@ export function Hero() {
   function replay() { setStage(0); setPlaying(true); }
 
   return (
-    <section className="hero-section py-6 sm:py-16 w-full overflow-x-hidden box-border" aria-labelledby="hero-heading" id="live-demo" data-reveal>
+    <section className="hero-section py-6 sm:py-16 w-full overflow-x-hidden box-border" aria-labelledby="hero-heading" id="live-demo">
       <div className="page-container max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
         {/* Left Copy Column */}
