@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider>
           <DemoProvider>
             <ScrollReveal />
-            <div className="min-h-screen w-full overflow-x-hidden">{children}</div>
+            <div className="min-h-screen w-full overflow-x-clip">{children}</div>
           </DemoProvider>
         </ThemeProvider>
       </body>

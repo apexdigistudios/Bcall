@@ -4,7 +4,7 @@ import Image from "next/image";
 export function BrandMark({ className = "" }: { className?: string }) {
   return (
     <span aria-hidden="true" className={`brand-mark ${className}`}>
-      <Image src="/logo.png" alt="" width={1280} height={1280} className="brand-mark-image" />
+      <Image src="/logo.png" alt="" width={1254} height={1254} sizes="40px" className="brand-mark-image" />
     </span>
   );
 }
@@ -12,7 +12,7 @@ export function BrandMark({ className = "" }: { className?: string }) {
 export function Brand({ onClick }: { onClick?: () => void }) {
   return (
     <Link href="/" onClick={onClick} className="brand-logo" aria-label="y'elllo homepage">
-      <Image src="/logo.png" alt="" width={1280} height={1280} priority className="brand-logo-image" />
+      <BrandMark className="brand-logo-mark" />
     </Link>
   );
 }

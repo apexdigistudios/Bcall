@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
 import { BrandMark } from "./Brand";
+import { Android } from "@/components/ui/android";
 
 const flowSteps = ["Missed call", "Follow-up", "Booked"];
 
@@ -45,7 +46,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2 w-full">
             <Link 
               href="/auth"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#f5c62e] text-[#111214] font-bold text-xs sm:text-sm hover:bg-[#e6b825] transition-all shadow-lg shadow-amber-500/10 active:scale-95 text-center"
+              className="gold-cta w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#f5c62e] text-[#111214] font-bold text-xs sm:text-sm hover:bg-[#e6b825] transition-all shadow-lg shadow-amber-500/10 active:scale-95 text-center"
             >
               Start my 14-day free trial
             </Link>
@@ -66,17 +67,9 @@ export function Hero() {
         {/* Right iPhone & Mobile Stack Column */}
         <div className="w-full lg:col-span-6 flex flex-col items-center justify-center gap-4 relative pt-2 lg:pt-0">
           
-          {/* Authentic iPhone Frame Mockup */}
-          <div className="relative w-full max-w-[320px] sm:max-w-[380px] bg-[#111214] rounded-[44px] sm:rounded-[48px] p-3 sm:p-4 shadow-2xl border-4 border-[#333] box-border">
-            
-            {/* iPhone Notch */}
-            <div className="absolute top-3 left-1/2 z-30 flex h-7 w-24 -translate-x-1/2 items-center justify-center gap-2 rounded-full bg-black">
-              <div className="size-2.5 rounded-full bg-[#1a1a1a]" />
-              <div className="h-1.5 w-9 rounded-full bg-[#2a2a2a]" />
-            </div>
-
-            {/* Screen Container */}
-            <div className="bg-white rounded-[32px] sm:rounded-[36px] pt-10 pb-4 px-3 sm:px-4 text-[#111214] relative overflow-hidden min-h-[420px] sm:min-h-[460px] flex flex-col justify-between box-border">
+          {/* Android Device Preview */}
+          <Android width={378} height={830} className="h-auto w-full max-w-[320px] sm:max-w-[380px]">
+            <div className="flex h-full min-h-0 flex-col justify-between bg-white px-3 pb-4 pt-10 text-[#111214] sm:px-4">
               
               <div>
                 {/* Header */}
@@ -180,7 +173,7 @@ export function Hero() {
               </div>
 
             </div>
-          </div>
+          </Android>
 
           {/* Clean Mobile-First Revenue Card (Replaces awkward floating absolute toast on small screens) */}
           <div className="w-full max-w-[320px] sm:max-w-[380px] bg-white border border-[#e7e7e9] rounded-2xl p-3 shadow-md flex items-center justify-between gap-3">

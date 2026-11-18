@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/lib/supabase";
+import { BrandMark } from "@/components/Brand";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -156,6 +157,9 @@ export function AppSidebar() {
       <Sidebar collapsible="icon" className="border-r border-neutral-200 hidden md:block bg-white text-[#111214] font-sans overflow-visible">
         {/* TOP HEADER: Business Switcher Menu */}
         <SidebarHeader className="border-b border-neutral-100 p-2 relative z-50 overflow-visible" ref={bizMenuRef}>
+          <div className="flex justify-center px-2 py-1 group-data-[collapsible=icon]:px-0">
+            <BrandMark />
+          </div>
           <div 
             onClick={() => setBusinessMenuOpen(!businessMenuOpen)}
             className="flex items-center gap-2.5 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100 cursor-pointer transition-colors border border-neutral-200/60 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1.5 relative"

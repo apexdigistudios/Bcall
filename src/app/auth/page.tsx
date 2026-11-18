@@ -130,7 +130,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 mt-2 rounded-xl bg-[#f5c62e] hover:bg-[#e6b825] text-[#111214] font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer disabled:opacity-50"
+              className="gold-cta w-full h-11 mt-2 rounded-xl bg-[#f5c62e] hover:bg-[#e6b825] text-[#111214] font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer disabled:opacity-50"
             >
               {loading ? "Processing..." : "Continue"} <ArrowRight className="w-4 h-4" />
             </button>

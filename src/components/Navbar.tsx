@@ -24,7 +24,7 @@ export function Navbar() {
   }, [menuOpen]);
 
   return (
-    <header className="site-nav sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-line w-full">
+    <header className="site-nav sticky top-0 z-50 border-b border-line w-full">
       <nav aria-label="Main navigation" className="page-container max-w-7xl mx-auto px-4 sm:px-6 flex min-h-16 sm:min-h-[76px] items-center justify-between gap-2 sm:gap-4 box-border">
         <Brand onClick={() => setMenuOpen(false)} />
         
