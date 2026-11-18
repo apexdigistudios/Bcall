@@ -17,8 +17,9 @@
   --app-neutral-300: #d4d4d8;
   --app-success-bg: #dcfce7;
   --app-success-ink: #166534;
+  --app-danger-ink: #b42318;
   --app-warning-bg: rgb(234 179 8 / 10%);
-  --app-warning-ink: #ca8a04;
+  --app-warning-ink: #854d0e;
   --app-danger-bg: #fee2e2;
   --brand-yellow: #eab308;
   --brand-ink: #09090b;
@@ -148,23 +149,29 @@ body :where([class~="bg-[#f7f7f5]"]) { background-color: var(--app-canvas) !impo
 body :where([class~="bg-[#f5c62e]"], [class~="bg-[#e6b825]"]) { background-color: var(--brand-yellow) !important; }
 body :where([class~="bg-[#f5c62e]"]:hover, [class~="bg-[#e6b825]"]:hover, [class~="bg-black"][class~="text-[#f5c62e]"]:hover) { background-color: #ca8a04 !important; }
 body :where([class~="bg-[#111214]"], [class~="bg-black"]) { background-color: var(--app-inverse-surface) !important; }
+body :where([class~="bg-neutral-700"], [class~="bg-neutral-800"], [class~="bg-neutral-900"], [class~="bg-neutral-950"]) { background-color: var(--app-inverse-surface) !important; }
 body :where([class~="bg-ink"]) { background-color: var(--app-inverse-surface) !important; color: #ffffff !important; }
 body :where([class~="bg-yellow"], [class~="bg-[#f5c62e]"]) { color: var(--brand-ink) !important; }
 body :where([class~="bg-black"][class~="text-[#f5c62e]"]) { background-color: var(--brand-yellow) !important; color: var(--brand-ink) !important; }
 body :where([class~="min-h-screen"][class~="bg-white"]) { background-color: var(--app-canvas) !important; }
 body :where([class~="text-[#111214]"], [class~="text-black"]) { color: var(--app-foreground) !important; }
 body :where([class~="bg-[#f5c62e]"][class~="text-[#111214]"], [class~="bg-[#e6b825]"][class~="text-[#111214]"], [class~="bg-black"][class~="text-[#f5c62e]"]) { background-color: var(--brand-yellow) !important; color: var(--brand-ink) !important; }
-body :where([data-sidebar="menu-button"][data-active="true"]) { border-radius: 8px; background-color: var(--app-hover) !important; color: var(--brand-yellow) !important; }
+body :where([data-sidebar="menu-button"][data-active="true"]) { border-radius: 8px; background-color: var(--brand-yellow) !important; color: var(--brand-ink) !important; }
 body :where([class~="text-[#686b73]"]) { color: var(--app-muted) !important; }
 body :where([class~="text-[#f5c62e]"]) { color: var(--brand-yellow) !important; }
 body :where([class~="border-[#e7e7e9]"], [class~="border-[#27292d]"], [class~="border-[#222326]"], [class~="border-[#2e3036]"]) { border-color: var(--app-border) !important; }
 body :where([class~="bg-emerald-50"]) { background-color: var(--app-success-bg) !important; }
-body :where([class~="text-emerald-900"], [class~="text-emerald-800"], [class~="text-emerald-700"]) { color: var(--app-success-ink) !important; }
+body :where([class~="bg-emerald-100"]) { background-color: var(--app-success-bg) !important; }
+body :where([class~="border-emerald-200"]) { border-color: color-mix(in srgb, var(--app-success-ink) 35%, var(--app-border)) !important; }
+body :where([class~="text-emerald-900"], [class~="text-emerald-800"], [class~="text-emerald-700"], [class~="text-emerald-600"]) { color: var(--app-success-ink) !important; }
 body :where([class~="bg-amber-50"]) { background-color: var(--app-warning-bg) !important; }
-body :where([class~="text-amber-800"]) { color: var(--app-warning-ink) !important; }
+body :where([class~="bg-amber-100"]) { background-color: var(--app-warning-bg) !important; }
+body :where([class~="border-amber-200"], [class~="border-amber-300"]) { border-color: color-mix(in srgb, var(--app-warning-ink) 35%, var(--app-border)) !important; }
+body :where([class~="text-amber-900"], [class~="text-amber-800"], [class~="text-amber-600"], [class~="text-amber-500"]) { color: var(--app-warning-ink) !important; }
 body :where([class~="bg-amber-50"], [class~="bg-amber-100"]) { border-color: color-mix(in srgb, var(--brand-yellow) 24%, transparent) !important; }
-body :where([class~="bg-red-50"], [class~="bg-red-100"]) { background-color: var(--app-danger-bg) !important; }
-body :where([class~="text-red-900"], [class~="text-red-800"], [class~="text-red-700"], [class~="text-red-600"]) { color: var(--app-danger-ink) !important; }
+body :where([class~="bg-red-50"], [class~="bg-red-100"], [class~="bg-rose-50"], [class~="bg-rose-100"]) { background-color: var(--app-danger-bg) !important; }
+body :where([class~="border-red-200"], [class~="border-rose-200"]) { border-color: color-mix(in srgb, var(--app-danger-ink) 35%, var(--app-border)) !important; }
+body :where([class~="text-red-900"], [class~="text-red-800"], [class~="text-red-700"], [class~="text-red-600"], [class~="text-rose-900"], [class~="text-rose-800"], [class~="text-rose-700"], [class~="text-rose-600"]) { color: var(--app-danger-ink) !important; }
 body a[class~="bg-[#f5c62e]"]:hover { background-color: #ca8a04 !important; }
 body :where([class*="shadow-"]) { box-shadow: none !important; }
 body :where([class*="backdrop-blur"]) { backdrop-filter: none !important; }
@@ -354,21 +361,16 @@ textarea.form-input { min-height: 74px; resize: vertical; }
   --app-surface: #191b1a;
   --app-surface-muted: #1d201f;
   --app-hover: #232625;
-  --app-inverse-surface: #191b1a;
-  --app-foreground: #f4f4f5;
-    --app-foreground: #f3f4f6;
-    --app-muted: #9ca3af;
+  --app-inverse-surface: #0b0d0c;
+  --app-foreground: #f3f4f6;
   --app-muted: #a1a1aa;
   --app-border: #282b29;
-    --app-foreground: #f3f4f6;
-    --app-muted: #9ca3af;
   --app-success-bg: #183123;
   --app-success-ink: #86efac;
   --app-warning-bg: #3a3214;
   --app-warning-ink: #fde047;
   --app-danger-bg: #3b2020;
   --app-danger-ink: #fca5a5;
-  --app-warning-bg: rgb(234 179 8 / 10%);
   --app-warning-ink: #facc15;
   --color-yellow-soft: #3a3214;
   --color-success: #4ade80;
@@ -410,7 +412,7 @@ textarea.form-input { min-height: 74px; resize: vertical; }
     --app-surface: #191b1a;
     --app-surface-muted: #1d201f;
     --app-hover: #232625;
-    --app-inverse-surface: #191b1a;
+    --app-inverse-surface: #0b0d0c;
     --app-foreground: #f4f4f5;
     --app-muted: #a1a1aa;
     --app-border: #282b29;
@@ -420,7 +422,6 @@ textarea.form-input { min-height: 74px; resize: vertical; }
     --app-warning-ink: #fde047;
     --app-danger-bg: #3b2020;
     --app-danger-ink: #fca5a5;
-    --app-warning-bg: rgb(234 179 8 / 10%);
     --app-warning-ink: #facc15;
     --color-yellow-soft: #3a3214;
     --color-success: #4ade80;

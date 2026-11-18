@@ -165,7 +165,7 @@ export function AppSidebar() {
             className="flex items-center gap-2.5 p-2 rounded-xl bg-neutral-50 hover:bg-neutral-100 cursor-pointer transition-colors border border-neutral-200/60 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1.5 relative"
             title="Switch Business"
           >
-            <div className="w-8 h-8 rounded-full bg-black text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-[#111214] text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden">
               {userProfile?.avatar_url ? (
                 <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -320,7 +320,7 @@ export function AppSidebar() {
             title="User Settings"
           >
             <div className="flex items-center gap-2.5 truncate group-data-[collapsible=icon]:justify-center">
-              <div className="w-8 h-8 rounded-full bg-black text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-[#111214] text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden">
                 {userProfile?.avatar_url ? (
                   <img src={userProfile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -339,7 +339,7 @@ export function AppSidebar() {
           {profileMenuOpen && (
             <div className="absolute bottom-full left-2 mb-2 w-60 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-neutral-200 p-1.5 z-50 animate-in fade-in zoom-in-95 text-[#111214]">
               <div className="p-2.5 border-b border-neutral-100 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-black text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-[#111214] text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
                   {userProfile?.avatar_url ? (
                     <img src={userProfile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -392,7 +392,7 @@ export function AppSidebar() {
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-neutral-200 space-y-4 text-[#111214] animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-black text-[#f5c62e]">
+                <span className="p-1.5 rounded-lg bg-[#111214] text-[#f5c62e]">
                   <Sparkles size={16} />
                 </span>
                 <div>
@@ -522,7 +522,7 @@ export function AppSidebar() {
             <form onSubmit={handleSaveProfile} className="space-y-3">
               {/* Profile Image Preview & Upload */}
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-black text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden border border-neutral-200">
+                <div className="w-12 h-12 rounded-full bg-[#111214] text-[#f5c62e] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden border border-neutral-200">
                   {editAvatar ? (
                     <img src={editAvatar} alt="Preview" className="w-full h-full object-cover" />
                   ) : (

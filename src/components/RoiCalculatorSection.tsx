@@ -62,7 +62,7 @@ export function RoiCalculatorSection() {
             <div className="my-7 grid grid-cols-2 divide-x divide-white/15 border-y border-white/15 py-5"><div><p className="text-[26px] font-medium tracking-[-.04em]">{number.format(bookings)}</p><p className="mt-1 text-[10px] text-white/50">potential bookings / month</p></div><div className="pl-7"><p className="text-[clamp(1.1rem,2.1vw,1.625rem)] font-medium tracking-[-.04em] tabular-nums">{currency.format(annualRevenue)}</p><p className="mt-1 text-[10px] text-white/50">potential revenue / year</p></div></div>
             <p className="mb-5 text-[11px] leading-6 text-white/60">That’s a lot of possibility, sitting in a missed call. Let’s help you bring it back.</p>
             <DemoButton variant="primary" className="mt-auto w-full" intent={{ source: "ROI calculator", kind: "demo", estimate: monthlyRevenue }}>Let’s make this real <ArrowUpRight size={15} className="hidden" /></DemoButton>
-            <p className="mt-3 text-center text-[8px] leading-5 text-white/40">Based on 30 days per month. Estimates are illustrative, not guarantees.</p>
+            <p className="mt-3 text-center text-[8px] leading-5 text-white/60">Based on 30 days per month. Estimates are illustrative, not guarantees.</p>
           </div>
         </div>
         <p className="mt-5 text-center font-mono text-[9px] tracking-[.04em] text-muted">{missedCalls} MISSED CALLS / DAY × 30 DAYS × {currency.format(customerValue)} / CUSTOMER × {recoveryRate}% RECOVERY = YOUR OPPORTUNITY</p>

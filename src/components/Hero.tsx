@@ -68,7 +68,7 @@ export function Hero() {
         <div className="w-full lg:col-span-6 flex flex-col items-center justify-center gap-4 relative pt-2 lg:pt-0">
           
           {/* Android Device Preview */}
-          <Android width={378} height={830} className="h-auto w-full max-w-[320px] sm:max-w-[380px]">
+          <Android width={378} height={830 * 0.88} className="h-auto w-full max-w-[320px] sm:max-w-[380px]">
             <div className="flex h-full min-h-0 flex-col justify-between bg-white px-3 pb-4 pt-10 text-[#111214] sm:px-4">
               
               <div>
