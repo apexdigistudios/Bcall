@@ -32,6 +32,14 @@ The site records real inquiries. It does not send outbound emails, SMS, or telep
 
 `/audit` is a public, auth-free audit flow. Its server endpoint validates and rate limits submissions, safely checks an optional public website homepage, calculates a disclosed call-recovery estimate, and saves the input and report to `audit_reports` before returning results. Apply the updated schema with `npx drizzle-kit push` (or execute `drizzle/0000_audit_reports.sql`) and configure the server-only `DATABASE_URL`. The audit does not email the report. Google Business Profile ratings and review data are not fetched because no authorized Google integration is configured. The in-memory rate limit is per running server process and should be replaced with a shared store for multi-instance production deployments.
 
+### Audit API database setup
+
+`POST /api/audit` uses the Drizzle PostgreSQL client in `src/db/index.ts`; it does not use the Supabase JavaScript client, Supabase REST API, or a Supabase service-role/anon key. Set `DATABASE_URL` in the Vercel project for every deployment environment that should accept audits (Production, Preview, and/or Development), then redeploy. For Supabase-hosted Postgres, use the database connection string from the Supabase dashboard, with its password URL-encoded as needed. Do not prefix this server-only variable with `NEXT_PUBLIC_`.
+
+Create `audit_reports` by running `npx drizzle-kit push` against that same database, or execute `drizzle/0000_audit_reports.sql`. The table has a unique `idempotency_key`, required business/range/email fields, a required JSONB `report`, and a creation timestamp. The migration enables row-level security and defines no client policies. The API connects directly with the PostgreSQL role in `DATABASE_URL`, so that role must have permission to select and insert the table and must bypass/own its RLS policy (the Supabase database-owner connection does); a restricted role will need appropriate grants and RLS policies.
+
+Responses include a stable `code` and request ID on errors. `DATABASE_URL_MISSING`, `AUDIT_TABLE_MISSING`, `AUDIT_SCHEMA_MISMATCH`, and `AUDIT_DATABASE_PERMISSION_DENIED` indicate configuration/schema/role setup problems; `AUDIT_DATABASE_CONFIGURATION`, `AUDIT_DATABASE_UNAVAILABLE`, or `AUDIT_STORAGE_FAILED` indicate connection or other storage failures. Match the response `requestId` to the structured Vercel function log; logs include the stage and safe database error code, never the connection string or submitted form data. Invalid input returns 400, rate limiting returns 429, and unexpected report-generation errors return 500. Optional public website checks are performed by the audit engine; an unreachable or unsafe website is reported as “Unable to verify” and does not by itself fail storage.
+
 ## Commands
 
 - `npm run dev` — local development.
