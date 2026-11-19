@@ -12,15 +12,15 @@ export const metadata: Metadata = {
 };
 
 const included = [
-  "A public homepage check, when you share a website",
-  "A transparent missed-call opportunity estimate",
-  "Practical next steps based on the information supplied",
+  "A public homepage and local listing check",
+  "Transparent missed-call and website estimates",
+  "Prioritized fixes with clear assumptions",
 ];
 
 export default function AuditPage() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-[#101211] dark:text-zinc-100">
-      <header className="border-b border-zinc-200 bg-white dark:border-[#282B29] dark:bg-[#191B1A]">
+      <header className="border-b border-zinc-200 bg-white dark:border-[#282B29] dark:bg-[#191B1A] print:hidden">
         <div className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label="y'elllo home">
             <BrandMark className="size-8" />
@@ -44,14 +44,14 @@ export default function AuditPage() {
             See where missed calls could be costing you opportunities.
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-[13px] leading-6 text-zinc-600 dark:text-zinc-400">
-            Answer a few quick questions for a clear, personalized audit. Estimates show their assumptions; anything we can&apos;t verify is marked plainly.
+            Share a few business details to get a practical estimate of missed-call and website leaks, plus prioritized fixes. Your answers are not saved to an account.
           </p>
         </div>
 
         <div className="mx-auto mt-8 grid max-w-5xl items-start gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(230px,.7fr)] lg:gap-6">
           <AuditWizard />
 
-          <aside className="space-y-4 lg:sticky lg:top-6">
+          <aside className="space-y-4 lg:sticky lg:top-6 print:hidden">
             <section className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-[#282B29] dark:bg-[#191B1A] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[.14em] text-zinc-500 dark:text-zinc-400">In about 2 minutes</p>
               <ul className="mt-3 space-y-3">
@@ -63,9 +63,9 @@ export default function AuditPage() {
               </ul>
             </section>
             <section className="rounded-xl border border-zinc-200 bg-zinc-100/70 p-4 dark:border-[#282B29] dark:bg-[#141615] sm:p-5">
-              <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">A note on the numbers</p>
+              <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">A note on the estimates</p>
               <p className="mt-2 text-[11px] leading-5 text-zinc-600 dark:text-zinc-400">
-                Revenue figures are illustrative estimates from the ranges you choose and a disclosed conversion assumption. They are not verified losses or promised results.
+                Results use the numbers and defaults shown in the report. Website and OpenStreetMap checks are limited snapshots, not guaranteed findings.
               </p>
             </section>
             <Button render={<Link href="/auth" />} variant="neutral" size="sm" className="w-full justify-between">

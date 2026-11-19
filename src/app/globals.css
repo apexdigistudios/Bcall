@@ -343,6 +343,21 @@ textarea.form-input { min-height: 74px; resize: vertical; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
+@media print {
+  body { background: #fff !important; color: #18181b !important; }
+  #main-content { max-width: none !important; padding: 0 !important; }
+  #main-content > div:first-child { display: none !important; }
+  #main-content article { color: #18181b !important; }
+  #main-content article section,
+  #main-content article header { break-inside: avoid; background: #fff !important; color: #18181b !important; border-color: #d4d4d8 !important; }
+  #main-content article p,
+  #main-content article h1,
+  #main-content article h2,
+  #main-content article h3,
+  #main-content article li { color: #27272a !important; }
+  .print\:hidden { display: none !important; }
+}
+
 .dark, [data-theme="dark"] {
   color-scheme: dark;
   --app-canvas: #141615;

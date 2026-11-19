@@ -21,7 +21,7 @@ The supplied sandbox database is already configured. The project uses the existi
 - Keyboard-accessible FAQ accordion.
 - Accessible demo and trial dialog with focus trapping, Escape dismissal, field validation, loading, error, and confirmation states.
 - PostgreSQL-backed inquiry submissions, with server-side validation and per-email rate limiting.
-- A public, multi-step revenue leak audit with safe homepage inspection, disclosed estimates, and stored reports.
+- A public, multi-step revenue leak audit with safe homepage inspection, OpenStreetMap lookup, disclosed estimates, and printable reports.
 - Privacy and terms pages, metadata, skip navigation, reduced-motion support, and a custom favicon.
 
 ## Inquiry flow
@@ -30,15 +30,13 @@ The supplied sandbox database is already configured. The project uses the existi
 
 The site records real inquiries. It does not send outbound emails, SMS, or telephone calls, process payments, or activate a live telephony account. Product conversations and charts are explicitly illustrative. Demo and trial inquiries are intended to be followed up by the business using the stored records. The calculator runs entirely in the browser; values are sent to the API only when a visitor submits an inquiry.
 
-`/audit` is a public, auth-free audit flow. Its server endpoint validates and rate limits submissions, safely checks an optional public website homepage, calculates a disclosed call-recovery estimate, and saves the input and report to `audit_reports` before returning results. Apply the updated schema with `npx drizzle-kit push` (or execute `drizzle/0000_audit_reports.sql`) and configure the server-only `DATABASE_URL`. The audit does not email the report. Google Business Profile ratings and review data are not fetched because no authorized Google integration is configured. The in-memory rate limit is per running server process and should be replaced with a shared store for multi-instance production deployments.
+`/audit` is a public, auth-free, three-step tool. `POST /api/audit` validates the request with Zod, checks the public website and OpenStreetMap in parallel, and returns a deterministic report directly to the browser. The report is not stored; it can be printed or saved as PDF through the browser print dialog. No database, login, queue, Google API, or AI integration is required for the audit.
 
-### Audit API database setup
+Website checks use a bounded public homepage fetch with HTTP/HTTPS, redirect, timeout, response-size, and private-address safeguards. OpenStreetMap uses one Nominatim search per audit and requires `OSM_USER_AGENT` set to a contactable application identifier, for example `RevenueLeakAudit/1.0 (contact: you@example.com)`. Requests are limited to at most one per second per server process; requests arriving sooner are skipped and marked unavailable. If its environment variable is missing or the request fails, the report marks the listing unavailable and continues.
 
-`POST /api/audit` uses the Drizzle PostgreSQL client in `src/db/index.ts`; it does not use the Supabase JavaScript client, Supabase REST API, or a Supabase service-role/anon key. Set `DATABASE_URL` in the Vercel project for every deployment environment that should accept audits (Production, Preview, and/or Development), then redeploy. For Supabase-hosted Postgres, use the database connection string from the Supabase dashboard, with its password URL-encoded as needed. Do not prefix this server-only variable with `NEXT_PUBLIC_`.
+Missed-call, website, and reputation estimates use the explicit defaults and formulas shown in the report; every displayed estimate is a low/expected/high range, with a 50% of monthly-revenue cap. Rating and review count are optional self-reported inputs because OpenStreetMap does not provide them. Reports are estimates, not verified losses or guarantees. The audit rate limit is in-memory (five requests per IP per hour per process); multi-instance production deployments should use a shared limiter.
 
-Create `audit_reports` by running `npx drizzle-kit push` against that same database, or execute `drizzle/0000_audit_reports.sql`. The table has a unique `idempotency_key`, required business/range/email fields, a required JSONB `report`, and a creation timestamp. The migration enables row-level security and defines no client policies. The API connects directly with the PostgreSQL role in `DATABASE_URL`, so that role must have permission to select and insert the table and must bypass/own its RLS policy (the Supabase database-owner connection does); a restricted role will need appropriate grants and RLS policies.
-
-Responses include a stable `code` and request ID on errors. `DATABASE_URL_MISSING`, `AUDIT_TABLE_MISSING`, `AUDIT_SCHEMA_MISMATCH`, and `AUDIT_DATABASE_PERMISSION_DENIED` indicate configuration/schema/role setup problems; `AUDIT_DATABASE_CONFIGURATION`, `AUDIT_DATABASE_UNAVAILABLE`, or `AUDIT_STORAGE_FAILED` indicate connection or other storage failures. Match the response `requestId` to the structured Vercel function log; logs include the stage and safe database error code, never the connection string or submitted form data. Invalid input returns 400, rate limiting returns 429, and unexpected report-generation errors return 500. Optional public website checks are performed by the audit engine; an unreachable or unsafe website is reported as “Unable to verify” and does not by itself fail storage.
+Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel environment(s) where the audit runs. No audit database table or Google/AI credentials are needed.
 
 ## Commands
 
@@ -46,7 +44,7 @@ Responses include a stable `code` and request ID on errors. `DATABASE_URL_MISSIN
 - `npm run build` — production build.
 - `npm run lint` — ESLint.
 - `npx playwright install chromium --with-deps` — install Chromium and its system dependencies for smoke tests.
-- `npx playwright test` — browser smoke tests, with a running app and configured database. Use `PLAYWRIGHT_BASE_URL` to point to a different preview. The form test creates and then removes a clearly labeled test inquiry.
+- `npx playwright test` — browser and audit tests. The full site suite needs a running app and configured database for inquiry/health checks; the audit logic itself does not use a database. Use `PLAYWRIGHT_BASE_URL` to point to a different preview.
 - `npx next typegen` — App Router route types.
 - `npm exec tsc -- --noEmit --pretty false` — strict TypeScript validation.
 
@@ -59,7 +57,7 @@ Responses include a stable `code` and request ID on errors. `DATABASE_URL_MISSIN
 - `src/app/api/demo/route.ts` — validated inquiry endpoint.
 - `src/app/audit/page.tsx` — public audit route.
 - `src/app/api/audit/route.ts` — validated, rate-limited audit endpoint.
-- `src/lib/audit/` — audit input validation, types, and server-side report engine.
-- `src/db/schema.ts` — Drizzle inquiry and audit-report schema.
+- `src/lib/schema.ts`, `src/lib/website.ts`, `src/lib/osm.ts`, `src/lib/leak.ts`, and `src/lib/report.ts` — audit validation, public checks, deterministic estimates, and report assembly.
+- `src/db/schema.ts` — Drizzle inquiry and device schema.
 
 Use `npx drizzle-kit push` after changing the database schema. The hosted preview uses the platform-managed production start and healthcheck.

@@ -1,20 +1,4 @@
-import { boolean, integer, jsonb, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import type { AuditReport } from "@/lib/audit/types";
-
-export const auditReports = pgTable("audit_reports", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  idempotencyKey: uuid("idempotency_key").notNull().unique(),
-  businessName: varchar("business_name", { length: 160 }).notNull(),
-  websiteUrl: text("website_url"),
-  googleBusinessProfileUrl: text("google_business_profile_url"),
-  businessType: varchar("business_type", { length: 80 }).notNull(),
-  monthlyCallsRange: varchar("monthly_calls_range", { length: 30 }).notNull(),
-  missedCallsRange: varchar("missed_calls_range", { length: 30 }).notNull(),
-  averageJobValueRange: varchar("average_job_value_range", { length: 40 }).notNull(),
-  businessEmail: varchar("business_email", { length: 254 }).notNull(),
-  report: jsonb("report").$type<AuditReport>().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+import { boolean, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const demoRequests = pgTable("demo_requests", {
   id: uuid("id").defaultRandom().primaryKey(),
