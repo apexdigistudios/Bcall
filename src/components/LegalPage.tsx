@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export function LegalPage({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
@@ -11,7 +11,7 @@ export function LegalPage({ title, description, children }: { title: string; des
       <Navbar />
       <main id="main-content" className="page-container section-space">
         <article className="mx-auto max-w-[760px]">
-          <Link href="/" className={buttonVariants({ variant: "neutral", size: "sm", className: "mb-10" })}><ArrowLeft size={14} /> Back to y&apos;elllo</Link>
+          <Button render={<Link href="/" />} variant="neutral" size="sm" className="mb-10"><ArrowLeft size={14} /> Back to y&apos;elllo</Button>
           <p className="eyebrow mb-4"><span className="eyebrow-dot" />THE SMALL PRINT, KEPT SIMPLE.</p>
           <h1 className="section-heading text-[48px]">{title}</h1>
           <p className="mt-5 text-[14px] leading-7 text-muted">{description}</p>

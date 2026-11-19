@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { Smartphone, MessageSquare, CheckCircle2, AlertCircle, Send, MessageCircle } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -57,9 +57,9 @@ export default async function DashboardPage() {
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Pair your device to start capturing and auto-responding to missed calls.</p>
             </div>
           </div>
-          <Link href="/dashboard/devices" className={buttonVariants({ variant: "primary", size: "sm", className: "shrink-0 rounded-lg px-3 text-[11px]" })}>
+          <Button render={<Link href="/dashboard/devices" />} variant="primary" size="sm" className="shrink-0 rounded-lg px-3 text-[11px]">
             Pair Device
-          </Link>
+          </Button>
         </div>
       )}
 
@@ -84,9 +84,9 @@ export default async function DashboardPage() {
             <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Quick Action</span>
             <h4 className="font-bold text-[11px] mt-0.5 text-zinc-900 dark:text-zinc-100">Companion Setup</h4>
           </div>
-          <Link href="/dashboard/devices" className={buttonVariants({ variant: "primary", size: "sm", className: "mt-3 w-full rounded-lg px-2.5 text-[11px]" })}>
+          <Button render={<Link href="/dashboard/devices" />} variant="primary" size="sm" className="mt-3 w-full rounded-lg px-2.5 text-[11px]">
             Pair Phone
-          </Link>
+          </Button>
         </div>
       </div>
 

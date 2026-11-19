@@ -277,7 +277,7 @@ section { min-width: 0; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; background: rgb(9 9 11 / 48%); animation: fade-in .18s ease-out; }
 .modal-panel { position: relative; width: min(100%, 570px); max-height: calc(100dvh - 48px); overflow-y: auto; border: 1px solid var(--color-line); border-radius: 12px; padding: 32px; background: var(--app-surface); animation: enter .22s ease-out; }
 .form-label { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 500; }
-.form-input { display: block; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--color-line); border-radius: 7px; background: var(--color-white); color: var(--color-ink); font-size: 13px; transition: border-color .2s; }
+.form-input { display: block; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--color-line); border-radius: 7px; background: var(--app-surface); color: var(--color-ink); font-size: 13px; transition: border-color .2s; }
 .form-input:focus { border-color: var(--color-ink); outline: 2px solid var(--color-yellow); outline-offset: 2px; }
 .form-input::placeholder { color: var(--color-muted); opacity: .7; }
 textarea.form-input { min-height: 74px; resize: vertical; }

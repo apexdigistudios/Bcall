@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Brand } from "./Brand";
-import { DemoButton } from "./DemoButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -40,9 +39,9 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <div className="hidden sm:block">
-            <DemoButton variant="light" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
+            <Link href="/audit" className={buttonVariants({ variant: "primary", size: "sm" })}>
               Free Audit
-            </DemoButton>
+            </Link>
           </div>
           
           <Link href="/auth" className={buttonVariants({ variant: "primary", size: "sm", className: "!hidden shrink-0 px-3 text-xs sm:!flex" })}>
@@ -80,9 +79,9 @@ export function Navbar() {
           ))}
           <div className="pt-3 flex flex-col gap-2">
             <div className="block sm:hidden w-full">
-              <DemoButton variant="light" className="w-full text-center text-xs" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
+              <Link href="/audit" onClick={() => setMenuOpen(false)} className={buttonVariants({ variant: "primary", size: "sm", className: "w-full text-center text-xs" })}>
                 Free Audit
-              </DemoButton>
+              </Link>
             </div>
             <Link href="/auth" onClick={() => setMenuOpen(false)} className={buttonVariants({ variant: "primary", size: "sm", className: "w-full text-center text-xs" })}>
               Get started
