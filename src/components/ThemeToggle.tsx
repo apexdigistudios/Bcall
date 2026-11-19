@@ -1,21 +1,22 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./ThemeProvider";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
-    <button
+    <AnimatedThemeToggler
       type="button"
       className={`theme-toggle ${className}`}
+      theme={theme ?? "light"}
+      onThemeChange={setTheme}
+      duration={400}
+      variant="circle"
       aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
       title={`Switch to ${isDark ? "light" : "dark"} theme`}
-      onClick={toggleTheme}
-    >
-      {isDark ? <Sun size={17} strokeWidth={1.75} /> : <Moon size={17} strokeWidth={1.75} />}
-    </button>
+    />
   );
 }

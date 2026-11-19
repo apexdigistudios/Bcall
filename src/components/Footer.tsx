@@ -27,7 +27,7 @@ export function Footer() {
             <nav className="flex flex-col items-start gap-3 text-[11px] text-muted" aria-label="Business footer navigation">
               <Link href="/#industries" className="hover:text-ink">Who it’s for</Link>
               <Link href="/#free-trial" className="hover:text-ink">14-day free trial</Link>
-              <DemoButton variant="text" className="min-h-0! p-0! text-[11px]! font-normal! text-muted!" arrow={false} intent={{ source: "Footer", kind: "demo" }}>Book a demo <ArrowUpRight size={12} /></DemoButton>
+              <DemoButton variant="text" className="min-h-0! p-0! text-[11px]! font-normal! text-muted!" arrow={false} intent={{ source: "Footer", kind: "demo" }}>Free Audit <ArrowUpRight size={12} /></DemoButton>
             </nav>
           </div>
           <div>

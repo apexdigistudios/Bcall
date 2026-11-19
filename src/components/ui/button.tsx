@@ -1,57 +1,100 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+"use client";
 
-const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
+import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
+
+export const buttonVariants = cva(
+  "relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border text-xs font-semibold outline-none before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 data-loading:select-none data-loading:text-transparent [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
-        outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
-      },
-    },
     defaultVariants: {
-      variant: "default",
       size: "default",
+      variant: "default",
     },
-  }
-)
+    variants: {
+      size: {
+        default: "h-8 px-3",
+        icon: "size-9 sm:size-8",
+        "icon-lg": "size-10 sm:size-9",
+        "icon-sm": "size-8 sm:size-7",
+        "icon-xl":
+          "size-11 sm:size-10 [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5",
+        "icon-xs":
+          "size-7 rounded-md before:rounded-[calc(var(--radius-md)-1px)] sm:size-6 not-in-data-[slot=input-group]:[&_svg:not([class*='size-'])]:size-4 sm:not-in-data-[slot=input-group]:[&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-10 px-[calc(--spacing(3.5)-1px)] sm:h-9",
+        sm: "h-8 gap-1.5 px-[calc(--spacing(2.5)-1px)] sm:h-7",
+        xl: "h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5",
+        xs: "h-7 gap-1 rounded-md px-[calc(--spacing(2)-1px)] text-xs before:rounded-[calc(var(--radius-md)-1px)] sm:h-6 [&_svg:not([class*='size-'])]:size-4 sm:[&_svg:not([class*='size-'])]:size-3.5",
+      },
+      variant: {
+        default:
+          "border-zinc-200 bg-zinc-100 text-zinc-900 hover:bg-zinc-100 data-pressed:bg-zinc-100 dark:border-[#282B29] dark:bg-[#191B1A] dark:text-zinc-100 dark:hover:bg-[#191B1A] dark:data-pressed:bg-[#191B1A]",
+        primary:
+          "border-[#CA8A04]/40 bg-[#EAB308] text-zinc-950 shadow-xs hover:bg-[#EAB308] data-pressed:bg-[#EAB308] *:data-[slot=button-loading-indicator]:text-zinc-950",
+        neutral:
+          "border-zinc-200 bg-zinc-100 text-zinc-900 hover:bg-zinc-100 data-pressed:bg-zinc-100 dark:border-[#282B29] dark:bg-[#191B1A] dark:text-zinc-100 dark:hover:bg-[#191B1A] dark:data-pressed:bg-[#191B1A]",
+        destructive:
+          "border-destructive bg-destructive text-white shadow-destructive/24 shadow-xs hover:bg-destructive data-pressed:bg-destructive *:data-[slot=button-loading-indicator]:text-white",
+        "destructive-outline":
+          "border-input bg-popover text-destructive-foreground hover:bg-popover data-pressed:bg-popover *:data-[slot=button-loading-indicator]:text-foreground",
+        ghost:
+          "border-transparent text-foreground hover:bg-transparent data-pressed:bg-transparent *:data-[slot=button-loading-indicator]:text-foreground",
+        link: "border-transparent text-foreground underline-offset-4 hover:underline data-pressed:underline *:data-[slot=button-loading-indicator]:text-foreground",
+        outline:
+          "border-input bg-popover text-foreground hover:bg-popover data-pressed:bg-popover *:data-[slot=button-loading-indicator]:text-foreground dark:bg-input/32 dark:hover:bg-input/32 dark:data-pressed:bg-input/32",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary data-pressed:bg-secondary *:data-[slot=button-loading-indicator]:text-secondary-foreground",
+      },
+    },
+  },
+);
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+export interface ButtonProps extends useRender.ComponentProps<"button"> {
+  variant?: VariantProps<typeof buttonVariants>["variant"];
+  size?: VariantProps<typeof buttonVariants>["size"];
+  loading?: boolean;
 }
 
-export { Button, buttonVariants }
+export function Button({
+  className,
+  variant,
+  size,
+  render,
+  children,
+  loading = false,
+  disabled: disabledProp,
+  ...props
+}: ButtonProps): React.ReactElement {
+  const isDisabled: boolean = Boolean(loading || disabledProp);
+  const typeValue: React.ButtonHTMLAttributes<HTMLButtonElement>["type"] =
+    render ? undefined : "button";
+
+  const defaultProps = {
+    children: (
+      <>
+        {children}
+        {loading && (
+          <Spinner
+            className="pointer-events-none absolute"
+            data-slot="button-loading-indicator"
+          />
+        )}
+      </>
+    ),
+    className: cn(buttonVariants({ className, size, variant })),
+    "aria-disabled": loading || undefined,
+    "data-loading": loading ? "" : undefined,
+    "data-slot": "button",
+    disabled: isDisabled,
+    type: typeValue,
+  };
+
+  return useRender({
+    defaultTagName: "button",
+    props: mergeProps<"button">(defaultProps, props),
+    render,
+  });
+}

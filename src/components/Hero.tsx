@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
 import { BrandMark } from "./Brand";
 import { Android } from "@/components/ui/android";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Reveal } from "./Reveal";
 
 const flowSteps = ["Missed call", "Follow-up", "Booked"];
@@ -54,13 +55,13 @@ export function Hero() {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2 w-full">
               <Link
                 href="/auth"
-                className="gold-cta w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#f5c62e] text-[#111214] font-bold text-xs sm:text-sm hover:bg-[#e6b825] transition-all shadow-lg shadow-amber-500/10 active:scale-95 text-center"
+                className={buttonVariants({ variant: "primary", size: "sm", className: "w-full sm:w-auto rounded-xl text-xs shadow-lg shadow-amber-500/10" })}
               >
                 Start my 14-day free trial
               </Link>
               <a
                 href="#how-it-works"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border border-[#e7e7e9] font-bold text-xs sm:text-sm text-[#111214] hover:bg-[#f7f7f5] transition-all flex items-center justify-center gap-2 shadow-sm text-center"
+                className={buttonVariants({ variant: "neutral", size: "sm", className: "w-full sm:w-auto text-center" })}
               >
                 <CirclePlay size={17} strokeWidth={1.6} /> See how it works
               </a>
@@ -91,16 +92,18 @@ export function Hero() {
                     <span className="text-[11px] font-bold tracking-tight truncate">y&apos;elllo</span>
                     <span className="rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[7px] text-amber-800 font-semibold shrink-0">LIVE</span>
                   </div>
-                  <button 
+                  <Button
                     type="button" 
                     onClick={replay} 
                     disabled={playing} 
-                    className="inline-flex items-center gap-1 text-[10px] text-[#686b73] hover:text-[#111214] disabled:opacity-50 font-medium bg-white px-2 py-1 rounded-lg border border-[#e7e7e9] shrink-0" 
+                    variant="neutral"
+                    size="xs"
+                    className="shrink-0 text-[10px]"
                     aria-label="Replay missed-call recovery flow"
                   >
                     <RotateCcw size={11} className={playing ? "animate-spin" : ""} />
                     {playing ? "Playing" : "Replay"}
-                  </button>
+                  </Button>
                 </div>
 
                 {/* Call Notice Card */}
@@ -167,10 +170,12 @@ export function Hero() {
               {/* iPhone Flow Tabs Footer */}
               <div className="mt-3 flex items-center justify-between border-t border-[#e7e7e9] pt-2.5">
                 {flowSteps.map((label, index) => (
-                  <button 
+                  <Button
                     key={label} 
                     type="button" 
-                    className="flex items-center gap-1 text-[9px] font-semibold text-[#686b73] data-[active=true]:text-[#111214] data-[active=true]:bg-white data-[active=true]:shadow-sm px-1.5 sm:px-2 py-1 rounded-lg transition-all" 
+                    variant="ghost"
+                    size="xs"
+                    className="h-auto rounded-lg px-1.5 py-1 text-[9px] font-semibold text-[#686b73] data-[active=true]:bg-white data-[active=true]:text-[#111214] data-[active=true]:shadow-sm sm:px-2"
                     data-active={stage === index} 
                     aria-pressed={stage === index} 
                     onClick={() => { setPlaying(false); setStage(index); }}
@@ -180,7 +185,7 @@ export function Hero() {
                     </span>
                     <span className="text-[9px]">{label}</span>
                     {index < 2 && <ChevronRight size={9} className="text-[#ccc] hidden sm:inline" aria-hidden="true" />}
-                  </button>
+                  </Button>
                 ))}
               </div>
 

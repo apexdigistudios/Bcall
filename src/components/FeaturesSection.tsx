@@ -52,7 +52,7 @@ export function FeaturesSection() {
                 <p className="eyebrow mb-3 text-[9px] text-muted">{number} / {label}</p>
                 <h3 className="display-title text-[clamp(1.25rem,2vw,1.5rem)]">{title}</h3>
                 <p className="mt-3 flex-1 text-[13px] leading-7 text-muted">{description}</p>
-                <a href={href} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[12px] font-medium">
+                <a href={href} className="mt-6 inline-flex min-h-9 items-center gap-1.5 text-[11px] font-medium">
                   {link}<ArrowUpRight size={14} />
                 </a>
               </article>

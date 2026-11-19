@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
-import { PhoneCall, Smartphone, MessageSquare, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
+import { Smartphone, MessageSquare, CheckCircle2, AlertCircle, Send, MessageCircle } from "lucide-react";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -30,15 +31,15 @@ export default async function DashboardPage() {
   const activeDevicesCount = devices.filter((d) => d.status === "active").length;
 
   return (
-    <div className="w-full min-w-0 space-y-4 bg-white min-h-screen text-[#111214] pb-20 px-2 sm:px-0">
+    <div className="w-full min-w-0 space-y-5 bg-transparent text-zinc-900 dark:text-zinc-100 pb-20 px-2 sm:px-0 text-[11px]">
       {/* Database Connection Error Banner */}
       {connectionError && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 space-y-1.5">
-          <div className="flex items-center gap-2 font-bold text-xs">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-900 dark:text-rose-200 space-y-1.5">
+          <div className="flex items-center gap-2 font-bold text-[11px]">
+            <AlertCircle className="w-3.5 h-3.5 text-rose-700 dark:text-rose-400 shrink-0" />
             Supabase Connection Error
           </div>
-          <p className="text-[10px] font-mono bg-white p-2 rounded border border-rose-200 overflow-x-auto">
+          <p className="text-[10px] font-mono bg-white dark:bg-[#141615] p-2 rounded-lg border border-rose-200 dark:border-rose-900/50 overflow-x-auto text-rose-800 dark:text-rose-300">
             {connectionError}
           </p>
         </div>
@@ -46,14 +47,17 @@ export default async function DashboardPage() {
 
       {/* Device Pairing Notice Banner */}
       {!connectionError && activeDevicesCount === 0 && (
-        <div className="p-3.5 rounded-xl bg-neutral-100 border border-neutral-200 text-[#111214] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div className="p-3.5 rounded-xl bg-white dark:bg-[#191B1A] border border-zinc-200 dark:border-[#282B29] text-zinc-900 dark:text-zinc-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-            <p className="text-xs font-medium">
-              No active companion phone paired. Pair your device to start capturing missed calls.
-            </p>
+            <div className="p-1.5 rounded-lg bg-yellow-500/15 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400">
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold">No active companion phone paired</p>
+              <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Pair your device to start capturing and auto-responding to missed calls.</p>
+            </div>
           </div>
-          <Link href="/dashboard/devices" className="px-3.5 py-1.5 rounded-lg bg-black text-[#f5c62e] text-[11px] font-bold hover:bg-neutral-900 transition-colors shrink-0">
+          <Link href="/dashboard/devices" className={buttonVariants({ variant: "primary", size: "sm", className: "shrink-0 rounded-lg px-3 text-[11px]" })}>
             Pair Device
           </Link>
         </div>
@@ -61,39 +65,39 @@ export default async function DashboardPage() {
 
       {/* Compact Bento Grid Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm space-y-1">
-          <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Missed Leads</span>
-          <h3 className="text-2xl font-black text-[#111214]">{totalMissed}</h3>
-          <p className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+        <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm space-y-1.5">
+          <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Missed Leads</span>
+          <h3 className="text-2xl font-bold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">{totalMissed}</h3>
+          <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> Captured in real-time
           </p>
         </div>
 
-        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm space-y-1">
-          <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Active Devices</span>
-          <h3 className="text-2xl font-black text-[#111214]">{activeDevicesCount}</h3>
-          <p className="text-[11px] text-neutral-500">Connected SIM gateway</p>
+        <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm space-y-1.5">
+          <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Active Devices</span>
+          <h3 className="text-2xl font-bold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">{activeDevicesCount}</h3>
+          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Connected SIM gateway</p>
         </div>
 
-        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+        <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm flex flex-col justify-between">
           <div>
-            <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">Quick Action</span>
-            <h4 className="font-bold text-xs mt-0.5 text-[#111214]">Companion Setup</h4>
+            <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Quick Action</span>
+            <h4 className="font-bold text-[11px] mt-0.5 text-zinc-900 dark:text-zinc-100">Companion Setup</h4>
           </div>
-          <Link href="/dashboard/devices" className="mt-3 w-full py-2 px-3 rounded-xl bg-black text-[#f5c62e] font-bold text-[11px] text-center hover:bg-neutral-900 transition-colors flex items-center justify-center gap-1">
-            Pair Phone <ArrowRight className="w-3 h-3" />
+          <Link href="/dashboard/devices" className={buttonVariants({ variant: "primary", size: "sm", className: "mt-3 w-full rounded-lg px-2.5 text-[11px]" })}>
+            Pair Phone
           </Link>
         </div>
       </div>
 
       {/* Missed Calls Inbox Section */}
-      <div className="w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between p-4 border-b border-neutral-200 bg-neutral-50/50">
+      <div className="w-full overflow-hidden rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] shadow-sm">
+        <div className="flex items-center justify-between p-3.5 border-b border-zinc-200 dark:border-[#282B29] bg-zinc-50/50 dark:bg-[#141615]/50">
           <div>
-            <h2 className="font-bold text-xs uppercase tracking-wider text-[#111214]">Missed Call Logs</h2>
-            <p className="text-[10px] text-neutral-500">Instant automated lead recovery stream</p>
+            <h2 className="font-bold text-[11px] uppercase tracking-wider text-zinc-900 dark:text-zinc-100">Missed Call Logs</h2>
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Instant automated lead recovery stream</p>
           </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-neutral-600 font-mono border border-neutral-200">
+          <span className="text-[9px] px-2 py-0.5 rounded-md bg-white dark:bg-[#191B1A] text-zinc-700 dark:text-zinc-300 font-mono border border-zinc-200 dark:border-[#282B29]">
             {calls.length} Leads
           </span>
         </div>
@@ -101,28 +105,35 @@ export default async function DashboardPage() {
         {/* Mobile Feed View */}
         <div className="space-y-2.5 p-3 xl:hidden">
           {calls.length === 0 ? (
-            <p className="py-8 text-center text-xs text-neutral-400">
-              {connectionError ? "Database connection error." : "No missed calls recorded yet."}
-            </p>
+            <div className="py-10 text-center space-y-1.5">
+              <MessageSquare className="w-7 h-7 mx-auto text-zinc-300 dark:text-zinc-700 stroke-[1.5]" />
+              <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                {connectionError ? "Database connection error." : "No missed calls recorded yet."}
+              </p>
+            </div>
           ) : calls.map((call) => {
             const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
             const cleanPhone = number.replace(/\D/g, "");
             return (
-              <article key={call.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 space-y-2">
+              <article key={call.id} className="rounded-lg border border-zinc-200 dark:border-[#282B29] bg-zinc-50/50 dark:bg-[#141615]/50 p-3 space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="font-mono text-xs font-bold text-[#111214]">{number}</p>
-                    {call.contact_name && <p className="text-[10px] text-neutral-500">{call.contact_name}</p>}
+                    <p className="font-mono text-[11px] font-bold text-zinc-900 dark:text-zinc-100">{number}</p>
+                    {call.contact_name && <p className="text-[10px] text-zinc-500 dark:text-zinc-400">{call.contact_name}</p>}
                   </div>
-                  <span className="rounded-md bg-neutral-200 px-2 py-0.5 text-[9px] font-mono text-neutral-700">
-                    {call.lead_status || "new"}
+                  <span className="rounded-md bg-rose-100 dark:bg-rose-500/10 border border-rose-300 dark:border-rose-500/20 px-2 py-0.5 text-[9px] font-semibold font-mono text-rose-700 dark:text-rose-400">
+                    {call.lead_status || "missed"}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-neutral-400 pt-1">
+                <div className="flex items-center justify-between text-[10px] text-zinc-500 dark:text-zinc-400 pt-1 border-t border-zinc-200/60 dark:border-[#282B29]">
                   <span>{call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}</span>
                   <div className="flex gap-1.5">
-                    <a href={`tel:${number}`} className="px-2.5 py-1 rounded-lg bg-black text-white text-[10px] font-medium">Call</a>
-                    <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 rounded-lg border border-neutral-300 bg-white text-[10px] font-medium text-[#111214]">WhatsApp</a>
+                    <a href={`sms:${number}`} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-[10px] font-medium hover:bg-blue-200 dark:hover:bg-blue-500/20 transition-colors">
+                      <Send className="w-3 h-3" /> SMS
+                    </a>
+                    <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-medium hover:bg-emerald-200 dark:hover:bg-emerald-500/20 transition-colors">
+                      <MessageCircle className="w-3 h-3" /> WhatsApp
+                    </a>
                   </div>
                 </div>
               </article>
@@ -134,18 +145,17 @@ export default async function DashboardPage() {
         <div className="hidden overflow-x-auto xl:block">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-neutral-200 bg-neutral-50 text-neutral-500 text-[10px] font-mono uppercase">
+              <tr className="border-b border-zinc-200 dark:border-[#282B29] bg-zinc-50/50 dark:bg-[#141615]/50 text-zinc-500 dark:text-zinc-400 text-[9px] font-mono uppercase tracking-wider">
                 <th className="py-2.5 px-4">Caller Number</th>
-                <th className="py-2.5 px-4">Outcome</th>
                 <th className="py-2.5 px-4">Time Received</th>
                 <th className="py-2.5 px-4">Status</th>
                 <th className="py-2.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100 text-xs">
+            <tbody className="divide-y divide-zinc-100 dark:divide-[#282B29] text-[11px]">
               {calls.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-neutral-400">
+                  <td colSpan={4} className="py-10 text-center text-zinc-500 dark:text-zinc-400">
                     {connectionError ? "Unable to load calls." : "No missed calls recorded yet."}
                   </td>
                 </tr>
@@ -155,44 +165,39 @@ export default async function DashboardPage() {
                   const cleanPhone = number.replace(/\D/g, "");
 
                   return (
-                    <tr key={call.id} className="hover:bg-neutral-50/50 transition-colors">
-                      <td className="py-3 px-4 font-bold font-mono text-[#111214]">
+                    <tr key={call.id} className="hover:bg-zinc-50/60 dark:hover:bg-[#141615]/40 transition-colors">
+                      <td className="py-3 px-4 font-bold font-mono text-zinc-900 dark:text-zinc-100">
                         <div className="flex items-center gap-2">
                           <span>{number}</span>
                           {call.contact_name && (
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-neutral-100 text-neutral-600 font-sans font-normal">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-sans font-normal">
                               {call.contact_name}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 font-mono">
-                          {call.call_outcome || call.callOutcome || "missed"}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-[11px] text-neutral-500 font-mono">
+                      <td className="py-3 px-4 text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
                         {call.created_at ? new Date(call.created_at.replace(" ", "T")).toLocaleString() : "Just now"}
                       </td>
                       <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-800 font-mono">
-                          {call.lead_status || call.leadStatus || "new"}
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-100 dark:bg-rose-500/10 border border-rose-300 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 font-mono">
+                          {call.lead_status || call.leadStatus || "missed"}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
                         <a
-                          href={`tel:${number}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black text-white text-[11px] font-medium hover:bg-neutral-800 transition-colors"
+                          href={`sms:${number}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-[10px] font-medium hover:bg-blue-200 dark:hover:bg-blue-500/20 transition-colors"
                         >
-                          <PhoneCall className="w-3 h-3" /> Call
+                          <Send className="w-3 h-3" /> SMS
                         </a>
                         <a
                           href={`https://wa.me/${cleanPhone}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-neutral-300 bg-white text-[11px] font-medium text-[#111214] hover:bg-neutral-50 transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-medium hover:bg-emerald-200 dark:hover:bg-emerald-500/20 transition-colors"
                         >
-                          <MessageSquare className="w-3 h-3" /> WhatsApp
+                          <MessageCircle className="w-3 h-3" /> WhatsApp
                         </a>
                       </td>
                     </tr>

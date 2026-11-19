@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Brand } from "./Brand";
 import { DemoButton } from "./DemoButton";
 import { ThemeToggle } from "./ThemeToggle";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 const navigation = [
   { label: "How it works", href: "#how-it-works" },
@@ -39,25 +40,27 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <div className="hidden sm:block">
-            <DemoButton variant="light" className="btn-sm" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
-              Book a demo
+            <DemoButton variant="light" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
+              Free Audit
             </DemoButton>
           </div>
           
-          <Link href="/auth" className="btn btn-dark btn-sm min-h-11 !hidden shrink-0 items-center gap-1 px-3 py-2 text-xs sm:!flex sm:text-sm">
-            Get started <ArrowRight size={13} />
+          <Link href="/auth" className={buttonVariants({ variant: "primary", size: "sm", className: "!hidden shrink-0 px-3 text-xs sm:!flex" })}>
+            Get started
           </Link>
 
-          <button 
+          <Button
             type="button" 
-            className="grid size-11 place-items-center rounded-lg text-ink lg:hidden bg-[#f7f7f5] border border-line shrink-0"
+            variant="neutral"
+            size="icon"
+            className="size-9 shrink-0 text-ink lg:hidden"
             aria-label={menuOpen ? "Close navigation" : "Open navigation"} 
             aria-expanded={menuOpen} 
             aria-controls="mobile-navigation" 
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          </Button>
         </div>
       </nav>
 
@@ -69,7 +72,7 @@ export function Navbar() {
               key={item.href} 
               href={item.href} 
               onClick={() => setMenuOpen(false)} 
-              className="flex items-center justify-between border-b border-line/60 py-3 text-xs sm:text-sm font-medium text-ink last:border-0"
+              className="flex items-center justify-between border-b border-line/60 py-2 text-xs font-medium text-ink last:border-0"
             >
               {item.label}
               <span aria-hidden="true" className="text-muted text-xs">↗</span>
@@ -77,11 +80,11 @@ export function Navbar() {
           ))}
           <div className="pt-3 flex flex-col gap-2">
             <div className="block sm:hidden w-full">
-              <DemoButton variant="light" className="w-full text-center py-2.5 text-xs" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
-                Book a demo
+              <DemoButton variant="light" className="w-full text-center text-xs" intent={{ source: "Navigation", kind: "demo" }} onOpen={() => setMenuOpen(false)}>
+                Free Audit
               </DemoButton>
             </div>
-            <Link href="/auth" onClick={() => setMenuOpen(false)} className="btn btn-dark btn-lg w-full text-center text-xs sm:text-sm py-2.5">
+            <Link href="/auth" onClick={() => setMenuOpen(false)} className={buttonVariants({ variant: "primary", size: "sm", className: "w-full text-center text-xs" })}>
               Get started
             </Link>
           </div>

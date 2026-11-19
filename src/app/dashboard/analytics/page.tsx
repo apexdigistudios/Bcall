@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { TrendingUp, DollarSign, Calendar, Sparkles, ShieldCheck, RefreshCw, Users, ArrowUpRight, Check, Edit3 } from "lucide-react";
+import { TrendingUp, DollarSign, Calendar, Sparkles, ShieldCheck, RefreshCw, Users, ArrowUpRight, Check, Edit3, LineChart, HelpCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AnalyticsPage() {
   const [calls, setCalls] = useState<any[]>([]);
   const [business, setBusiness] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [analyticsError, setAnalyticsError] = useState("");
-  
+
   const [averageIncome, setAverageIncome] = useState<string>("");
   const [currency, setCurrency] = useState<string>("GHS");
   const [rates, setRates] = useState<Record<string, number>>({});
@@ -21,6 +22,9 @@ export default function AnalyticsPage() {
   const [isEditingIncome, setIsEditingIncome] = useState(false);
   const [savingIncome, setSavingIncome] = useState(false);
   const [incomeSavedSuccess, setIncomeSavedSuccess] = useState(false);
+
+  // Chart view switcher state: 'day' | 'week' | 'month'
+  const [chartView, setChartView] = useState<"day" | "week" | "month">("day");
 
   useEffect(() => {
     fetchData();
@@ -94,7 +98,7 @@ export default function AnalyticsPage() {
       setRatesError("Refresh exchange rates before converting this value.");
       return;
     }
-    
+
     const valueInUSD = currentVal / rateFrom;
     const convertedValue = valueInUSD * rateTo;
 
@@ -150,7 +154,7 @@ export default function AnalyticsPage() {
   }
 
   const numericBaseIncome = Number(averageIncome) || 0;
-  
+
   const now = new Date();
   const todayStr = now.toDateString();
   const startOfWeek = new Date();
@@ -167,80 +171,144 @@ export default function AnalyticsPage() {
   const earnedMonth = leadsThisMonth * numericBaseIncome;
   const earnedTotal = totalLeads * numericBaseIncome;
 
+  // Real chart data aggregation based on selected chartView (day, week, month)
+  const getChartData = () => {
+    if (chartView === "day") {
+      // Last 7 days
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(now.getDate() - (6 - i));
+        const dStr = d.toDateString();
+        const count = calls.filter(c => new Date(c.created_at).toDateString() === dStr).length;
+        return { label: d.toLocaleDateString([], { weekday: 'short' }), count };
+      });
+    } else if (chartView === "week") {
+      // Last 6 weeks
+      return Array.from({ length: 6 }, (_, i) => {
+        const start = new Date();
+        start.setDate(now.getDate() - (5 - i) * 7 - 6);
+        const end = new Date();
+        end.setDate(now.getDate() - (5 - i) * 7);
+        const count = calls.filter(c => {
+          const dt = new Date(c.created_at);
+          return dt >= start && dt <= end;
+        }).length;
+        return { label: `Wk ${i + 1}`, count };
+      });
+    } else {
+      // Last 6 months
+      return Array.from({ length: 6 }, (_, i) => {
+        const targetMonth = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+        const mYear = targetMonth.getFullYear();
+        const mMonth = targetMonth.getMonth();
+        const count = calls.filter(c => {
+          const dt = new Date(c.created_at);
+          return dt.getFullYear() === mYear && dt.getMonth() === mMonth;
+        }).length;
+        return { label: targetMonth.toLocaleDateString([], { month: 'short' }), count };
+      });
+    }
+  };
+
+  const currentChartData = getChartData();
+  const maxChartCount = Math.max(...currentChartData.map(d => d.count), 1);
+
   if (loading) {
-    return <div className="w-full py-16 text-center text-xs font-medium text-neutral-400 bg-white">Loading analytics...</div>;
+    return <div className="w-full py-16 text-center text-xs font-mono text-zinc-500 bg-transparent">Loading analytics...</div>;
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl min-w-0 space-y-4 pb-20 px-3 sm:px-4 bg-white min-h-screen text-[#111214] font-sans">
+    <div className="mx-auto w-full max-w-4xl min-w-0 space-y-5 pb-20 px-2 sm:px-0 bg-transparent min-h-screen text-zinc-900 dark:text-zinc-100 font-sans text-[11px]">
       {analyticsError && (
-        <p role="alert" className="wrap-break-word rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-900 font-medium">{analyticsError}</p>
+        <p role="alert" className="wrap-break-word rounded-xl border border-rose-300 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/30 p-3.5 text-xs text-rose-900 dark:text-rose-200 font-medium">{analyticsError}</p>
       )}
 
-      {/* Header & Currency Controller Bar */}
-      <div className="pt-2 border-b border-neutral-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Header */}
+      <div className="border-b border-zinc-200 dark:border-[#282B29] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase">y'elllo / Metrics</span>
-          <h2 className="text-lg font-bold tracking-tight text-[#111214]">Analytics</h2>
+          <span className="text-[9px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">y'elllo / Metrics</span>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Analytics & Revenue</h2>
         </div>
+      </div>
 
-        {/* Compact Currency & Average Value Card */}
-        <div className="flex w-full min-w-0 flex-col gap-2 rounded-2xl border border-neutral-200/80 bg-neutral-50/50 p-3 shadow-2xs sm:w-auto sm:min-w-[280px]">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-6 h-6 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[#111214] shrink-0 font-bold">
-                <DollarSign className="w-3 h-3" />
+      {/* Separated Settings Grid: Currency Selector & Average Customer Value */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Currency & Live Market Rates Control Box */}
+        <div className="flex flex-col gap-2.5 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-[#141615] border border-zinc-200 dark:border-[#282B29] flex items-center justify-center text-zinc-900 dark:text-zinc-100 shrink-0 font-bold">
+                <DollarSign className="w-3.5 h-3.5 text-[#EAB308]" />
               </div>
-              <span className="text-[10px] font-semibold text-neutral-500 uppercase">Avg Value / Currency</span>
+              <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">Currency Selection</span>
             </div>
-            {/* iOS Styled Pill Button */}
-            <button
+            <Button
               onClick={fetchLiveRates}
               disabled={refreshingRates}
               title="Refresh Live Market Rates"
-              className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-neutral-700 transition-all hover:bg-neutral-100 active:scale-95 shadow-2xs"
+              variant="neutral"
+              size="xs"
+              className="text-[10px]"
             >
-              <RefreshCw className={`w-2.5 h-2.5 text-neutral-500 ${refreshingRates ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3 h-3 text-zinc-500 ${refreshingRates ? "animate-spin" : ""}`} />
               {refreshingRates ? "Updating..." : "Rates"}
-            </button>
+            </Button>
           </div>
 
           {ratesUpdatedMsg && (
-            <span role="status" className="rounded-lg bg-emerald-50 text-emerald-800 py-1 text-center text-[10px] font-semibold">
+            <span role="status" className="rounded-md bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 py-1 text-center text-[10px] font-semibold">
               Rates updated successfully
             </span>
           )}
           {ratesError && <p role="alert" className="wrap-break-word text-[10px] text-rose-600">{ratesError}</p>}
 
-          <div className="flex min-w-0 flex-col gap-1.5 border-t border-neutral-200/60 pt-2">
+          <div className="pt-2 border-t border-zinc-100 dark:border-[#282B29]">
+            <select
+              value={currency}
+              onChange={(e) => handleCurrencyChange(e.target.value)}
+              aria-label="Select currency"
+              className="w-full h-9 rounded-lg border border-zinc-300 dark:border-[#282B29] bg-zinc-50 dark:bg-[#141615] px-3 text-xs font-bold text-zinc-900 dark:text-zinc-100 focus:outline-none"
+            >
+              <option value="GHS">GHS (Ghanaian Cedi)</option>
+              <option value="USD">USD (US Dollar)</option>
+              <option value="EUR">EUR (Euro)</option>
+              <option value="GBP">GBP (British Pound)</option>
+              <option value="NGN">NGN (Nigerian Naira)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Average Customer Value Control Box with 6th-grade explanation */}
+        <div className="flex flex-col justify-between gap-2.5 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide">Average Customer Value</span>
+              <span className="text-[10px] font-mono font-semibold text-[#EAB308]">{currency}</span>
+            </div>
+            {/* 6th grade explanation */}
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Think of this as the average money you make when a customer buys something or books with you.
+            </p>
+          </div>
+
+          <div className="pt-2 border-t border-zinc-100 dark:border-[#282B29]">
             {!isEditingIncome ? (
-              <div className="flex w-full items-center justify-between gap-2">
-                <span className="min-w-0 wrap-break-word text-xs font-bold text-[#111214]">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold font-mono text-zinc-900 dark:text-zinc-100">
                   {currency} {Number(averageIncome).toLocaleString()}
                 </span>
-                {/* iOS Styled Pill Button */}
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsEditingIncome(true)}
-                  className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-neutral-700 transition-all hover:bg-neutral-100 active:scale-95 shadow-2xs"
+                  variant="neutral"
+                  size="xs"
+                  className="text-[10px]"
                 >
-                  <Edit3 className="w-2.5 h-2.5" /> Edit
-                </button>
+                  <Edit3 className="w-3 h-3" /> Edit Value
+                </Button>
               </div>
             ) : (
-              <div className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-1.5">
-                <select
-                  value={currency}
-                  onChange={(e) => handleCurrencyChange(e.target.value)}
-                  aria-label="Average customer value currency"
-                  className="h-8 rounded-lg border border-neutral-200 bg-white px-2 text-[11px] font-bold text-[#111214] focus:outline-none"
-                >
-                  <option value="GHS">GHS</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="GBP">GBP</option>
-                  <option value="NGN">NGN</option>
-                </select>
+              <div className="flex items-center gap-2">
                 <input
                   type="number"
                   min="0"
@@ -250,92 +318,170 @@ export default function AnalyticsPage() {
                   value={averageIncome}
                   onChange={(e) => setAverageIncome(e.target.value)}
                   placeholder="0"
-                  className="min-w-0 h-8 rounded-lg border border-neutral-200 bg-white px-2 text-xs font-semibold text-[#111214] focus:outline-none"
+                  className="flex-1 h-8 rounded-lg border border-zinc-300 dark:border-[#282B29] bg-zinc-50 dark:bg-[#141615] px-2.5 text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none font-mono"
                 />
-                {/* iOS Styled Pill Button */}
-                <button
+                <Button
                   type="button"
                   disabled={savingIncome}
                   onClick={handleSaveIncomeAndCurrency}
-                  className="inline-flex h-8 items-center gap-1 rounded-full bg-black px-3 text-[11px] font-semibold text-white hover:bg-neutral-800 disabled:opacity-60 active:scale-95 shadow-2xs"
+                  variant="primary"
+                  size="sm"
+                  className="min-h-8 px-3"
                 >
-                  <Check className="w-3 h-3" /> {savingIncome ? "..." : "Save"}
-                </button>
+                  <Check className="w-3 h-3" /> {savingIncome ? "Saving..." : "Save"}
+                </Button>
               </div>
             )}
+            {incomeSavedSuccess && (
+              <span role="status" className="block mt-1 text-[10px] font-semibold text-center text-emerald-600 dark:text-emerald-400">Saved successfully!</span>
+            )}
           </div>
-          {incomeSavedSuccess && (
-            <span role="status" className="text-[10px] font-semibold text-center text-emerald-700">Saved successfully!</span>
-          )}
         </div>
       </div>
 
       {/* Main KPI Grid */}
-      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Total Leads */}
-        <div className="min-w-0 space-y-1.5 rounded-2xl border border-neutral-200/80 bg-white p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Total Leads</span>
-            <Users className="w-3.5 h-3.5 text-[#111214]" />
+      <div className="grid min-w-0 grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="min-w-0 space-y-2 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
+            <span className="text-[10px] font-mono uppercase tracking-wider">Total Leads</span>
+            <Users className="w-4 h-4 text-[#EAB308]" />
           </div>
-          <h3 className="text-2xl font-bold text-[#111214] font-mono">{totalLeads.toLocaleString()}</h3>
-          <p className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
-            <ArrowUpRight className="w-3 h-3" /> 100% captured
+          <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 font-mono">{totalLeads.toLocaleString()}</h3>
+          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+            <ArrowUpRight className="w-3 h-3" /> 100% captured in real-time
           </p>
         </div>
 
-        {/* Today Revenue */}
-        <div className="min-w-0 space-y-1.5 rounded-2xl border border-neutral-200/80 bg-white p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">Today</span>
-            <Calendar className="w-3.5 h-3.5 text-[#111214]" />
+        <div className="min-w-0 space-y-2 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
+            <span className="text-[10px] font-mono uppercase tracking-wider">Today</span>
+            <Calendar className="w-4 h-4 text-[#EAB308]" />
           </div>
-          <h3 className="wrap-break-word text-xl font-bold leading-tight tracking-tight text-[#111214]">{formatMoney(earnedToday)}</h3>
-          <p className="text-[10px] text-neutral-500">
-            From <span className="font-bold text-[#111214]">{leadsToday}</span> call{leadsToday === 1 ? "" : "s"}
+          <h3 className="wrap-break-word text-2xl font-bold tracking-tight font-mono text-zinc-900 dark:text-zinc-100">{formatMoney(earnedToday)}</h3>
+          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+            From <span className="font-bold text-zinc-900 dark:text-zinc-100">{leadsToday}</span> call{leadsToday === 1 ? "" : "s"}
           </p>
         </div>
 
-        {/* Weekly Revenue */}
-        <div className="min-w-0 space-y-1.5 rounded-2xl border border-neutral-200/80 bg-white p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">This Week</span>
-            <TrendingUp className="w-3.5 h-3.5 text-[#111214]" />
+        <div className="min-w-0 space-y-2 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
+            <span className="text-[10px] font-mono uppercase tracking-wider">This Week</span>
+            <TrendingUp className="w-4 h-4 text-[#EAB308]" />
           </div>
-          <h3 className="wrap-break-word text-xl font-bold leading-tight tracking-tight text-[#111214]">{formatMoney(earnedWeek)}</h3>
-          <p className="text-[10px] text-neutral-500">
-            From <span className="font-bold text-[#111214]">{leadsThisWeek}</span> call{leadsThisWeek === 1 ? "" : "s"}
+          <h3 className="wrap-break-word text-2xl font-bold tracking-tight font-mono text-zinc-900 dark:text-zinc-100">{formatMoney(earnedWeek)}</h3>
+          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+            From <span className="font-bold text-zinc-900 dark:text-zinc-100">{leadsThisWeek}</span> call{leadsThisWeek === 1 ? "" : "s"}
           </p>
         </div>
 
-        {/* Monthly Revenue */}
-        <div className="min-w-0 space-y-1.5 rounded-2xl border border-neutral-200/80 bg-white p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-[10px] font-semibold uppercase tracking-wider">This Month</span>
-            <Sparkles className="w-3.5 h-3.5 text-[#111214]" />
+        <div className="min-w-0 space-y-2 rounded-xl border border-zinc-200 dark:border-[#282B29] bg-white dark:bg-[#191B1A] p-4 shadow-sm">
+          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
+            <span className="text-[10px] font-mono uppercase tracking-wider">This Month</span>
+            <Sparkles className="w-4 h-4 text-[#EAB308]" />
           </div>
-          <h3 className="wrap-break-word text-xl font-bold leading-tight tracking-tight text-[#111214]">{formatMoney(earnedMonth)}</h3>
-          <p className="text-[10px] text-neutral-500">
-            From <span className="font-bold text-[#111214]">{leadsThisMonth}</span> call{leadsThisMonth === 1 ? "" : "s"}
+          <h3 className="wrap-break-word text-2xl font-bold tracking-tight font-mono text-zinc-900 dark:text-zinc-100">{formatMoney(earnedMonth)}</h3>
+          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+            From <span className="font-bold text-zinc-900 dark:text-zinc-100">{leadsThisMonth}</span> call{leadsThisMonth === 1 ? "" : "s"}
           </p>
         </div>
       </div>
 
-      {/* Financial Hero Banner */}
-      <div className="relative flex min-w-0 flex-col items-start justify-between gap-4 overflow-hidden rounded-2xl bg-black p-5 text-white shadow-md sm:p-6 lg:flex-row lg:items-center border border-neutral-800">
-        <div className="space-y-1.5 z-10 flex-1 min-w-0 pr-0 lg:pr-4">
-          <div className="flex items-center gap-1.5 text-[#f5c62e] text-[10px] font-semibold tracking-wider uppercase">
-            <ShieldCheck className="w-3.5 h-3.5 shrink-0" /> Total Lifetime Recovered Value
+      {/* Real-Data SVG Line Chart Card with Day / Week / Month Switcher */}
+      <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <LineChart className="w-4 h-4 text-[#EAB308]" />
+            <h3 className="font-bold text-[11px] uppercase tracking-wider text-zinc-900 dark:text-zinc-100">Recovery Velocity Trend</h3>
           </div>
-          <h3 className="wrap-break-word text-3xl font-extrabold leading-tight tracking-tight tabular-nums text-white">{formatMoney(earnedTotal)}</h3>
-          <p className="text-[11px] text-neutral-400 max-w-md leading-relaxed">
-            Calculated across all <span className="font-bold text-white">{totalLeads}</span> missed leads saved with y'elllo.
+
+          {/* Day / Week / Month Switcher Tabs */}
+          <div className="flex items-center bg-zinc-100 dark:bg-[#141615] p-1 rounded-lg border border-zinc-200 dark:border-[#282B29]">
+            {(["day", "week", "month"] as const).map((view) => (
+              <Button
+                key={view}
+                type="button"
+                onClick={() => setChartView(view)}
+                variant={chartView === view ? "primary" : "ghost"}
+                size="xs"
+                className={`capitalize ${
+                  chartView === view
+                    ? "shadow-xs"
+                    : "text-zinc-600 dark:text-zinc-400"
+                }`}
+              >
+                {view}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Real Data SVG Line Chart */}
+        <div className="h-32 w-full bg-zinc-50 dark:bg-[#141615] rounded-lg border border-zinc-200 dark:border-[#282B29] p-3 flex flex-col justify-between">
+          <div className="relative h-20 w-full">
+            {/* Grid lines */}
+            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-30">
+              <div className="border-b border-zinc-300 dark:border-zinc-700 w-full" />
+              <div className="border-b border-zinc-300 dark:border-zinc-700 w-full" />
+              <div className="border-b border-zinc-300 dark:border-zinc-700 w-full" />
+            </div>
+
+            {/* SVG Polyline representing real call counts */}
+            <svg className="absolute inset-0 h-full w-full overflow-visible">
+              <polyline
+                fill="none"
+                stroke="#EAB308"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={currentChartData
+                  .map((d, i) => {
+                    const x = (i / (currentChartData.length - 1 || 1)) * 100;
+                    const y = 100 - (d.count / maxChartCount) * 80;
+                    return `${x}%,${y}%`;
+                  })
+                  .join(" ")}
+              />
+            </svg>
+
+            {/* Data points */}
+            <div className="absolute inset-0 flex justify-between items-center pointer-events-none px-1">
+              {currentChartData.map((d, i) => {
+                const topPct = 100 - (d.count / maxChartCount) * 80;
+                return (
+                  <div key={i} className="flex flex-col items-center relative" style={{ transform: `translateY(${topPct - 50}%)` }}>
+                    <div className="w-2 h-2 rounded-full bg-[#EAB308] border-2 border-white dark:border-[#191B1A] shadow-xs" title={`${d.count} calls`} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* X Axis Labels */}
+          <div className="flex justify-between pt-1 border-t border-zinc-200 dark:border-zinc-800 px-1">
+            {currentChartData.map((d, i) => (
+              <span key={i} className="text-[9px] font-mono text-zinc-500 text-center flex-1 truncate">
+                {d.label} ({d.count})
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Financial Hero Banner */}
+      <div className="relative flex min-w-0 flex-col items-start justify-between gap-4 overflow-hidden rounded-xl bg-zinc-900 dark:bg-[#191B1A] p-5 text-white shadow-md sm:p-6 lg:flex-row lg:items-center border border-zinc-800 dark:border-[#282B29]">
+        <div className="space-y-1.5 z-10 flex-1 min-w-0 pr-0 lg:pr-4">
+          <div className="flex items-center gap-1.5 text-[#EAB308] text-[10px] font-bold tracking-wider uppercase font-mono">
+            <ShieldCheck className="w-4 h-4 shrink-0" /> Total Lifetime Recovered Value
+          </div>
+          <h3 className="wrap-break-word text-3xl font-extrabold leading-tight tracking-tight tabular-nums text-white font-mono">{formatMoney(earnedTotal)}</h3>
+          <p className="text-[11px] text-zinc-400 max-w-md leading-relaxed">
+            Calculated across all <span className="font-bold text-white">{totalLeads}</span> missed leads captured and converted with y'elllo.
           </p>
         </div>
 
-        <div className="px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-center shrink-0 z-10 w-full lg:w-auto">
-          <span className="text-[9px] text-neutral-400 block uppercase font-mono tracking-wider">Status</span>
-          <span className="mt-0.5 block wrap-break-word text-xs font-bold text-[#f5c62e]">Active Recovery</span>
+        <div className="px-4 py-3 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 text-center shrink-0 z-10 w-full lg:w-auto">
+          <span className="text-[9px] text-zinc-400 block uppercase font-mono tracking-wider">Gateway Status</span>
+          <span className="mt-0.5 block wrap-break-word text-xs font-bold text-[#EAB308]">Active Recovery</span>
         </div>
       </div>
     </div>

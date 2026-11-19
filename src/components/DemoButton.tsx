@@ -3,6 +3,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import type { DemoIntent } from "@/lib/demo";
+import { Button } from "@/components/ui/button";
 import { useDemo } from "./DemoProvider";
 
 type DemoButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> & {
@@ -15,10 +16,17 @@ type DemoButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> 
 
 export function DemoButton({ children, variant = "dark", intent, arrow = true, className = "", onOpen, ...props }: DemoButtonProps) {
   const { openDemo } = useDemo();
+  const handleClick = () => { onOpen?.(); openDemo(intent); };
   return (
-    <button type="button" className={`btn btn-${variant} ${className}`} onClick={() => { onOpen?.(); openDemo(intent); }} {...props}>
+    <Button
+      variant={variant === "text" ? "ghost" : variant === "light" ? "neutral" : "primary"}
+      size="sm"
+      className={className}
+      onClick={handleClick}
+      {...props}
+    >
       {children}
-      {arrow && <ArrowUpRight size={16} strokeWidth={1.8} aria-hidden="true" />}
-    </button>
+      {arrow && <ArrowUpRight size={14} strokeWidth={1.8} aria-hidden="true" />}
+    </Button>
   );
 }

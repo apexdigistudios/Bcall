@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneMissed, Smartphone, Clock, AlertCircle, MessageCircle, Send, ChevronDown } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
 
 interface CallsClientWrapperProps {
   initialCalls: any[];
@@ -51,32 +52,32 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
   }, [router]);
 
   return (
-    <div className="space-y-4 max-w-4xl mx-auto px-2 sm:px-0 bg-white min-h-screen text-[#111214] pb-20">
+    <div className="space-y-4 max-w-4xl mx-auto px-2 sm:px-0 bg-transparent min-h-screen text-zinc-900 dark:text-zinc-100 pb-20 text-[11px]">
       <div>
-        <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block mb-0.5">Live Lead Stream</span>
-        <h2 className="text-xl font-bold tracking-tight text-[#111214]">Missed Call Logs</h2>
+        <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 block mb-0.5">Live Lead Stream</span>
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Missed Call Logs</h2>
       </div>
 
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-neutral-200 bg-neutral-50/50 flex items-center justify-between">
+      <div className="bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm overflow-hidden">
+        <div className="p-3.5 border-b border-zinc-200 dark:border-[#282B29] bg-zinc-50/50 dark:bg-[#141615]/50 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-wider text-[#111214]">Recent Inbound Calls</h3>
-            <p className="text-[10px] text-neutral-500">Synced automatically from companion devices</p>
+            <h3 className="font-bold text-[11px] uppercase tracking-wider text-zinc-900 dark:text-zinc-100">Recent Inbound Calls</h3>
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Synced automatically from companion devices</p>
           </div>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white text-neutral-700 border border-neutral-200">
+          <span className="px-2 py-0.5 rounded-md text-[9px] font-mono bg-white dark:bg-[#191B1A] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-[#282B29]">
             {initialCalls.length} Call{initialCalls.length === 1 ? "" : "s"}
           </span>
         </div>
 
-        <div className="divide-y divide-neutral-100">
+        <div className="divide-y divide-zinc-100 dark:divide-[#282B29]">
           {error && (
-            <div className="p-4 text-xs text-rose-600 flex items-center gap-2">
+            <div className="p-4 text-[11px] text-rose-700 dark:text-rose-400 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" /> Error loading calls: {error}
             </div>
           )}
 
           {!error && initialCalls.length === 0 ? (
-            <div className="p-8 text-center text-xs text-neutral-400">
+            <div className="p-10 text-center text-[11px] text-zinc-500 dark:text-zinc-400">
               No missed calls logged yet. Incoming calls from your companion devices will appear here instantly.
             </div>
           ) : (
@@ -86,54 +87,56 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
               const isDropdownOpen = openDropdownId === call.id;
 
               return (
-                <div key={call.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative hover:bg-neutral-50/50 transition-colors">
-                  <div className="flex items-start sm:items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[#111214] shrink-0 mt-0.5 sm:mt-0 font-bold">
-                      <PhoneMissed className="w-4 h-4" />
+                <div key={call.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative hover:bg-zinc-50/60 dark:hover:bg-[#141615]/40 transition-colors">
+                  <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-[#141615] border border-zinc-200 dark:border-[#282B29] flex items-center justify-center text-zinc-900 dark:text-zinc-100 shrink-0 mt-0.5 sm:mt-0 font-bold">
+                      <PhoneMissed className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-bold text-xs text-[#111214] font-mono">{call.phone_number}</h4>
+                        <h4 className="font-bold text-[11px] text-zinc-900 dark:text-zinc-100 font-mono">{call.phone_number}</h4>
                         {call.contact_name && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200 truncate">
+                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-[#282B29] truncate">
                             {call.contact_name}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-neutral-500 mt-0.5 flex items-center gap-1 truncate">
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1 truncate">
                         <Smartphone className="w-3 h-3 shrink-0" />
                         <span className="truncate">{call.android_devices?.business_name || "Shop"} ({call.android_devices?.device_label || "Phone"})</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
-                    <div className="flex items-center gap-1 text-[10px] text-neutral-400 font-mono">
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-zinc-100 dark:border-[#282B29]">
+                    <div className="flex items-center gap-1 text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
                       <Clock className="w-3 h-3 shrink-0" />
                       {call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
                     </div>
 
-                    {/* iOS-Styled Pill Follow-Up Button & Frosted Glass Menu */}
+                    {/* Cute Clean Follow-Up Button & Dropdown */}
                     <div className="relative" ref={isDropdownOpen ? dropdownRef : undefined}>
-                      <button
+                      <Button
                         onClick={() => setOpenDropdownId(isDropdownOpen ? null : call.id)}
-                        className="px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[#111214] font-semibold text-[11px] transition-all flex items-center gap-1.5 border border-neutral-200 active:scale-95 shadow-2xs"
+                        variant="primary"
+                        size="sm"
+                        className="text-[11px]"
                       >
-                        Follow Up <ChevronDown className={`w-3 h-3 text-neutral-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
+                        Follow Up <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                      </Button>
 
                       {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-neutral-200/80 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                          <div className="px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest text-neutral-400 border-b border-neutral-100 mb-1">
+                        <div className="absolute right-0 mt-1.5 w-44 bg-white/95 dark:bg-[#191B1A]/95 backdrop-blur-xl rounded-xl shadow-xl border border-zinc-200 dark:border-[#282B29] p-1 z-50 animate-in fade-in zoom-in-95 duration-150">
+                          <div className="px-2 py-1 text-[8px] font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-[#282B29] mb-1">
                             Quick Action
                           </div>
                           <a
                             href={`sms:${call.phone_number}?body=${defaultMsg}`}
-                            className="w-full px-3 py-2 text-[11px] text-left text-[#111214] hover:bg-neutral-100/80 rounded-xl flex items-center gap-2.5 font-semibold transition-colors"
+                            className="w-full px-2.5 py-1.5 text-[10px] text-left text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center gap-2 font-medium transition-colors"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="w-5 h-5 rounded-lg bg-neutral-900 text-white flex items-center justify-center shrink-0">
-                              <MessageCircle className="w-3 h-3" />
+                            <span className="w-4.5 h-4.5 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
+                              <Send className="w-2.5 h-2.5" />
                             </span>
                             Send SMS
                           </a>
@@ -141,11 +144,11 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                             href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full px-3 py-2 text-[11px] text-left text-[#111214] hover:bg-neutral-100/80 rounded-xl flex items-center gap-2.5 font-semibold transition-colors mt-0.5"
+                            className="w-full px-2.5 py-1.5 text-[10px] text-left text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center gap-2 font-medium transition-colors mt-0.5"
                             onClick={() => setOpenDropdownId(null)}
                           >
-                            <span className="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
-                              <Send className="w-3 h-3" />
+                            <span className="w-4.5 h-4.5 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                              <MessageCircle className="w-2.5 h-2.5" />
                             </span>
                             WhatsApp
                           </a>

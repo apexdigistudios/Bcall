@@ -4,7 +4,11 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 type Theme = "light" | "dark";
 
-const ThemeContext = createContext<{ theme: Theme | null; toggleTheme: () => void } | null>(null);
+const ThemeContext = createContext<{
+  theme: Theme | null;
+  toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
+} | null>(null);
 
 function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle("dark", theme === "dark");
@@ -13,7 +17,7 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme | null>(null);
+  const [theme, setThemeState] = useState<Theme | null>(null);
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("yelllo-theme");
@@ -21,26 +25,29 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       ? savedTheme
       : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     applyTheme(initialTheme);
-    setTheme(initialTheme);
+    setThemeState(initialTheme);
 
     const syncTheme = (event: StorageEvent) => {
       if (event.key !== "yelllo-theme" || (event.newValue !== "light" && event.newValue !== "dark")) return;
       applyTheme(event.newValue);
-      setTheme(event.newValue);
+      setThemeState(event.newValue);
     };
     window.addEventListener("storage", syncTheme);
     return () => window.removeEventListener("storage", syncTheme);
   }, []);
 
-  function toggleTheme() {
-    const currentTheme = theme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+  function setTheme(nextTheme: Theme) {
     applyTheme(nextTheme);
     window.localStorage.setItem("yelllo-theme", nextTheme);
-    setTheme(nextTheme);
+    setThemeState(nextTheme);
   }
 
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  function toggleTheme() {
+    const currentTheme = theme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  }
+
+  return <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

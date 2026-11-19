@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { ArrowRight, ShieldCheck, Smartphone, Zap } from "lucide-react";
+import { ShieldCheck, Smartphone, Zap } from "lucide-react";
 import { BrandMark } from "@/components/Brand";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -127,23 +128,27 @@ export default function AuthPage() {
               />
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="gold-cta w-full h-11 mt-2 rounded-xl bg-[#f5c62e] hover:bg-[#e6b825] text-[#111214] font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer disabled:opacity-50"
+              variant="primary"
+              size="sm"
+              className="mt-2 w-full rounded-xl shadow-lg"
             >
-              {loading ? "Processing..." : "Continue"} <ArrowRight className="w-4 h-4" />
-            </button>
+              {loading ? "Processing..." : "Continue"}
+            </Button>
           </form>
 
           <div className="mt-6 flex items-center justify-between text-xs">
-            <button
+            <Button
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-[#90939c] hover:text-white transition-colors cursor-pointer"
+              variant="ghost"
+              size="xs"
+              className="h-auto border-0 p-0 text-[#90939c]"
             >
               {isSignUp ? "Already have an account? Sign in" : "New to y'elllo? Create a free account"}
-            </button>
+            </Button>
           </div>
         </div>
 

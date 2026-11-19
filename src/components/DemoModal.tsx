@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
-import { ArrowUpRight, CheckCircle2, LoaderCircle, LockKeyhole, X } from "lucide-react";
+import { CheckCircle2, LoaderCircle, LockKeyhole, X } from "lucide-react";
 import { businessTypes, validateDemoSubmission, type DemoIntent } from "@/lib/demo";
+import { Button } from "@/components/ui/button";
 import { BrandMark } from "./Brand";
 
 type DemoModalProps = { intent: DemoIntent; onClose: () => void };
@@ -85,7 +86,7 @@ export function DemoModal({ intent, onClose }: DemoModalProps) {
   return createPortal(
     <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" aria-describedby="demo-modal-description" tabIndex={-1} className="modal-panel">
-        <button type="button" onClick={onClose} aria-label="Close inquiry form" className="absolute top-5 right-5 grid size-8 place-items-center rounded-full bg-soft text-muted transition-colors hover:text-ink"><X size={17} /></button>
+        <Button type="button" variant="ghost" size="icon-sm" onClick={onClose} aria-label="Close inquiry form" className="absolute top-5 right-5 rounded-full bg-soft text-muted hover:text-ink"><X size={17} /></Button>
         {confirmation ? (
           <div className="py-6 text-center" role="status" aria-live="polite">
             <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-success-soft text-success"><CheckCircle2 size={30} strokeWidth={1.5} /></div>
@@ -93,7 +94,7 @@ export function DemoModal({ intent, onClose }: DemoModalProps) {
             <h2 id="demo-modal-title" className="section-heading">You’re on the list,<br />{confirmation.name}.</h2>
             <p id="demo-modal-description" className="mx-auto mt-5 max-w-sm text-sm leading-7 text-muted">Your {intent.kind === "trial" ? "free-trial" : "demo"} request has been saved. We’ll use <strong className="font-medium text-ink">{confirmation.email}</strong> to follow up and help you get started.</p>
             <div className="my-7 rounded-lg bg-soft px-4 py-3 font-mono text-[10px] tracking-widest text-muted">REQUEST REFERENCE · CB-{confirmation.reference}</div>
-            <button type="button" onClick={onClose} className="btn btn-dark w-full">Back to y&apos;elllo <ArrowUpRight size={16} /></button>
+            <Button type="button" variant="neutral" size="sm" onClick={onClose} className="w-full">Back to y&apos;elllo</Button>
           </div>
         ) : (
           <>
@@ -116,7 +117,7 @@ export function DemoModal({ intent, onClose }: DemoModalProps) {
                 <div><label className="form-label" htmlFor="demo-message">Anything we should know? <span className="font-normal text-muted">(optional)</span></label><textarea className="form-input" id="demo-message" name="message" maxLength={2000} rows={2} placeholder="A busy season, a big goal, or a question. We’re all ears." defaultValue={intent.estimate ? `I’d like to recover an estimated $${intent.estimate.toLocaleString("en-US")} per month in missed-call revenue.` : ""} /></div>
                 <label className="flex items-start gap-2.5 text-[11px] leading-5 text-muted"><input className="form-checkbox mt-0.5" type="checkbox" name="consent" required /><span>I agree to be contacted about my request. My details will be handled according to the <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2">privacy policy</a>.</span></label>
                 {error && <p className="form-error" role="alert">{error}</p>}
-                <button type="submit" className="btn btn-primary w-full">{submitting ? <><LoaderCircle className="animate-spin" size={16} /> Saving your request…</> : <>{intent.kind === "trial" ? "Start my 14-day free trial" : "Request my demo"}<ArrowUpRight size={16} /></>}</button>
+                <Button type="submit" variant="primary" size="sm" className="w-full">{submitting ? <><LoaderCircle className="animate-spin" size={16} /> Saving your request…</> : intent.kind === "trial" ? "Start my 14-day free trial" : "Request my demo"}</Button>
               </fieldset>
               <p className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-muted"><LockKeyhole size={11} /> Your details are safe with us. No spam, ever.</p>
             </form>
