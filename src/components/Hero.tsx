@@ -29,7 +29,7 @@ export function Hero() {
               <span className="block">We turn your missed</span>
               <span className="block">
                 calls into{" "}
-                <span className="inline-block h-[1.12em] w-[8ch] overflow-hidden align-bottom text-left underline decoration-[#f5c62e] decoration-wavy">
+                <span className="inline-block h-[1.12em] w-[8ch] overflow-hidden align-bottom text-left text-[#CA8A04] dark:text-[#EAB308]">
                   <span className="hero-word-track flex flex-col" aria-hidden="true">
                     {headlineWords.map((word) => (
                       <span key={word} className="block h-[1.12em]">
@@ -50,16 +50,16 @@ export function Hero() {
           </Reveal>
 
           <Reveal immediate delay={240}>
-            <div className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row lg:justify-start">
+            <div className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row sm:gap-3.5 lg:justify-start">
               <Link
                 href="/auth"
-                className={buttonVariants({ variant: "primary", size: "sm", className: "w-full rounded-xl text-xs shadow-lg shadow-amber-500/10 sm:w-auto" })}
+                className={buttonVariants({ variant: "primary", size: "lg", className: "w-full rounded-lg text-xs shadow-sm shadow-amber-900/10 sm:w-auto" })}
               >
                 Start my 14-day free trial
               </Link>
               <a
                 href="#how-it-works"
-                className={buttonVariants({ variant: "neutral", size: "sm", className: "w-full text-center sm:w-auto" })}
+                className={buttonVariants({ variant: "neutral", size: "lg", className: "w-full border-zinc-300 text-center shadow-sm dark:border-[#3a3d3b] sm:w-auto" })}
               >
                 <CirclePlay size={17} strokeWidth={1.6} /> See how it works
               </a>
