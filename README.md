@@ -28,7 +28,15 @@ The supplied sandbox database is already configured. The project uses the existi
 
 `POST /api/demo` validates and saves demo or free-trial inquiries to `demo_requests`. The form returns an inquiry reference after a successful database insert. All database access uses the Drizzle client from `@/db`. Sensitive configuration stays server-side; no external API keys are required.
 
-The site records real inquiries. It does not send outbound emails, SMS, or telephone calls, process payments, or activate a live telephony account. Product conversations and charts are explicitly illustrative. Demo and trial inquiries are intended to be followed up by the business using the stored records. The calculator runs entirely in the browser; values are sent to the API only when a visitor submits an inquiry.
+The site records real inquiries. Demo and trial submissions do not send outbound emails, SMS, or telephone calls, process payments, or activate a live telephony account. Product conversations and charts are explicitly illustrative. Demo and trial inquiries are intended to be followed up by the business using the stored records. The calculator runs entirely in the browser; values are sent to the API only when a visitor submits an inquiry.
+
+## Missed-call SMS
+
+The dashboard can register a Sender ID and dispatch missed-call follow-ups through Sailup. Set `SAILUP_API_KEY` in the server environment; it is never sent to the browser. Sender IDs are fetched from Sailup, and only an approved, active sender can send. Registration and manual SMS requests require a signed-in Supabase user. Manual dispatch is bound to an existing call event and its captured Ghanaian phone number. When a paired Android device records a missed call, the server attempts the same follow-up automatically if an active sender is available. Sender registration status is shown on `/dashboard/templates` and `/dashboard`.
+
+SMS rate limits and duplicate-dispatch protection are currently held in process memory. Multi-instance deployments should use a shared rate limiter and durable dispatch records before relying on cross-instance limits or deduplication. Sailup failures are reported without rolling back call ingestion.
+
+WhatsApp actions require `WHATSAPP_ACCESS_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID` on the server. The current action opens a prefilled `wa.me` chat for the signed-in operator; it does not send a WhatsApp Cloud API message automatically.
 
 `/audit` is a public, auth-free, three-step tool. `POST /api/audit` validates the request with Zod, checks the public website and OpenStreetMap in parallel, and calculates all scores, findings, recommendations, and financial estimates deterministically on the server. No AI or LLM service is called. The report is not stored; it can be printed or saved as PDF through the browser print dialog.
 
@@ -57,6 +65,8 @@ Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel env
 - `src/app/api/demo/route.ts` — validated inquiry endpoint.
 - `src/app/audit/page.tsx` — public audit route.
 - `src/app/api/audit/route.ts` — validated, rate-limited audit endpoint.
+- `src/app/api/sailup/senders/route.ts` and `src/app/api/sms/send/route.ts` — authenticated Sender ID registration/status and missed-call SMS dispatch.
+- `src/lib/sailup.ts` and `src/lib/sms-followup.ts` — server-only Sailup client, channel checks, and shared automatic/manual SMS follow-up logic.
 - `src/lib/schema.ts`, `src/lib/website.ts`, `src/lib/osm.ts`, `src/lib/leak.ts`, and `src/lib/report.ts` — audit validation, public checks, deterministic estimates and findings, and report assembly.
 - `src/db/schema.ts` — Drizzle inquiry and device schema.
 

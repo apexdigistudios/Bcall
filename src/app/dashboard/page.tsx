@@ -1,7 +1,9 @@
 import { supabase } from "@/lib/supabase";
-import { Smartphone, MessageSquare, CheckCircle2, AlertCircle, Send, MessageCircle } from "lucide-react";
+import { Smartphone, MessageSquare, CheckCircle2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SmsFollowupButton, WhatsAppFollowupButton } from "@/components/MissedCallActions";
+import { getPrimarySailupSender, getSailupSenders, hasSailupApiKey, isWhatsAppConfigured, SailupError } from "@/lib/sailup";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +11,10 @@ export default async function DashboardPage() {
   let devices: any[] = [];
   let calls: any[] = [];
   let connectionError: string | null = null;
+  const sailupConfigured = hasSailupApiKey();
+  const whatsappConfigured = isWhatsAppConfigured();
+  let sender: Awaited<ReturnType<typeof getPrimarySailupSender>> = null;
+  let senderStatusError = false;
 
   try {
     const devicesRes = await supabase.from("android_devices").select("*");
@@ -25,6 +31,19 @@ export default async function DashboardPage() {
   } catch (error: any) {
     console.error("Supabase query error:", error);
     connectionError = error?.message || "Failed to query Supabase.";
+  }
+
+  if (sailupConfigured) {
+    try {
+      sender = getPrimarySailupSender(await getSailupSenders());
+    } catch (error) {
+      senderStatusError = true;
+      console.error(JSON.stringify({
+        event: "dashboard.sailup_status_failed",
+        errorName: error instanceof Error ? error.name : "UnknownError",
+        status: error instanceof SailupError ? error.status : undefined,
+      }));
+    }
   }
 
   const totalMissed = calls.length;
@@ -64,7 +83,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Compact Bento Grid Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
         <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm space-y-1.5">
           <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Missed Leads</span>
           <h3 className="text-2xl font-bold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">{totalMissed}</h3>
@@ -77,6 +96,24 @@ export default async function DashboardPage() {
           <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">Active Devices</span>
           <h3 className="text-2xl font-bold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">{activeDevicesCount}</h3>
           <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Connected SIM gateway</p>
+        </div>
+
+        <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm flex flex-col justify-between">
+          <div className="min-w-0">
+            <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">SMS Sender ID</span>
+            <h4 className="font-bold text-[11px] mt-1 truncate text-zinc-900 dark:text-zinc-100">
+              {sender?.name || "Not configured"}
+            </h4>
+            <p className="text-[10px] mt-0.5 truncate text-zinc-500 dark:text-zinc-400">
+              Sender ID: {sender?.id || "—"}
+            </p>
+            <p className={`text-[9px] mt-1 font-medium ${sender?.status === "active" ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"}`}>
+              {senderStatusError ? "Status unavailable" : sender?.status ? sender.status[0].toUpperCase() + sender.status.slice(1) : sailupConfigured ? "No sender registered" : "Not configured"}
+            </p>
+          </div>
+          <Button render={<Link href="/dashboard/templates" />} variant="neutral" size="sm" className="mt-3 w-full rounded-lg px-2.5 text-[11px]">
+            View
+          </Button>
         </div>
 
         <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm flex flex-col justify-between">
@@ -113,7 +150,6 @@ export default async function DashboardPage() {
             </div>
           ) : calls.map((call) => {
             const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
-            const cleanPhone = number.replace(/\D/g, "");
             return (
               <article key={call.id} className="rounded-lg border border-zinc-200 dark:border-[#282B29] bg-zinc-50/50 dark:bg-[#141615]/50 p-3 space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
@@ -127,13 +163,13 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between text-[10px] text-zinc-500 dark:text-zinc-400 pt-1 border-t border-zinc-200/60 dark:border-[#282B29]">
                   <span>{call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}</span>
-                  <div className="flex gap-1.5">
-                    <a href={`sms:${number}`} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-[10px] font-medium hover:bg-blue-200 dark:hover:bg-blue-500/20 transition-colors">
-                      <Send className="w-3 h-3" /> SMS
-                    </a>
-                    <a href={`https://wa.me/${cleanPhone}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-medium hover:bg-emerald-200 dark:hover:bg-emerald-500/20 transition-colors">
-                      <MessageCircle className="w-3 h-3" /> WhatsApp
-                    </a>
+                  <div className="flex flex-wrap gap-1.5">
+                    <SmsFollowupButton callEventId={String(call.id)} enabled={Boolean(sender && sender.status === "active")} />
+                    <WhatsAppFollowupButton
+                      recipient={number}
+                      message="Hello! We missed your call at our shop. How can we help you today?"
+                      enabled={whatsappConfigured}
+                    />
                   </div>
                 </div>
               </article>
@@ -162,7 +198,6 @@ export default async function DashboardPage() {
               ) : (
                 calls.map((call) => {
                   const number = call.phone_number || call.caller_number || call.callerNumber || "Unknown";
-                  const cleanPhone = number.replace(/\D/g, "");
 
                   return (
                     <tr key={call.id} className="hover:bg-zinc-50/60 dark:hover:bg-[#141615]/40 transition-colors">
@@ -184,21 +219,15 @@ export default async function DashboardPage() {
                           {call.lead_status || call.leadStatus || "missed"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
-                        <a
-                          href={`sms:${number}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-[10px] font-medium hover:bg-blue-200 dark:hover:bg-blue-500/20 transition-colors"
-                        >
-                          <Send className="w-3 h-3" /> SMS
-                        </a>
-                        <a
-                          href={`https://wa.me/${cleanPhone}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-medium hover:bg-emerald-200 dark:hover:bg-emerald-500/20 transition-colors"
-                        >
-                          <MessageCircle className="w-3 h-3" /> WhatsApp
-                        </a>
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
+                        <div className="inline-flex items-start gap-1.5">
+                          <SmsFollowupButton callEventId={String(call.id)} enabled={Boolean(sender && sender.status === "active")} />
+                          <WhatsAppFollowupButton
+                            recipient={number}
+                            message="Hello! We missed your call at our shop. How can we help you today?"
+                            enabled={whatsappConfigured}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );

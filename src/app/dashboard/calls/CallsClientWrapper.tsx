@@ -2,16 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { PhoneMissed, Smartphone, Clock, AlertCircle, MessageCircle, Send, ChevronDown } from "lucide-react";
+import { PhoneMissed, Smartphone, Clock, AlertCircle, ChevronDown } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
+import { SmsFollowupButton, WhatsAppFollowupButton } from "@/components/MissedCallActions";
 
 interface CallsClientWrapperProps {
   initialCalls: any[];
   error: string | null;
+  smsConfigured: boolean;
+  whatsappConfigured: boolean;
 }
 
-export default function CallsClientWrapper({ initialCalls, error }: CallsClientWrapperProps) {
+export default function CallsClientWrapper({ initialCalls, error, smsConfigured, whatsappConfigured }: CallsClientWrapperProps) {
   const router = useRouter();
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -82,9 +85,8 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
             </div>
           ) : (
             initialCalls.map((call) => {
-              const cleanPhone = call.phone_number.replace(/\D/g, "");
-              const defaultMsg = encodeURIComponent("Hello! We missed your call at our shop. How can we help you today?");
               const isDropdownOpen = openDropdownId === call.id;
+              const canFollowUp = smsConfigured || whatsappConfigured;
 
               return (
                 <div key={call.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative hover:bg-zinc-50/60 dark:hover:bg-[#141615]/40 transition-colors">
@@ -121,6 +123,7 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                         variant="primary"
                         size="sm"
                         className="text-[11px]"
+                        disabled={!canFollowUp}
                       >
                         Follow Up <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                       </Button>
@@ -130,32 +133,26 @@ export default function CallsClientWrapper({ initialCalls, error }: CallsClientW
                           <div className="px-2 py-1 text-[8px] font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-[#282B29] mb-1">
                             Quick Action
                           </div>
-                          <a
-                            href={`sms:${call.phone_number}?body=${defaultMsg}`}
-                            className="w-full px-2.5 py-1.5 text-[10px] text-left text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center gap-2 font-medium transition-colors"
-                            onClick={() => setOpenDropdownId(null)}
-                          >
-                            <span className="w-4.5 h-4.5 rounded-md bg-blue-100 dark:bg-blue-500/10 border border-blue-300 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
-                              <Send className="w-2.5 h-2.5" />
-                            </span>
-                            Send SMS
-                          </a>
-                          <a
-                            href={`https://wa.me/${cleanPhone}?text=${defaultMsg}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full px-2.5 py-1.5 text-[10px] text-left text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg flex items-center gap-2 font-medium transition-colors mt-0.5"
-                            onClick={() => setOpenDropdownId(null)}
-                          >
-                            <span className="w-4.5 h-4.5 rounded-md bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                              <MessageCircle className="w-2.5 h-2.5" />
-                            </span>
-                            WhatsApp
-                          </a>
+                          <div className="p-1">
+                            <SmsFollowupButton callEventId={String(call.id)} enabled={smsConfigured} size="sm" />
+                          </div>
+                          <div className="p-1">
+                            <WhatsAppFollowupButton
+                              recipient={call.phone_number}
+                              message={`Hello! We missed your call at ${call.android_devices?.business_name || "our shop"}. How can we help you today?`}
+                              enabled={whatsappConfigured}
+                              size="sm"
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
+                  {!canFollowUp && (
+                    <p className="pl-10 text-[9px] text-zinc-500 dark:text-zinc-400">
+                      Follow-ups are blocked until SMS or WhatsApp is configured. <a className="underline" href="/dashboard/templates">Set up channels</a>
+                    </p>
+                  )}
                 </div>
               );
             })
