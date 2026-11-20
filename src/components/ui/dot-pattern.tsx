@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useId, useRef, useState } from "react"
-import { motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
@@ -37,44 +36,26 @@ function Dot({
   r,
   glow,
   gradientId,
+  index,
 }: {
   cx: number
   cy: number
   r: number
   glow: boolean
   gradientId: string
+  index: number
 }) {
-  const [timing] = useState(() => ({
-    delay: Math.random() * 5,
-    duration: Math.random() * 3 + 2,
-  }))
-
   return (
-    <motion.circle
+    <circle
       cx={cx}
       cy={cy}
       r={r}
       fill={glow ? `url(#${gradientId})` : "currentColor"}
-      initial={glow ? { opacity: 0.4, scale: 1 } : {}}
-      animate={
-        glow
-          ? {
-              opacity: [0.4, 1, 0.4],
-              scale: [1, 1.5, 1],
-            }
-          : {}
-      }
-      transition={
-        glow
-          ? {
-              duration: timing.duration,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: timing.delay,
-              ease: "easeInOut",
-            }
-          : {}
-      }
+      className={glow ? "dot-pattern-glow" : undefined}
+      style={glow ? {
+        animationDelay: `${(index * 173) % 5_000}ms`,
+        animationDuration: `${2_000 + (index * 97) % 3_000}ms`,
+      } : undefined}
     />
   )
 }
@@ -105,7 +86,7 @@ function Dot({
  * - The component is client-side only ("use client")
  * - Automatically responds to container size changes
  * - When glow is enabled, dots will animate with random delays and durations
- * - Uses Motion for animations
+ * - Uses CSS for optional glow animations
  * - Dots color can be controlled via the text color utility classes
  */
 
@@ -148,6 +129,7 @@ export function DotPattern({
       const col = i % Math.ceil(dimensions.width / width)
       const row = Math.floor(i / Math.ceil(dimensions.width / width))
       return {
+        index: i,
         x: col * width + cx + x,
         y: row * height + cy + y,
       }
@@ -178,6 +160,7 @@ export function DotPattern({
           r={cr}
           glow={glow}
           gradientId={`${id}-gradient`}
+          index={dot.index}
         />
       ))}
     </svg>

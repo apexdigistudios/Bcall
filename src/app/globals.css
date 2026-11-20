@@ -224,6 +224,14 @@ section { min-width: 0; }
 .nav-link::after { position: absolute; bottom: 19px; left: 0; width: 0; height: 2px; background: var(--color-yellow); content: ""; transition: width .2s; }
 .nav-link:hover::after { width: 100%; }
 .hero-section { position: relative; overflow: hidden; padding-top: 78px; padding-bottom: 70px; background: var(--app-canvas); }
+.dot-pattern-glow { transform-box: fill-box; transform-origin: center; animation: dot-pattern-glow 2.5s ease-in-out infinite alternate; }
+@keyframes dot-pattern-glow {
+  from { opacity: .4; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dot-pattern-glow { animation: none; }
+}
 .hero-word-track { animation: hero-word-loop 6.6s infinite; will-change: transform; }
 @keyframes hero-word-loop {
   0%, 28% { transform: translateY(0); }
