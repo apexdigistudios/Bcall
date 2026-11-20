@@ -52,24 +52,22 @@ export function FeaturesSection() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {features.map(({ number, label, image, imageAlt, title, description, icon: Icon, href, link }, index) => (
             <Reveal key={number} className="min-w-0" delay={index * 70}>
-              <article className="bento-card flex min-w-0 flex-col bg-white p-4 sm:p-5">
-                <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg bg-soft">
-                  <Image
-                    src={image}
-                    alt={imageAlt}
-                    fill
-                    sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
-                    className="object-contain p-2"
-                  />
-                </div>
-                <div className="relative z-10 flex flex-1 flex-col rounded-lg bg-white pt-5 dark:bg-[#191B1A]">
-                  <span className="mb-5 grid size-11 place-items-center rounded-xl border border-line bg-soft text-ink">
+              <article className="bento-card relative isolate flex min-h-[420px] min-w-0 flex-col bg-white dark:bg-[#191B1A] sm:min-h-[440px]">
+                <Image
+                  src={image}
+                  alt={imageAlt}
+                  fill
+                  sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+                  className="object-contain p-3 sm:p-4"
+                />
+                <div className="feature-card-copy relative z-10 mt-auto flex flex-1 flex-col justify-end px-5 pb-5 pt-24 sm:px-6 sm:pb-6">
+                  <span className="mb-4 grid size-10 place-items-center rounded-xl border border-line bg-white/90 text-ink shadow-sm dark:bg-[#191B1A]/90">
                     <Icon size={20} strokeWidth={1.7} />
                   </span>
                   <p className="eyebrow mb-3 text-[9px] text-muted">{number} / {label}</p>
                   <h3 className="display-title text-[clamp(1.25rem,2vw,1.5rem)]">{title}</h3>
                   <p className="mt-3 flex-1 text-[13px] leading-7 text-muted">{description}</p>
-                  <a href={href} className="mt-5 inline-flex min-h-9 items-center gap-1.5 text-[11px] font-medium">
+                  <a href={href} className="mt-4 inline-flex min-h-9 items-center gap-1.5 text-[11px] font-medium text-ink">
                     {link}<ArrowUpRight size={14} />
                   </a>
                 </div>

@@ -267,6 +267,7 @@ section { min-width: 0; }
 .metric-strip-item > span { font-size: clamp(1.5rem, 3vw, 2rem); }
 .metric-strip-item:not(:last-child)::after { position: absolute; right: 0; top: 28px; bottom: 28px; width: 1px; background: var(--app-border); content: ""; }
 .bento-card { overflow: hidden; border: 1px solid var(--color-line); border-radius: 12px; }
+.feature-card-copy { background: linear-gradient(to top, var(--app-surface) 0%, color-mix(in srgb, var(--app-surface) 96%, transparent) 58%, color-mix(in srgb, var(--app-surface) 0%, transparent) 100%); }
 .feature-illustration { position: relative; height: 216px; overflow: hidden; padding: 28px; background: var(--color-soft); border-bottom: 1px solid var(--color-line); }
 .problem-flow { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 34px; }
 .problem-flow-item { flex: 1; text-align: center; }
