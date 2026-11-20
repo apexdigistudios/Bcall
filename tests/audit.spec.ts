@@ -3,7 +3,7 @@ import { auditInputSchema } from "../src/lib/schema";
 import { auditWebsite, type WebsiteAudit } from "../src/lib/website";
 import { calculateLeak } from "../src/lib/leak";
 import { buildAuditReport } from "../src/lib/report";
-import { parseAuditDiagnosis } from "../src/lib/diagnosis";
+import { isTransientModelError, parseAuditDiagnosis, requestDiagnosisWithFallback } from "../src/lib/diagnosis";
 import type { AuditInput } from "../src/lib/schema";
 import type { OsmAudit } from "../src/lib/osm";
 
@@ -124,4 +124,52 @@ test("accepts structured diagnosis text without numeric or financial figures", (
     executive_summary: "The homepage may lose $500 each month.",
   }))).toBeNull();
   expect(parseAuditDiagnosis("not JSON")).toBeNull();
+});
+
+test("retries Gemma once after a transient error, then uses the fallback model", async () => {
+  const validDiagnosis = JSON.stringify({
+    executive_summary: "The homepage makes it difficult for callers to take the next step.",
+    website_gaps: ["A direct contact action is not prominent."],
+    gbp_gaps: [],
+    action_plan: [],
+  });
+  const calls: string[] = [];
+  const delays: number[] = [];
+  const result = await requestDiagnosisWithFallback(
+    async (model) => {
+      calls.push(model);
+      if (calls.length < 3) throw { status: calls.length === 1 ? 429 : 503 };
+      return validDiagnosis;
+    },
+    async (milliseconds) => { delays.push(milliseconds); },
+  );
+
+  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it", "gemma-4-26b-a4b-it"]);
+  expect(delays).toEqual([1_200]);
+  expect(result.status).toBe("generated");
+  if (result.status === "generated") expect(result.model).toBe("gemma-4-26b-a4b-it");
+});
+
+test("uses deterministic fallback when the Gemma retry is not transient", async () => {
+  const calls: string[] = [];
+  const delays: number[] = [];
+  const result = await requestDiagnosisWithFallback(
+    async (model) => {
+      calls.push(model);
+      throw { status: calls.length === 1 ? 503 : 400 };
+    },
+    async (milliseconds) => { delays.push(milliseconds); },
+  );
+
+  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it"]);
+  expect(delays).toEqual([1_200]);
+  expect(result).toMatchObject({ status: "fallback", reason: "model_unavailable" });
+});
+
+test("recognizes Gemini transient status and code forms", () => {
+  expect(isTransientModelError({ status: 503 })).toBe(true);
+  expect(isTransientModelError({ status: "429" })).toBe(true);
+  expect(isTransientModelError({ code: "RESOURCE_EXHAUSTED" })).toBe(true);
+  expect(isTransientModelError({ code: "UNAVAILABLE" })).toBe(true);
+  expect(isTransientModelError({ status: 400 })).toBe(false);
 });
