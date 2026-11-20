@@ -22,6 +22,14 @@ type FallbackReason = "missing_api_key" | "invalid_response" | "model_unavailabl
 type DiagnosisRequest = (model: string) => Promise<string | undefined>;
 type DiagnosisSuccess = Extract<AuditDiagnosisResult, { status: "generated" }>;
 type DiagnosisFallback = Extract<AuditDiagnosisResult, { status: "fallback" }>;
+type DiagnosisAttemptStatus = "generated" | "invalid_response" | "failed" | number;
+type DiagnosisAttemptDiagnostic = {
+  model: string;
+  attempt: number;
+  status: DiagnosisAttemptStatus;
+  message: string;
+  error?: unknown;
+};
 
 export type AuditDiagnosisResult =
   | { status: "generated"; model: string; diagnosis: AuditDiagnosis }
@@ -167,31 +175,45 @@ export async function requestDiagnosisWithFallback(
   request: DiagnosisRequest,
   delay: (milliseconds: number) => Promise<void> = wait,
   onModelError?: (model: string, error: unknown, nextAction: "retry" | "fallback" | "stop") => void,
+  onAttempt?: (diagnostic: DiagnosisAttemptDiagnostic) => void,
 ): Promise<AuditDiagnosisResult> {
-  const firstAttempt = await requestAndParse(modelName, request);
-  if (firstAttempt.status === "generated") return firstAttempt.result;
-  if (firstAttempt.status === "invalid_response") return diagnosisFallback("invalid_response");
-  if (!isTransientModelError(firstAttempt.error)) {
-    onModelError?.(modelName, firstAttempt.error, "stop");
-    return diagnosisFallback("model_unavailable");
+  const models = [modelName, fallbackModelName];
+  for (const [modelIndex, model] of models.entries()) {
+    const maxAttempts = modelIndex === 0 ? 2 : 1;
+    for (let attemptNumber = 1; attemptNumber <= maxAttempts; attemptNumber += 1) {
+      const attempt = await requestAndParse(model, request);
+      const errorStatus = attempt.status === "failed" ? getErrorStatus(attempt.error) : undefined;
+      onAttempt?.({
+        model,
+        attempt: attemptNumber,
+        status: errorStatus ?? attempt.status,
+        message: attempt.status === "generated"
+          ? "Diagnosis generated successfully."
+          : attempt.status === "invalid_response"
+            ? "Model response did not match the diagnosis schema."
+            : attempt.error instanceof Error
+              ? attempt.error.message
+              : errorStatus
+                ? `Model request failed with status ${errorStatus}.`
+              : "Model request failed.",
+        ...(attempt.status === "failed" ? { error: attempt.error } : {}),
+      });
+
+      if (attempt.status === "generated") return attempt.result;
+      if (attempt.status === "invalid_response") return diagnosisFallback("invalid_response");
+
+      if (!isTransientModelError(attempt.error)) {
+        onModelError?.(model, attempt.error, "stop");
+        return diagnosisFallback("model_unavailable");
+      }
+
+      const hasRetry = attemptNumber < maxAttempts;
+      const hasFallback = modelIndex < models.length - 1;
+      onModelError?.(model, attempt.error, hasRetry ? "retry" : hasFallback ? "fallback" : "stop");
+      if (hasRetry) await delay(retryDelayMs);
+    }
   }
 
-  onModelError?.(modelName, firstAttempt.error, "retry");
-  await delay(retryDelayMs);
-
-  const retryAttempt = await requestAndParse(modelName, request);
-  if (retryAttempt.status === "generated") return retryAttempt.result;
-  if (retryAttempt.status === "invalid_response") return diagnosisFallback("invalid_response");
-  if (!isTransientModelError(retryAttempt.error)) {
-    onModelError?.(modelName, retryAttempt.error, "stop");
-    return diagnosisFallback("model_unavailable");
-  }
-
-  onModelError?.(modelName, retryAttempt.error, "fallback");
-  const fallbackAttempt = await requestAndParse(fallbackModelName, request);
-  if (fallbackAttempt.status === "generated") return fallbackAttempt.result;
-  if (fallbackAttempt.status === "invalid_response") return diagnosisFallback("invalid_response");
-  onModelError?.(fallbackModelName, fallbackAttempt.error, "stop");
   return diagnosisFallback("model_unavailable");
 }
 
@@ -324,6 +346,19 @@ export async function generateAuditDiagnosis(
         model,
         nextAction,
       );
+    },
+    ({ model, attempt, status, message, error }) => {
+      const safeMessage = error
+        ? safeErrorDetails(error, apiKey).message
+        : message;
+      console.info(JSON.stringify({
+        event: "audit.ai_diagnosis_attempt",
+        requestId,
+        model,
+        attempt,
+        status,
+        message: typeof safeMessage === "string" ? safeMessage : message,
+      }));
     },
   );
 

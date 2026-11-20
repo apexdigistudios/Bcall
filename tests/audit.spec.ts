@@ -150,6 +150,35 @@ test("retries Gemma once after a transient error, then uses the fallback model",
   if (result.status === "generated") expect(result.model).toBe("gemma-4-26b-a4b-it");
 });
 
+test("logs each attempt and returns deterministic fallback when all models are transiently unavailable", async () => {
+  const calls: string[] = [];
+  const diagnostics: Array<{ model: string; attempt: number; status: string | number; message: string }> = [];
+  const result = await requestDiagnosisWithFallback(
+    async (model) => {
+      calls.push(model);
+      throw { status: calls.length === 2 ? 429 : 503 };
+    },
+    async () => {},
+    undefined,
+    (diagnostic) => {
+      diagnostics.push({
+        model: diagnostic.model,
+        attempt: diagnostic.attempt,
+        status: diagnostic.status,
+        message: diagnostic.message,
+      });
+    },
+  );
+
+  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it", "gemma-4-26b-a4b-it"]);
+  expect(diagnostics).toEqual([
+    { model: "gemma-4-31b-it", attempt: 1, status: 503, message: "Model request failed with status 503." },
+    { model: "gemma-4-31b-it", attempt: 2, status: 429, message: "Model request failed with status 429." },
+    { model: "gemma-4-26b-a4b-it", attempt: 1, status: 503, message: "Model request failed with status 503." },
+  ]);
+  expect(result).toMatchObject({ status: "fallback", reason: "model_unavailable" });
+});
+
 test("uses deterministic fallback when the Gemma retry is not transient", async () => {
   const calls: string[] = [];
   const delays: number[] = [];
