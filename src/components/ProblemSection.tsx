@@ -1,4 +1,5 @@
-import { ArrowRight, ArrowUpRight, CircleX, PhoneMissed, Voicemail } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Reveal } from "./Reveal";
 
 export function ProblemSection() {
@@ -9,18 +10,17 @@ export function ProblemSection() {
           <div><p className="eyebrow mb-4"><span className="eyebrow-dot" />THE EXPENSIVE PROBLEM</p><h2 id="problem-heading" className="section-heading">Every missed call<br />has a price tag.</h2></div>
           <p className="section-description max-w-[350px]">You can’t always pick up. But when a customer gets voicemail, they don’t wait around. They call the next business.</p>
         </div>
-        <div className="grid gap-5 md:grid-cols-12">
+        <div className="grid gap-5 md:grid-cols-1 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
-            <div className="bento-card bg-soft p-7 sm:p-9">
-              <div className="mb-6 flex items-center gap-2 font-mono text-[9px] tracking-[.09em] text-muted"><span className="size-1.5 rounded-full bg-danger" />THE MISSED-CALL CYCLE</div>
-              <h3 className="display-title text-[clamp(1.35rem,3vw,1.8125rem)]">You’re busy doing great work.<br className="hidden sm:block" /><span className="text-muted">They’re moving on.</span></h3>
-              <div className="problem-flow">
-                <div className="problem-flow-item"><div className="problem-flow-icon"><PhoneMissed size={23} strokeWidth={1.5} /></div><p className="text-[11px] font-medium">A call you can’t take</p><p className="mt-1 text-[9px] text-muted">The phone keeps ringing.</p></div>
-                <ArrowRight className="mb-10 shrink-0 text-muted/50" size={17} strokeWidth={1.5} />
-                <div className="problem-flow-item"><div className="problem-flow-icon"><Voicemail size={23} strokeWidth={1.5} /></div><p className="text-[11px] font-medium">Another voicemail</p><p className="mt-1 text-[9px] text-muted">“Leave a message…”</p></div>
-                <ArrowRight className="mb-10 shrink-0 text-muted/50" size={17} strokeWidth={1.5} />
-                <div className="problem-flow-item"><div className="problem-flow-icon"><CircleX size={23} strokeWidth={1.5} className="text-danger" /></div><p className="text-[11px] font-medium">A lost opportunity</p><p className="mt-1 text-[9px] text-muted">They try someone else.</p></div>
-              </div>
+            <div className="bento-card flex h-full items-center justify-center bg-soft p-0">
+              <Image
+                src="/pain.png"
+                alt="A business owner notices a missed call while busy, illustrating lost leads, missed follow-ups, and lost revenue"
+                width={1882}
+                height={836}
+                sizes="(max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 700px"
+                className="block h-auto w-full max-w-full object-contain"
+              />
             </div>
           </Reveal>
           <Reveal className="lg:col-span-5" delay={70}>
