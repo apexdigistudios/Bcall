@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { createHmac } from "node:crypto";
 import {
   createMissedCallMessage,
   getPrimarySailupSender,
@@ -6,6 +7,7 @@ import {
   validateSenderRegistration,
   type SailupSender,
 } from "../src/lib/sailup";
+import { verifySailupWebhookSignature } from "../src/lib/sailup-webhook";
 
 test("validates Sender ID registration fields and limits", () => {
   const valid = validateSenderRegistration({
@@ -59,4 +61,17 @@ test("uses the business template and chooses an active default sender", () => {
   expect(getPrimarySailupSender([sender("pending"), sender("active")])?.status).toBe("active");
   expect(getPrimarySailupSender([sender("active"), sender("active", true)])?.is_default).toBe(true);
   expect(getPrimarySailupSender([sender("pending")])?.status).toBe("pending");
+});
+
+test("verifies Sailup webhook signatures against the raw body and recent timestamp", () => {
+  const secret = "test-webhook-secret";
+  const timestamp = "1795188000";
+  const body = '{"event":"message.delivered","data":{"id":"msg-1"}}';
+  const signature = `sha256=${createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex")}`;
+  const nowMs = Number(timestamp) * 1_000;
+
+  expect(verifySailupWebhookSignature(body, timestamp, signature, secret, nowMs)).toBe(true);
+  expect(verifySailupWebhookSignature(`${body} `, timestamp, signature, secret, nowMs)).toBe(false);
+  expect(verifySailupWebhookSignature(body, timestamp, signature, "wrong-secret", nowMs)).toBe(false);
+  expect(verifySailupWebhookSignature(body, "1795187000", signature, secret, nowMs)).toBe(false);
 });

@@ -34,6 +34,8 @@ The site records real inquiries. Demo and trial submissions do not send outbound
 
 The dashboard can register a Sender ID and dispatch missed-call follow-ups through Sailup. Set `SAILUP_API_KEY` in the server environment; it is never sent to the browser. Sender IDs are fetched from Sailup, and only an approved, active sender can send. Registration and manual SMS requests require a signed-in Supabase user. Manual dispatch is bound to an existing call event and its captured Ghanaian phone number. When a paired Android device records a missed call, the server attempts the same follow-up automatically if an active sender is available. Sender registration status is shown on `/dashboard/templates` and `/dashboard`.
 
+Register `https://<your-production-domain>/api/webhooks/sailup` in Sailup's Webhooks settings, and store the one-time webhook secret as `SAILUP_WEBHOOK_SECRET` in the server environment. The endpoint validates Sailup's HMAC-SHA256 signature against the unmodified request body and rejects stale timestamps. Valid message and Sender ID events are acknowledged and written to server logs; Sender ID status is refreshed from Sailup when the dashboard loads.
+
 SMS rate limits and duplicate-dispatch protection are currently held in process memory. Multi-instance deployments should use a shared rate limiter and durable dispatch records before relying on cross-instance limits or deduplication. Sailup failures are reported without rolling back call ingestion.
 
 WhatsApp actions require `WHATSAPP_ACCESS_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID` on the server. The current action opens a prefilled `wa.me` chat for the signed-in operator; it does not send a WhatsApp Cloud API message automatically.
@@ -66,6 +68,7 @@ Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel env
 - `src/app/audit/page.tsx` — public audit route.
 - `src/app/api/audit/route.ts` — validated, rate-limited audit endpoint.
 - `src/app/api/sailup/senders/route.ts` and `src/app/api/sms/send/route.ts` — authenticated Sender ID registration/status and missed-call SMS dispatch.
+- `src/app/api/webhooks/sailup/route.ts` — signed Sailup delivery and Sender ID review event receiver.
 - `src/lib/sailup.ts` and `src/lib/sms-followup.ts` — server-only Sailup client, channel checks, and shared automatic/manual SMS follow-up logic.
 - `src/lib/schema.ts`, `src/lib/website.ts`, `src/lib/osm.ts`, `src/lib/leak.ts`, and `src/lib/report.ts` — audit validation, public checks, deterministic estimates and findings, and report assembly.
 - `src/db/schema.ts` — Drizzle inquiry and device schema.
