@@ -1,213 +1,111 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { CalendarCheck2, Check, CheckCircle2, ChevronRight, CirclePlay, MessageCircle, PhoneMissed, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
-import { BrandMark } from "./Brand";
-import { Android } from "@/components/ui/android";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Building2, Check, CirclePlay, Store } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "./Reveal";
 
-const flowSteps = ["Missed call", "Follow-up", "Booked"];
+const headlineWords = ["paying", "booked", "acquired"] as const;
+
+function subscribeToScroll(callback: () => void) {
+  window.addEventListener("scroll", callback, { passive: true });
+  window.addEventListener("resize", callback);
+  return () => {
+    window.removeEventListener("scroll", callback);
+    window.removeEventListener("resize", callback);
+  };
+}
+
+function getHeadlineWordIndex() {
+  return Math.min(2, Math.floor(window.scrollY / Math.max(window.innerHeight * 0.8, 1)));
+}
 
 export function Hero() {
-  const [stage, setStage] = useState(2);
-  const [playing, setPlaying] = useState(false);
-
-  useEffect(() => {
-    if (!playing) return;
-    const followUp = setTimeout(() => setStage(1), 1200);
-    const booking = setTimeout(() => setStage(2), 3000);
-    const finish = setTimeout(() => setPlaying(false), 3300);
-    return () => { clearTimeout(followUp); clearTimeout(booking); clearTimeout(finish); };
-  }, [playing]);
-
-  function replay() { setStage(0); setPlaying(true); }
+  const wordIndex = useSyncExternalStore(subscribeToScroll, getHeadlineWordIndex, () => 0);
 
   return (
-    <section className="hero-section py-6 sm:py-16 w-full overflow-x-hidden box-border" aria-labelledby="hero-heading" id="live-demo">
-      <div className="page-container max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        
-        {/* Left Copy Column */}
-        <div className="w-full lg:col-span-6 space-y-4 sm:space-y-6 text-center lg:text-left">
+    <section className="hero-section w-full overflow-x-clip box-border py-6 sm:py-16" aria-labelledby="hero-heading" id="live-demo">
+      <div className="page-container mx-auto flex w-full max-w-7xl flex-col items-center gap-8 px-4 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-12">
+        <div className="w-full min-w-0 space-y-4 text-center sm:space-y-6 lg:col-span-6 lg:text-left">
           <Reveal immediate delay={0}>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] sm:text-xs font-semibold mx-auto lg:mx-0">
-              <PhoneMissed size={12} strokeWidth={1.8} /> Built for businesses that can’t afford to miss customers
-            </div>
+            <p className="mx-auto flex max-w-fit items-center justify-center gap-2 text-[11px] font-semibold text-amber-900 sm:text-xs lg:mx-0">
+              <Store size={15} strokeWidth={1.8} aria-hidden="true" />
+              Built for local businesses that can&apos;t afford to miss customers
+            </p>
           </Reveal>
-          
+
           <Reveal immediate delay={80}>
-            <h1 id="hero-heading" className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#111214] leading-[1.12]">
-              <span className="block">Turn missed calls</span>
-              <span className="block">into <span className="underline decoration-[#f5c62e] decoration-wavy">booked</span></span>
+            <h1
+              id="hero-heading"
+              aria-label={`We turn your missed calls into ${headlineWords[wordIndex]} customers.`}
+              className="font-sans text-3xl font-extrabold leading-[1.12] tracking-tight text-[#111214] sm:text-5xl lg:text-6xl"
+            >
+              <span className="block">We turn your missed</span>
+              <span className="block">
+                calls into{" "}
+                <span className="inline-block h-[1.12em] w-[8ch] overflow-hidden align-bottom text-left underline decoration-[#f5c62e] decoration-wavy">
+                  <span
+                    className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                    style={{ transform: `translateY(-${wordIndex * 1.12}em)` }}
+                    aria-hidden="true"
+                  >
+                    {headlineWords.map((word) => (
+                      <span key={word} className="block h-[1.12em]">
+                        {word}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </span>
               <span className="block">customers.</span>
             </h1>
           </Reveal>
-          
+
           <Reveal immediate delay={160}>
-            <p className="text-xs sm:text-sm lg:text-base text-[#686b73] max-w-lg mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
+            <p className="mx-auto max-w-lg px-2 text-xs leading-relaxed text-[#686b73] sm:px-0 sm:text-sm lg:mx-0 lg:text-base">
               Your next customer called. You were busy. Turn missed calls into real conversations and booked appointments — without lifting a finger.
             </p>
           </Reveal>
-          
-          {/* Mobile-optimized full-width buttons */}
+
           <Reveal immediate delay={240}>
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2 w-full">
+            <div className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row lg:justify-start">
               <Link
                 href="/auth"
-                className={buttonVariants({ variant: "primary", size: "sm", className: "w-full sm:w-auto rounded-xl text-xs shadow-lg shadow-amber-500/10" })}
+                className={buttonVariants({ variant: "primary", size: "sm", className: "w-full rounded-xl text-xs shadow-lg shadow-amber-500/10 sm:w-auto" })}
               >
                 Start my 14-day free trial
               </Link>
               <a
                 href="#how-it-works"
-                className={buttonVariants({ variant: "neutral", size: "sm", className: "w-full sm:w-auto text-center" })}
+                className={buttonVariants({ variant: "neutral", size: "sm", className: "w-full text-center sm:w-auto" })}
               >
                 <CirclePlay size={17} strokeWidth={1.6} /> See how it works
               </a>
             </div>
           </Reveal>
-          
+
           <Reveal immediate delay={240}>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-[11px] sm:text-xs text-[#686b73] pt-1">
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pt-1 text-[11px] text-[#686b73] sm:text-xs lg:justify-start">
               <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> No credit card needed</span>
               <span className="inline-flex items-center gap-1.5"><Check size={12} strokeWidth={2} className="text-emerald-600" /> Works with your existing number</span>
             </div>
           </Reveal>
         </div>
 
-        {/* Right iPhone & Mobile Stack Column */}
-        <Reveal immediate delay={240} className="w-full lg:col-span-6">
-        <div className="flex flex-col items-center justify-center gap-4 relative pt-2 lg:pt-0">
-          
-          {/* Android Device Preview */}
-          <Android width={378} height={830 * 0.88} className="h-auto w-full max-w-[320px] sm:max-w-[380px]">
-            <div className="flex h-full min-h-0 flex-col justify-between bg-white px-3 pb-4 pt-10 text-[#111214] sm:px-4">
-              
-              <div>
-                {/* Header */}
-                <div className="mb-3 sm:mb-4 flex items-center justify-between border-b border-[#e7e7e9] pb-3">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <BrandMark className="brand-mark-small w-5 h-5 shrink-0" />
-                    <span className="text-[11px] font-bold tracking-tight truncate">y&apos;elllo</span>
-                    <span className="rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[7px] text-amber-800 font-semibold shrink-0">LIVE</span>
-                  </div>
-                  <Button
-                    type="button" 
-                    onClick={replay} 
-                    disabled={playing} 
-                    variant="neutral"
-                    size="xs"
-                    className="shrink-0 text-[10px]"
-                    aria-label="Replay missed-call recovery flow"
-                  >
-                    <RotateCcw size={11} className={playing ? "animate-spin" : ""} />
-                    {playing ? "Playing" : "Replay"}
-                  </Button>
-                </div>
-
-                {/* Call Notice Card */}
-                <div className="bg-white rounded-2xl border border-[#e7e7e9] p-2.5 sm:p-3 shadow-sm flex items-center gap-2.5">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-red-600 shrink-0">
-                    <PhoneMissed size={16} strokeWidth={1.8} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-bold truncate text-[#111214]">Sarah Miller</p>
-                    <p className="text-[9px] text-[#686b73] truncate">Missed call · Shop line</p>
-                  </div>
-                  <span className="font-mono text-[8px] text-[#686b73] shrink-0">10:42 AM</span>
-                </div>
-
-                <div className="mt-3 mb-2 flex items-center justify-between">
-                  <span className="font-mono text-[8px] tracking-wider text-[#686b73] uppercase font-semibold">Automated Follow-up</span>
-                  <MessageCircle size={12} className="text-[#686b73]" strokeWidth={1.5} />
-                </div>
-
-                {/* Chat Flow Area */}
-                <div className="min-h-40 sm:min-h-[170px] text-[11px]" aria-live="polite" aria-atomic="true">
-                  {stage === 0 ? (
-                    <div className="animate-enter flex min-h-[150px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#e7e7e9] bg-white text-center p-3">
-                      <span className="mb-2 grid size-7 place-items-center rounded-full bg-amber-100 text-amber-800">
-                        <Sparkles size={15} strokeWidth={1.8} className={playing ? "animate-pulse" : ""} />
-                      </span>
-                      <p className="text-[11px] font-bold">Missed call detected.</p>
-                      <p className="mt-1 max-w-[200px] text-[9px] leading-relaxed text-[#686b73]">
-                        Instant SMS & WhatsApp follow-up deploying automatically.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <div key="outgoing" className="bg-white border border-[#e7e7e9] rounded-2xl rounded-tl-sm p-2.5 sm:p-3 text-[11px] shadow-sm leading-relaxed animate-enter">
-                        Hi Sarah! Sorry we missed your call. 👋 Want to book a fresh cut? We’d love to fit you in.
-                      </div>
-                      <div key="incoming" className="bg-[#111214] text-white rounded-2xl rounded-tr-sm p-2.5 sm:p-3 text-[11px] shadow-sm leading-relaxed ml-4 sm:ml-6 animate-enter">
-                        Hey! Yes, do you have anything Friday afternoon?
-                      </div>
-                      {stage === 1 ? (
-                        <div className="animate-enter flex items-center gap-1.5 pt-1.5 pl-1 text-[10px] text-[#686b73]">
-                          <span className="flex gap-0.5 text-amber-600 font-bold" aria-hidden="true">
-                            <span className="animate-pulse">•</span><span className="animate-pulse">•</span><span className="animate-pulse">•</span>
-                          </span> 
-                          Checking calendar & booking...
-                        </div>
-                      ) : (
-                        <div className="animate-enter bg-emerald-50 border border-emerald-200 rounded-2xl p-2 sm:p-2.5 flex items-center gap-2">
-                          <div className="grid size-6 shrink-0 place-items-center rounded-lg bg-emerald-600 text-white">
-                            <CalendarCheck2 size={13} strokeWidth={1.8} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-bold text-emerald-900 truncate">Booked successfully!</p>
-                            <p className="text-[9px] text-emerald-700 truncate">Friday, 2:00 PM</p>
-                          </div>
-                          <CheckCircle2 size={13} strokeWidth={1.8} className="text-emerald-600 shrink-0" />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* iPhone Flow Tabs Footer */}
-              <div className="mt-3 flex items-center justify-between border-t border-[#e7e7e9] pt-2.5">
-                {flowSteps.map((label, index) => (
-                  <Button
-                    key={label} 
-                    type="button" 
-                    variant="ghost"
-                    size="xs"
-                    className="h-auto rounded-lg px-1.5 py-1 text-[9px] font-semibold text-[#686b73] data-[active=true]:bg-white data-[active=true]:text-[#111214] data-[active=true]:shadow-sm sm:px-2"
-                    data-active={stage === index} 
-                    aria-pressed={stage === index} 
-                    onClick={() => { setPlaying(false); setStage(index); }}
-                  >
-                    <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#e7e7e9] data-[active=true]:bg-[#f5c62e] data-[active=true]:text-[#111214] flex items-center justify-center text-[8px] font-bold shrink-0" data-active={stage === index}>
-                      {index + 1}
-                    </span>
-                    <span className="text-[9px]">{label}</span>
-                    {index < 2 && <ChevronRight size={9} className="text-[#ccc] hidden sm:inline" aria-hidden="true" />}
-                  </Button>
-                ))}
-              </div>
-
-            </div>
-          </Android>
-
-          {/* Clean Mobile-First Revenue Card (Replaces awkward floating absolute toast on small screens) */}
-          <div className="w-full max-w-[320px] sm:max-w-[380px] bg-white border border-[#e7e7e9] rounded-2xl p-3 shadow-md flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="grid size-9 place-items-center rounded-xl bg-[#f5c62e] text-[#111214] shrink-0 font-bold">
-                <TrendingUp size={16} strokeWidth={2} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] text-[#686b73] truncate font-medium">1 missed call recovered</p>
-                <p className="text-sm font-bold tracking-tight text-[#111214]">$180 <span className="text-[10px] font-normal text-[#686b73]">in potential revenue</span></p>
-              </div>
-            </div>
-            <span className="grid size-5 place-items-center rounded-full bg-emerald-100 text-emerald-700 shrink-0 ml-auto">
-              <Check size={11} strokeWidth={2.5} />
-            </span>
+        <Reveal immediate delay={240} className="w-full min-w-0 lg:col-span-6">
+          <div className="flex w-full min-w-0 items-center justify-center overflow-hidden pt-2 lg:pt-0">
+            <Image
+              src="/mock.png"
+              alt="Yelllo missed-call recovery dashboard alongside an SMS conversation that turns into a booked customer"
+              width={1330}
+              height={1182}
+              priority
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
+              className="block h-auto w-full max-w-full rounded-2xl object-contain sm:rounded-3xl"
+            />
           </div>
-        </div>
         </Reveal>
       </div>
     </section>
