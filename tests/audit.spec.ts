@@ -3,7 +3,6 @@ import { auditInputSchema } from "../src/lib/schema";
 import { auditWebsite, type WebsiteAudit } from "../src/lib/website";
 import { calculateLeak } from "../src/lib/leak";
 import { buildAuditReport } from "../src/lib/report";
-import { isTransientModelError, parseAuditDiagnosis, requestDiagnosisWithFallback } from "../src/lib/diagnosis";
 import type { AuditInput } from "../src/lib/schema";
 import type { OsmAudit } from "../src/lib/osm";
 
@@ -105,100 +104,20 @@ test("report identifies data sources, assumptions, and ranked fixes", () => {
   expect(report.breakdown.assumptions.some((item) => item.includes("30%"))).toBe(true);
   expect(report.disclaimer).toContain("not a guarantee");
   expect(report.dataSources).toContain("A limited scan of the public website homepage.");
+  expect(report.executiveSummary).toContain("$8,375 (range:");
+  expect(report.leadRecoverySummary).toContain("10 reported missed calls per month");
+  expect(report.websiteFindings).toContain("Phone number visible: None found.");
+  expect(report.listingFindings[0]).toContain("No direct Google Business Profile lookup");
+  expect(report.fixes[0].title).toBe("Recover missed callers");
 });
 
-test("accepts structured diagnosis text without numeric or financial figures", () => {
-  const diagnosis = {
-    executive_summary: "The homepage makes it difficult for callers to take the next step.",
-    website_gaps: ["A direct contact action is not prominent."],
-    gbp_gaps: ["Google profile details are not available for verification."],
-    action_plan: [{
-      priority: "high",
-      title: "Make contact easier",
-      action: "Place a clear call or quote action near the top of the homepage.",
-    }],
-  };
-  expect(parseAuditDiagnosis(JSON.stringify(diagnosis))).toEqual(diagnosis);
-  expect(parseAuditDiagnosis(JSON.stringify({
-    ...diagnosis,
-    executive_summary: "The homepage may lose $500 each month.",
-  }))).toBeNull();
-  expect(parseAuditDiagnosis("not JSON")).toBeNull();
-});
-
-test("retries Gemma once after a transient error, then uses the fallback model", async () => {
-  const validDiagnosis = JSON.stringify({
-    executive_summary: "The homepage makes it difficult for callers to take the next step.",
-    website_gaps: ["A direct contact action is not prominent."],
-    gbp_gaps: [],
-    action_plan: [],
-  });
-  const calls: string[] = [];
-  const delays: number[] = [];
-  const result = await requestDiagnosisWithFallback(
-    async (model) => {
-      calls.push(model);
-      if (calls.length < 3) throw { status: calls.length === 1 ? 429 : 503 };
-      return validDiagnosis;
-    },
-    async (milliseconds) => { delays.push(milliseconds); },
+test("builds grounded findings when website and listing checks are unavailable", () => {
+  const report = buildAuditReport(
+    validInput,
+    { status: "unavailable", url: validInput.websiteUrl, phone: null, checks: [], message: "Website scan unavailable." },
+    { status: "unavailable", message: "OpenStreetMap lookup unavailable." },
   );
-
-  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it", "gemma-4-26b-a4b-it"]);
-  expect(delays).toEqual([1_200]);
-  expect(result.status).toBe("generated");
-  if (result.status === "generated") expect(result.model).toBe("gemma-4-26b-a4b-it");
-});
-
-test("logs each attempt and returns deterministic fallback when all models are transiently unavailable", async () => {
-  const calls: string[] = [];
-  const diagnostics: Array<{ model: string; attempt: number; status: string | number; message: string }> = [];
-  const result = await requestDiagnosisWithFallback(
-    async (model) => {
-      calls.push(model);
-      throw { status: calls.length === 2 ? 429 : 503 };
-    },
-    async () => {},
-    undefined,
-    (diagnostic) => {
-      diagnostics.push({
-        model: diagnostic.model,
-        attempt: diagnostic.attempt,
-        status: diagnostic.status,
-        message: diagnostic.message,
-      });
-    },
-  );
-
-  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it", "gemma-4-26b-a4b-it"]);
-  expect(diagnostics).toEqual([
-    { model: "gemma-4-31b-it", attempt: 1, status: 503, message: "Model request failed with status 503." },
-    { model: "gemma-4-31b-it", attempt: 2, status: 429, message: "Model request failed with status 429." },
-    { model: "gemma-4-26b-a4b-it", attempt: 1, status: 503, message: "Model request failed with status 503." },
-  ]);
-  expect(result).toMatchObject({ status: "fallback", reason: "model_unavailable" });
-});
-
-test("uses deterministic fallback when the Gemma retry is not transient", async () => {
-  const calls: string[] = [];
-  const delays: number[] = [];
-  const result = await requestDiagnosisWithFallback(
-    async (model) => {
-      calls.push(model);
-      throw { status: calls.length === 1 ? 503 : 400 };
-    },
-    async (milliseconds) => { delays.push(milliseconds); },
-  );
-
-  expect(calls).toEqual(["gemma-4-31b-it", "gemma-4-31b-it"]);
-  expect(delays).toEqual([1_200]);
-  expect(result).toMatchObject({ status: "fallback", reason: "model_unavailable" });
-});
-
-test("recognizes Gemini transient status and code forms", () => {
-  expect(isTransientModelError({ status: 503 })).toBe(true);
-  expect(isTransientModelError({ status: "429" })).toBe(true);
-  expect(isTransientModelError({ code: "RESOURCE_EXHAUSTED" })).toBe(true);
-  expect(isTransientModelError({ code: "UNAVAILABLE" })).toBe(true);
-  expect(isTransientModelError({ status: 400 })).toBe(false);
+  expect(report.websiteFindings).toEqual(["Website scan unavailable."]);
+  expect(report.listingFindings).toContain("OpenStreetMap lookup unavailable.");
+  expect(report.listingFindings).toContain("Rating and review count were not provided; no reputation leak was estimated.");
 });

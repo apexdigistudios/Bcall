@@ -3,7 +3,6 @@ import { auditInputSchema } from "@/lib/schema";
 import { auditWebsite, type WebsiteAudit } from "@/lib/website";
 import { auditOpenStreetMap, type OsmAudit } from "@/lib/osm";
 import { buildAuditReport } from "@/lib/report";
-import { generateAuditDiagnosis } from "@/lib/diagnosis";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -143,15 +142,7 @@ export async function POST(request: Request) {
       website,
     );
 
-    const deterministicReport = buildAuditReport(parsed.data, website, openStreetMap);
-    const diagnosis = await generateAuditDiagnosis(
-      parsed.data,
-      website,
-      openStreetMap,
-      deterministicReport,
-      requestId,
-    );
-    const report = { ...deterministicReport, diagnosis };
+    const report = buildAuditReport(parsed.data, website, openStreetMap);
     return Response.json({ report }, {
       status: 200,
       headers: { "Cache-Control": "no-store", "X-Request-Id": requestId },
