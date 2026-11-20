@@ -1,30 +1,14 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Building2, Check, CirclePlay, Store } from "lucide-react";
+import { Check, CirclePlay, Store } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "./Reveal";
 
-const headlineWords = ["paying", "booked", "acquired"] as const;
-
-function subscribeToScroll(callback: () => void) {
-  window.addEventListener("scroll", callback, { passive: true });
-  window.addEventListener("resize", callback);
-  return () => {
-    window.removeEventListener("scroll", callback);
-    window.removeEventListener("resize", callback);
-  };
-}
-
-function getHeadlineWordIndex() {
-  return Math.min(2, Math.floor(window.scrollY / Math.max(window.innerHeight * 0.8, 1)));
-}
+const headlineWords = ["paying", "booked", "acquired", "paying"] as const;
 
 export function Hero() {
-  const wordIndex = useSyncExternalStore(subscribeToScroll, getHeadlineWordIndex, () => 0);
-
   return (
     <section className="hero-section w-full overflow-x-clip box-border py-6 sm:py-16" aria-labelledby="hero-heading" id="live-demo">
       <div className="page-container mx-auto flex w-full max-w-7xl flex-col items-center gap-8 px-4 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-12">
@@ -39,18 +23,14 @@ export function Hero() {
           <Reveal immediate delay={80}>
             <h1
               id="hero-heading"
-              aria-label={`We turn your missed calls into ${headlineWords[wordIndex]} customers.`}
+              aria-label="We turn your missed calls into paying customers."
               className="font-sans text-3xl font-extrabold leading-[1.12] tracking-tight text-[#111214] sm:text-5xl lg:text-6xl"
             >
               <span className="block">We turn your missed</span>
               <span className="block">
                 calls into{" "}
                 <span className="inline-block h-[1.12em] w-[8ch] overflow-hidden align-bottom text-left underline decoration-[#f5c62e] decoration-wavy">
-                  <span
-                    className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-                    style={{ transform: `translateY(-${wordIndex * 1.12}em)` }}
-                    aria-hidden="true"
-                  >
+                  <span className="hero-word-track flex flex-col" aria-hidden="true">
                     {headlineWords.map((word) => (
                       <span key={word} className="block h-[1.12em]">
                         {word}

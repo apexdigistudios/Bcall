@@ -224,6 +224,18 @@ section { min-width: 0; }
 .nav-link::after { position: absolute; bottom: 19px; left: 0; width: 0; height: 2px; background: var(--color-yellow); content: ""; transition: width .2s; }
 .nav-link:hover::after { width: 100%; }
 .hero-section { position: relative; overflow: hidden; padding-top: 78px; padding-bottom: 70px; background: var(--app-canvas); }
+.hero-word-track { animation: hero-word-loop 6.6s infinite; will-change: transform; }
+@keyframes hero-word-loop {
+  0%, 28% { transform: translateY(0); }
+  33.333% { transform: translateY(-1.12em); }
+  61.333% { transform: translateY(-1.12em); }
+  66.667% { transform: translateY(-2.24em); }
+  94.667% { transform: translateY(-2.24em); }
+  100% { transform: translateY(-3.36em); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-word-track { animation: none; }
+}
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); align-items: center; gap: 48px; }
 .hero-title { font-size: clamp(3.5rem, 5.5vw, 4.9rem); line-height: 1.015; font-weight: 600; letter-spacing: -.035em; }
 .hero-line { display: block; }
