@@ -2,6 +2,7 @@ import type { AuditInput } from "./schema";
 import type { WebsiteAudit } from "./website";
 import type { OsmAudit } from "./osm";
 import { calculateLeak } from "./leak";
+import type { AuditDiagnosisResult } from "./diagnosis";
 
 export type AuditReport = ReturnType<typeof calculateLeak> & {
   businessName: string;
@@ -18,6 +19,7 @@ export type AuditReport = ReturnType<typeof calculateLeak> & {
   };
   dataSources: string[];
   disclaimer: string;
+  diagnosis?: AuditDiagnosisResult;
 };
 
 export function buildAuditReport(
@@ -55,6 +57,6 @@ export function buildAuditReport(
       website.status === "checked" ? "A limited scan of the public website homepage." : "Website scan unavailable; no website leak was assigned.",
       openStreetMap.status === "found" ? "A best-match OpenStreetMap Nominatim listing, when available." : "OpenStreetMap listing data unavailable or no matching business found.",
     ],
-    disclaimer: "Estimates are based on self-reported numbers, a scan of your public website, and OpenStreetMap data where available. This is not a guarantee of results.",
+    disclaimer: "Estimates are based on self-reported numbers, a scan of your public website, and OpenStreetMap data where available. Any AI-generated narrative is explanatory only; scores and financial figures are calculated deterministically by the server. This is not a guarantee of results.",
   };
 }

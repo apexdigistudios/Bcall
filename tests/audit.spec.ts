@@ -3,6 +3,7 @@ import { auditInputSchema } from "../src/lib/schema";
 import { auditWebsite, type WebsiteAudit } from "../src/lib/website";
 import { calculateLeak } from "../src/lib/leak";
 import { buildAuditReport } from "../src/lib/report";
+import { parseAuditDiagnosis } from "../src/lib/diagnosis";
 import type { AuditInput } from "../src/lib/schema";
 import type { OsmAudit } from "../src/lib/osm";
 
@@ -104,4 +105,23 @@ test("report identifies data sources, assumptions, and ranked fixes", () => {
   expect(report.breakdown.assumptions.some((item) => item.includes("30%"))).toBe(true);
   expect(report.disclaimer).toContain("not a guarantee");
   expect(report.dataSources).toContain("A limited scan of the public website homepage.");
+});
+
+test("accepts structured diagnosis text without numeric or financial figures", () => {
+  const diagnosis = {
+    executive_summary: "The homepage makes it difficult for callers to take the next step.",
+    website_gaps: ["A direct contact action is not prominent."],
+    gbp_gaps: ["Google profile details are not available for verification."],
+    action_plan: [{
+      priority: "high",
+      title: "Make contact easier",
+      action: "Place a clear call or quote action near the top of the homepage.",
+    }],
+  };
+  expect(parseAuditDiagnosis(JSON.stringify(diagnosis))).toEqual(diagnosis);
+  expect(parseAuditDiagnosis(JSON.stringify({
+    ...diagnosis,
+    executive_summary: "The homepage may lose $500 each month.",
+  }))).toBeNull();
+  expect(parseAuditDiagnosis("not JSON")).toBeNull();
 });

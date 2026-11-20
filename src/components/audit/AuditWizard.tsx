@@ -96,6 +96,63 @@ function AuditReportView({ report, onRestart }: { report: AuditReport; onRestart
         ))}
       </section>
 
+      {report.diagnosis && (
+        <section className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-[#282B29] dark:bg-[#191B1A] sm:p-5" aria-labelledby="ai-diagnosis-title">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 id="ai-diagnosis-title" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Final diagnosis</h2>
+            <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${
+              report.diagnosis.status === "generated"
+                ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
+                : "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
+            }`}>
+              {report.diagnosis.status === "generated" ? `AI-assisted · ${report.diagnosis.model}` : "Deterministic report · AI unavailable"}
+            </span>
+          </div>
+          {report.diagnosis.status === "fallback" ? (
+            <p className="mt-3 text-[11px] leading-5 text-zinc-600 dark:text-zinc-400">{report.diagnosis.message}</p>
+          ) : (
+            <>
+              <p className="mt-3 text-[12px] leading-6 text-zinc-700 dark:text-zinc-300">{report.diagnosis.diagnosis.executive_summary}</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <h3 className="text-[11px] font-semibold text-zinc-900 dark:text-zinc-100">Website gaps</h3>
+                  {report.diagnosis.diagnosis.website_gaps.length > 0 ? (
+                    <ul className="mt-2 list-disc space-y-1 pl-4 text-[11px] leading-5 text-zinc-600 dark:text-zinc-400">
+                      {report.diagnosis.diagnosis.website_gaps.map((gap, index) => <li key={`${index}-${gap}`}>{gap}</li>)}
+                    </ul>
+                  ) : <p className="mt-2 text-[11px] text-zinc-600 dark:text-zinc-400">No additional website gaps were identified from the available checks.</p>}
+                </div>
+                <div>
+                  <h3 className="text-[11px] font-semibold text-zinc-900 dark:text-zinc-100">Google profile and listing gaps</h3>
+                  <p className="mt-1 text-[10px] leading-5 text-zinc-500 dark:text-zinc-400">No direct Google Business Profile lookup is configured. Listing signals are from OpenStreetMap; ratings and reviews are self-reported.</p>
+                  {report.diagnosis.diagnosis.gbp_gaps.length > 0 ? (
+                    <ul className="mt-2 list-disc space-y-1 pl-4 text-[11px] leading-5 text-zinc-600 dark:text-zinc-400">
+                      {report.diagnosis.diagnosis.gbp_gaps.map((gap, index) => <li key={`${index}-${gap}`}>{gap}</li>)}
+                    </ul>
+                  ) : <p className="mt-2 text-[11px] text-zinc-600 dark:text-zinc-400">No additional listing gaps were identified from the available data.</p>}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-zinc-100 pt-4 dark:border-[#282B29]">
+                <h3 className="text-[11px] font-semibold text-zinc-900 dark:text-zinc-100">Action plan</h3>
+                {report.diagnosis.diagnosis.action_plan.length > 0 ? (
+                  <ol className="mt-2 space-y-2">
+                    {report.diagnosis.diagnosis.action_plan.map((item, index) => (
+                      <li key={`${index}-${item.title}`} className="rounded-lg border border-zinc-200 p-3 dark:border-[#282B29]">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">{item.title}</span>
+                          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-zinc-600 dark:bg-[#282B29] dark:text-zinc-300">{item.priority} priority</span>
+                        </div>
+                        <p className="mt-1 text-[11px] leading-5 text-zinc-600 dark:text-zinc-400">{item.action}</p>
+                      </li>
+                    ))}
+                  </ol>
+                ) : <p className="mt-2 text-[11px] text-zinc-600 dark:text-zinc-400">No additional actions could be grounded in the available signals.</p>}
+              </div>
+            </>
+          )}
+        </section>
+      )}
+
       <section className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-[#282B29] dark:bg-[#191B1A] sm:p-5" aria-labelledby="website-audit-title">
         <h2 id="website-audit-title" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Website checks</h2>
         {report.website.status === "unavailable" ? (

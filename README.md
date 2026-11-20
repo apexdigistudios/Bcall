@@ -30,13 +30,13 @@ The supplied sandbox database is already configured. The project uses the existi
 
 The site records real inquiries. It does not send outbound emails, SMS, or telephone calls, process payments, or activate a live telephony account. Product conversations and charts are explicitly illustrative. Demo and trial inquiries are intended to be followed up by the business using the stored records. The calculator runs entirely in the browser; values are sent to the API only when a visitor submits an inquiry.
 
-`/audit` is a public, auth-free, three-step tool. `POST /api/audit` validates the request with Zod, checks the public website and OpenStreetMap in parallel, and returns a deterministic report directly to the browser. The report is not stored; it can be printed or saved as PDF through the browser print dialog. No database, login, queue, Google API, or AI integration is required for the audit.
+`/audit` is a public, auth-free, three-step tool. `POST /api/audit` validates the request with Zod, checks the public website and OpenStreetMap in parallel, calculates all scores and financial estimates deterministically on the server, and then optionally requests a structured narrative diagnosis from Google Gemini using `gemma-4-31b-it`. The model cannot provide figures to the report; deterministic server calculations remain authoritative. If the model key is missing or the model call fails, the report clearly indicates that the narrative diagnosis is unavailable and still returns its deterministic findings. The report is not stored; it can be printed or saved as PDF through the browser print dialog.
 
 Website checks use a bounded public homepage fetch with HTTP/HTTPS, redirect, timeout, response-size, and private-address safeguards. OpenStreetMap uses one Nominatim search per audit and requires `OSM_USER_AGENT` set to a contactable application identifier, for example `RevenueLeakAudit/1.0 (contact: you@example.com)`. Requests are limited to at most one per second per server process; requests arriving sooner are skipped and marked unavailable. If its environment variable is missing or the request fails, the report marks the listing unavailable and continues.
 
 Missed-call, website, and reputation estimates use the explicit defaults and formulas shown in the report; every displayed estimate is a low/expected/high range, with a 50% of monthly-revenue cap. Rating and review count are optional self-reported inputs because OpenStreetMap does not provide them. Reports are estimates, not verified losses or guarantees. The audit rate limit is in-memory (five requests per IP per hour per process); multi-instance production deployments should use a shared limiter.
 
-Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel environment(s) where the audit runs. No audit database table or Google/AI credentials are needed.
+Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel environment(s) where the audit runs. Set `GEMINI_API_KEY` in the same server environments to enable the optional Gemini diagnosis; keep it server-side and never prefix it with `NEXT_PUBLIC_`. Without it the deterministic report continues to work. The current pipeline does not connect to Google Business Profile APIs; it uses only OpenStreetMap listing signals and clearly labels unverified Google profile data.
 
 ## Commands
 
@@ -57,7 +57,7 @@ Set `OSM_USER_AGENT` in `.env.local` for local development and in the Vercel env
 - `src/app/api/demo/route.ts` — validated inquiry endpoint.
 - `src/app/audit/page.tsx` — public audit route.
 - `src/app/api/audit/route.ts` — validated, rate-limited audit endpoint.
-- `src/lib/schema.ts`, `src/lib/website.ts`, `src/lib/osm.ts`, `src/lib/leak.ts`, and `src/lib/report.ts` — audit validation, public checks, deterministic estimates, and report assembly.
+- `src/lib/schema.ts`, `src/lib/website.ts`, `src/lib/osm.ts`, `src/lib/leak.ts`, `src/lib/diagnosis.ts`, and `src/lib/report.ts` — audit validation, public checks, deterministic estimates, optional structured Gemini diagnosis, and report assembly.
 - `src/db/schema.ts` — Drizzle inquiry and device schema.
 
 Use `npx drizzle-kit push` after changing the database schema. The hosted preview uses the platform-managed production start and healthcheck.
