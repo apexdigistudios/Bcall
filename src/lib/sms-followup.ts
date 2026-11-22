@@ -3,8 +3,6 @@ import {
   claimCallEventSms,
   completeCallEventSms,
   createMissedCallMessage,
-  getPrimarySailupSender,
-  getSailupSenders,
   hasSailupApiKey,
   logSmsDispatch,
   releaseCallEventSms,
@@ -18,6 +16,7 @@ type FollowupInput = {
   recipient: string;
   businessName: string;
   body?: string;
+  userId?: string;
 };
 
 export type FollowupResult =
@@ -59,25 +58,35 @@ export async function dispatchMissedCallFollowup(input: FollowupInput): Promise<
   }
 
   let sender;
-  try {
-    sender = getPrimarySailupSender(await getSailupSenders());
-  } catch (error) {
-    const statusCode = error instanceof SailupError ? error.status : 502;
-    const message = error instanceof Error ? error.message : "Could not check the Sailup Sender ID status.";
-    console.error(JSON.stringify({
-      event: "sms.sender_status_failed",
-      callEventId: input.callEventId,
-      errorName: error instanceof Error ? error.name : "UnknownError",
-      status: statusCode,
-    }));
-    return { status: "failed", message, statusCode };
-  }
-  if (!sender || sender.status !== "active") {
-    return {
-      status: "blocked",
-      reason: "sender_not_active",
-      message: "SMS follow-up is blocked until a Sender ID is approved and active.",
+  if (input.userId) {
+    const { data: ownedSender, error: ownerError } = await supabase
+      .from("sailup_senders")
+      .select("id,name,use_case,sample_message,notes,status,status_reason,is_default,reviewed_at,created_at")
+      .eq("user_id", input.userId)
+      .eq("status", "active")
+      .order("is_default", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (ownerError) {
+      return { status: "failed", message: "Could not verify the account's active Sender ID.", statusCode: 502 };
+    }
+    if (!ownedSender) {
+      return { status: "blocked", reason: "sender_not_active", message: "SMS follow-up is blocked until an account-owned Sender ID is approved and active." };
+    }
+    sender = {
+      id: ownedSender.id,
+      name: ownedSender.name,
+      use_case: ownedSender.use_case,
+      sample_message: ownedSender.sample_message,
+      notes: ownedSender.notes,
+      status: ownedSender.status,
+      status_reason: ownedSender.status_reason,
+      is_default: ownedSender.is_default,
+      reviewed_at: ownedSender.reviewed_at,
+      created_at: ownedSender.created_at,
     };
+  } else {
+    return { status: "blocked", reason: "sender_not_active", message: "Automatic SMS ownership could not be verified for this device." };
   }
   if (!claimCallEventSms(input.callEventId)) {
     return {

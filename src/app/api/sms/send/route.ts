@@ -14,9 +14,11 @@ const requestSchema = z.object({
 }).strict();
 
 export async function POST(request: Request) {
+  let userId: string;
   try {
     const user = await getRequestUser(request);
     if (!user) return Response.json({ error: "Sign in to send SMS follow-ups." }, { status: 401 });
+    userId = user.id;
   } catch (error) {
     console.error(JSON.stringify({
       event: "sms.auth_check_failed",
@@ -78,6 +80,7 @@ export async function POST(request: Request) {
     recipient: call.phone_number,
     businessName: device.business_name,
     body: parsed.data.body,
+    userId,
   });
   if (result.status === "sent") return Response.json({ dispatch: result }, { status: 202 });
   if (result.status === "blocked") {

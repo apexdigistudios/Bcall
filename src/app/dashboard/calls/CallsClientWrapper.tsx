@@ -86,8 +86,6 @@ export default function CallsClientWrapper({ initialCalls, error, smsConfigured,
           ) : (
             initialCalls.map((call) => {
               const isDropdownOpen = openDropdownId === call.id;
-              const canFollowUp = smsConfigured || whatsappConfigured;
-
               return (
                 <div key={call.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative hover:bg-zinc-50/60 dark:hover:bg-[#141615]/40 transition-colors">
                   <div className="flex items-start sm:items-center gap-2.5 min-w-0">
@@ -123,7 +121,6 @@ export default function CallsClientWrapper({ initialCalls, error, smsConfigured,
                         variant="primary"
                         size="sm"
                         className="text-[11px]"
-                        disabled={!canFollowUp}
                       >
                         Follow Up <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                       </Button>
@@ -148,11 +145,6 @@ export default function CallsClientWrapper({ initialCalls, error, smsConfigured,
                       )}
                     </div>
                   </div>
-                  {!canFollowUp && (
-                    <p className="pl-10 text-[9px] text-zinc-500 dark:text-zinc-400">
-                      Follow-ups are blocked until SMS or WhatsApp is configured. <a className="underline" href="/dashboard/templates">Set up channels</a>
-                    </p>
-                  )}
                 </div>
               );
             })

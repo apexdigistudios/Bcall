@@ -86,7 +86,7 @@ export default function DevicesClientWrapper({
       {/* Header */}
       <div className="border-b border-zinc-200 dark:border-[#282B29] pb-4 flex items-center justify-between">
         <div>
-          <span className="text-[9px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">y'elllo / Gateway</span>
+          <span className="text-[9px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">y&apos;elllo / Gateway</span>
           <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Android Devices</h2>
         </div>
         <span className="text-[9px] px-2.5 py-1 rounded-md bg-white dark:bg-[#191B1A] text-zinc-700 dark:text-zinc-300 font-mono border border-zinc-200 dark:border-[#282B29]">
@@ -110,7 +110,7 @@ export default function DevicesClientWrapper({
             )}
           </div>
           <p className="text-[11px] text-zinc-300">
-            Enter inside your y'elllo app for <span className="font-bold text-white">{decodeURIComponent(bizName || "Shop")}</span>.
+            Enter inside your y&apos;elllo app for <span className="font-bold text-white">{decodeURIComponent(bizName || "Shop")}</span>.
           </p>
           <div className="flex items-center gap-3 pt-1 flex-wrap">
             <div className="bg-white/10 border border-white/20 px-4 py-2 rounded-lg font-mono text-xl tracking-widest text-[#EAB308] font-bold">

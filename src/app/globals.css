@@ -267,9 +267,6 @@ section { min-width: 0; }
 .metric-strip-item > span { font-size: clamp(1.5rem, 3vw, 2rem); }
 .metric-strip-item:not(:last-child)::after { position: absolute; right: 0; top: 28px; bottom: 28px; width: 1px; background: var(--app-border); content: ""; }
 .bento-card { overflow: hidden; border: 1px solid var(--color-line); border-radius: 12px; }
-.feature-card-copy { --feature-copy-shadow: 0 1px 4px rgb(255 255 255 / 90%); }
-.dark .feature-card-copy, [data-theme="dark"] .feature-card-copy { --feature-copy-shadow: 0 1px 4px rgb(0 0 0 / 90%); }
-.feature-card-copy > :where(p, h3, a) { text-shadow: var(--feature-copy-shadow); }
 .feature-illustration { position: relative; height: 216px; overflow: hidden; padding: 28px; background: var(--color-soft); border-bottom: 1px solid var(--color-line); }
 .problem-flow { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 34px; }
 .problem-flow-item { flex: 1; text-align: center; }

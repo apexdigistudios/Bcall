@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { MessageSquare, Send, Check, Sparkles, RefreshCw, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { SailupSender } from "@/lib/sailup";
 import { getAuthenticatedHeaders } from "@/lib/client-auth";
+import { Android } from "@/components/ui/android";
 
 type ChannelStatus = {
   configured: boolean;
@@ -251,7 +253,7 @@ export default function TemplatesPage() {
                 : "text-zinc-500 dark:text-zinc-400"
             }`}
           >
-            <MessageSquare className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> SMS Auto-Reply
+            <Image src="/logos/sms.svg" alt="" width={16} height={16} className="size-4 object-contain" /> SMS Auto-Reply
           </Button>
           <Button
             type="button"
@@ -264,7 +266,7 @@ export default function TemplatesPage() {
                 : "text-zinc-500 dark:text-zinc-400"
             }`}
           >
-            <Send className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> WhatsApp Auto-Reply
+            <Image src="/logos/whatsapp.svg" alt="" width={16} height={16} className="size-4 object-contain" /> WhatsApp Auto-Reply
           </Button>
         </div>
 
@@ -337,20 +339,17 @@ export default function TemplatesPage() {
           {/* Compact Device Mockup Preview Column */}
           <div className="md:col-span-5 flex flex-col">
             <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2">Live Preview</span>
-            <div className="flex-1 bg-zinc-50 dark:bg-[#141615] rounded-xl border border-zinc-200 dark:border-[#282B29] p-4 flex flex-col justify-center relative overflow-hidden shadow-sm min-h-[180px]">
-              {/* Phone Speaker Notch Graphic */}
-              <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
-
-              {/* Notification Bubble */}
-              <div className="mt-3 bg-white dark:bg-[#191B1A] rounded-lg p-3 shadow-sm border border-zinc-200 dark:border-[#282B29] space-y-1.5">
-                <div className="flex items-center justify-between text-[9px] text-zinc-500 font-mono">
-                  <span className="font-bold text-zinc-800 dark:text-zinc-200">{businessName || "y'elllo"}</span>
-                  <span>Just now</span>
+            <div className="flex flex-1 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-[#282B29] dark:bg-[#141615]">
+              <Android width={230} height={506} className="h-auto w-full max-w-[230px]">
+                <div className="flex h-full flex-col bg-white px-3 pb-3 pt-9 text-zinc-900 dark:bg-[#191B1A] dark:text-zinc-100">
+                  <div className="mb-2 border-b border-zinc-200 pb-2 text-[12px] font-bold leading-tight dark:border-[#282B29]">
+                    {activeSender?.name || senderName || businessName || "y'elllo"}
+                  </div>
+                  <div className="ml-auto max-w-[84%] rounded-xl rounded-br-sm bg-[#EAB308] px-2.5 py-2 text-[11px] font-medium leading-snug text-zinc-950">
+                    {currentText.replace(/\[Business Name\]/g, businessName || "Our Shop")}
+                  </div>
                 </div>
-                <p className="text-[11px] font-normal text-zinc-800 dark:text-zinc-200 leading-snug break-words">
-                  {currentText.replace(/\[Business Name\]/g, businessName || "Our Shop")}
-                </p>
-              </div>
+              </Android>
             </div>
           </div>
         </div>

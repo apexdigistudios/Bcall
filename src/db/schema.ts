@@ -43,3 +43,18 @@ export const callEvents = pgTable("call_events", {
   contactName: text("contact_name").notNull().default(""),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const sailupSenders = pgTable("sailup_senders", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  businessId: text("business_id"),
+  name: text("name").notNull(),
+  useCase: text("use_case").notNull(),
+  sampleMessage: text("sample_message").notNull(),
+  notes: text("notes").notNull().default(""),
+  status: text("status").notNull(),
+  statusReason: text("status_reason").notNull().default(""),
+  isDefault: boolean("is_default").notNull().default(false),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

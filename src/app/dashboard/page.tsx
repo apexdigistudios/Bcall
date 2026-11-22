@@ -3,7 +3,7 @@ import { Smartphone, MessageSquare, CheckCircle2, AlertCircle } from "lucide-rea
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SmsFollowupButton, WhatsAppFollowupButton } from "@/components/MissedCallActions";
-import { getPrimarySailupSender, getSailupSenders, hasSailupApiKey, isWhatsAppConfigured, SailupError } from "@/lib/sailup";
+import { SenderIdOverviewCard } from "@/components/SenderIdOverviewCard";
 
 export const dynamic = "force-dynamic";
 
@@ -11,10 +11,6 @@ export default async function DashboardPage() {
   let devices: any[] = [];
   let calls: any[] = [];
   let connectionError: string | null = null;
-  const sailupConfigured = hasSailupApiKey();
-  const whatsappConfigured = isWhatsAppConfigured();
-  let sender: Awaited<ReturnType<typeof getPrimarySailupSender>> = null;
-  let senderStatusError = false;
 
   try {
     const devicesRes = await supabase.from("android_devices").select("*");
@@ -31,19 +27,6 @@ export default async function DashboardPage() {
   } catch (error: any) {
     console.error("Supabase query error:", error);
     connectionError = error?.message || "Failed to query Supabase.";
-  }
-
-  if (sailupConfigured) {
-    try {
-      sender = getPrimarySailupSender(await getSailupSenders());
-    } catch (error) {
-      senderStatusError = true;
-      console.error(JSON.stringify({
-        event: "dashboard.sailup_status_failed",
-        errorName: error instanceof Error ? error.name : "UnknownError",
-        status: error instanceof SailupError ? error.status : undefined,
-      }));
-    }
   }
 
   const totalMissed = calls.length;
@@ -98,23 +81,7 @@ export default async function DashboardPage() {
           <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Connected SIM gateway</p>
         </div>
 
-        <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm flex flex-col justify-between">
-          <div className="min-w-0">
-            <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block">SMS Sender ID</span>
-            <h4 className="font-bold text-[11px] mt-1 truncate text-zinc-900 dark:text-zinc-100">
-              {sender?.name || "Not configured"}
-            </h4>
-            <p className="text-[10px] mt-0.5 truncate text-zinc-500 dark:text-zinc-400">
-              Sender ID: {sender?.id || "—"}
-            </p>
-            <p className={`text-[9px] mt-1 font-medium ${sender?.status === "active" ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"}`}>
-              {senderStatusError ? "Status unavailable" : sender?.status ? sender.status[0].toUpperCase() + sender.status.slice(1) : sailupConfigured ? "No sender registered" : "Not configured"}
-            </p>
-          </div>
-          <Button render={<Link href="/dashboard/templates" />} variant="neutral" size="sm" className="mt-3 w-full rounded-lg px-2.5 text-[11px]">
-            View
-          </Button>
-        </div>
+        <SenderIdOverviewCard />
 
         <div className="p-4 bg-white dark:bg-[#191B1A] rounded-xl border border-zinc-200 dark:border-[#282B29] shadow-sm flex flex-col justify-between">
           <div>
@@ -164,11 +131,11 @@ export default async function DashboardPage() {
                 <div className="flex items-center justify-between text-[10px] text-zinc-500 dark:text-zinc-400 pt-1 border-t border-zinc-200/60 dark:border-[#282B29]">
                   <span>{call.created_at ? new Date(call.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}</span>
                   <div className="flex flex-wrap gap-1.5">
-                    <SmsFollowupButton callEventId={String(call.id)} enabled={Boolean(sender && sender.status === "active")} />
+                    <SmsFollowupButton callEventId={String(call.id)} enabled={false} />
                     <WhatsAppFollowupButton
                       recipient={number}
                       message="Hello! We missed your call at our shop. How can we help you today?"
-                      enabled={whatsappConfigured}
+                      enabled={false}
                     />
                   </div>
                 </div>
@@ -221,11 +188,11 @@ export default async function DashboardPage() {
                       </td>
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <div className="inline-flex items-start gap-1.5">
-                          <SmsFollowupButton callEventId={String(call.id)} enabled={Boolean(sender && sender.status === "active")} />
+                          <SmsFollowupButton callEventId={String(call.id)} enabled={false} />
                           <WhatsAppFollowupButton
                             recipient={number}
                             message="Hello! We missed your call at our shop. How can we help you today?"
-                            enabled={whatsappConfigured}
+                            enabled={false}
                           />
                         </div>
                       </td>
