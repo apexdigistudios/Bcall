@@ -72,7 +72,7 @@ export function SmsFollowupButton({
         onClick={channelEnabled ? sendSms : () => setSetupOpen(true)}
         aria-describedby={!channelEnabled ? `sms-${callEventId}-setup` : undefined}
       >
-        <Image src="/logos/sms.svg" alt="" width={12} height={12} className="size-3 object-contain" /> SMS
+        <Image src="/logos/sms.svg" alt="" width={12} height={12} unoptimized className="size-3 object-contain" /> SMS
       </Button>
       {message && <span role="status" className="absolute left-0 top-full z-[70] mt-1 max-w-48 rounded-md border border-zinc-200 bg-white px-2 py-1 text-[9px] shadow-md dark:border-[#282B29] dark:bg-[#191B1A] text-zinc-600 dark:text-zinc-300">{message}</span>}
       {!channelEnabled && setupOpen && (
@@ -123,7 +123,7 @@ export function WhatsAppFollowupButton({
     return (
       <div className="relative flex flex-col items-start">
         <Button type="button" variant="neutral" size={size} onClick={() => setSetupOpen(true)}>
-          <Image src="/logos/whatsapp.svg" alt="" width={12} height={12} className="size-3 object-contain" /> WhatsApp
+          <Image src="/logos/whatsapp.svg" alt="" width={12} height={12} unoptimized className="size-3 object-contain" /> WhatsApp
         </Button>
         {setupOpen && (
           <div role="dialog" className="absolute left-0 top-full z-[70] mt-1.5 w-56 rounded-lg border border-zinc-200 bg-white p-3 text-left shadow-xl dark:border-[#282B29] dark:bg-[#191B1A]">
@@ -142,7 +142,7 @@ export function WhatsAppFollowupButton({
       variant="neutral"
       size={size}
     >
-      <Image src="/logos/whatsapp.svg" alt="" width={12} height={12} className="size-3 object-contain" /> WhatsApp
+      <Image src="/logos/whatsapp.svg" alt="" width={12} height={12} unoptimized className="size-3 object-contain" /> WhatsApp
     </Button>
   );
 }

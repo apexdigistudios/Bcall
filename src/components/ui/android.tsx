@@ -11,6 +11,8 @@ export interface AndroidProps extends SVGProps<SVGSVGElement> {
 const DEVICE_HEIGHT_SCALE = 0.88
 const SCREEN_TOP = 14 * DEVICE_HEIGHT_SCALE
 const SCREEN_HEIGHT = 800 * DEVICE_HEIGHT_SCALE
+const FRAME_WIDTH = 378
+const FRAME_HEIGHT = 830 * DEVICE_HEIGHT_SCALE
 
 export function Android({
   width = 433,
@@ -24,7 +26,7 @@ export function Android({
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`0 0 ${FRAME_WIDTH} ${FRAME_HEIGHT}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}

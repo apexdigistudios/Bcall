@@ -253,7 +253,7 @@ export default function TemplatesPage() {
                 : "text-zinc-500 dark:text-zinc-400"
             }`}
           >
-            <Image src="/logos/sms.svg" alt="" width={16} height={16} className="size-4 object-contain" /> SMS Auto-Reply
+            <Image src="/logos/sms.svg" alt="" width={16} height={16} unoptimized className="size-4 object-contain" /> SMS Auto-Reply
           </Button>
           <Button
             type="button"
@@ -266,7 +266,7 @@ export default function TemplatesPage() {
                 : "text-zinc-500 dark:text-zinc-400"
             }`}
           >
-            <Image src="/logos/whatsapp.svg" alt="" width={16} height={16} className="size-4 object-contain" /> WhatsApp Auto-Reply
+            <Image src="/logos/whatsapp.svg" alt="" width={16} height={16} unoptimized className="size-4 object-contain" /> WhatsApp Auto-Reply
           </Button>
         </div>
 
@@ -340,14 +340,17 @@ export default function TemplatesPage() {
           <div className="md:col-span-5 flex flex-col">
             <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2">Live Preview</span>
             <div className="flex flex-1 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-[#282B29] dark:bg-[#141615]">
-              <Android width={230} height={506} className="h-auto w-full max-w-[230px]">
-                <div className="flex h-full flex-col bg-white px-3 pb-3 pt-9 text-zinc-900 dark:bg-[#191B1A] dark:text-zinc-100">
-                  <div className="mb-2 border-b border-zinc-200 pb-2 text-[12px] font-bold leading-tight dark:border-[#282B29]">
+              <Android width={238} height={520} className="h-auto w-full max-w-[238px]">
+                <div className="flex h-full flex-col overflow-y-auto bg-white px-3 pb-3 pt-9 text-zinc-900 dark:bg-[#191B1A] dark:text-zinc-100">
+                  <div className="mb-2 border-b border-zinc-200 pb-2 text-[11px] font-bold leading-tight break-words dark:border-[#282B29]">
                     {activeSender?.name || senderName || businessName || "y'elllo"}
                   </div>
-                  <div className="ml-auto max-w-[84%] rounded-xl rounded-br-sm bg-[#EAB308] px-2.5 py-2 text-[11px] font-medium leading-snug text-zinc-950">
+                  <div className="ml-auto max-w-[84%] whitespace-pre-line break-words rounded-xl rounded-br-sm bg-[#EAB308] px-2.5 py-2 text-[10px] font-medium leading-snug text-zinc-950">
                     {currentText.replace(/\[Business Name\]/g, businessName || "Our Shop")}
                   </div>
+                  <p className="mt-2 text-[8px] font-semibold text-zinc-500 dark:text-zinc-400">
+                    {activeSender?.status ? `${activeSender.status[0].toUpperCase()}${activeSender.status.slice(1)} Sender ID` : "Preview"}
+                  </p>
                 </div>
               </Android>
             </div>
